@@ -184,6 +184,7 @@
 
         <div class="flex items-center gap-3">
             <input id="username" type="text" placeholder="@usuario_tiktok" class="input-gamer w-40">
+            <input id="key" type="password" placeholder="Access Key" class="input-gamer w-32">
             <button id="btn-connect" class="btn-gamer-top">Conectar</button>
             <button id="btn-disconnect" class="hidden bg-red-900 border border-red-500 text-white font-black px-6 py-2 rounded-md uppercase tracking-widest text-xs">Salir</button>
         </div>
@@ -449,13 +450,15 @@
         const volInput = document.getElementById('tts-volume');
         if(volInput) volInput.oninput = (e) => document.getElementById('vol-perc').innerText = Math.round(e.target.value * 100) + "%";
 
+        // SE RESTAURÓ LA LÓGICA DE VALIDACIÓN Y ENVÍO DE LA KEY
         const btnConnect = document.getElementById('btn-connect');
         if(btnConnect) {
             btnConnect.onclick = () => {
                 const username = document.getElementById('username').value;
-                if(!username) return alert("Ingresa tu usuario de TikTok");
+                const key = document.getElementById('key').value;
+                if(!username || !key) return alert("Faltan datos (Usuario o Access Key)");
                 document.getElementById('loader').style.display = 'flex'; 
-                socket.emit("startConnection", { username, key: "" }); // Se ignora la key
+                socket.emit("startConnection", { username, key }); 
             };
         }
 
