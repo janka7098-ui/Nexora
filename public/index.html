@@ -25,14 +25,8 @@
         }
 
         body {
-            font-family: 'Rajdhani', sans-serif;
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden; 
-            margin: 0;
+            font-family: 'Rajdhani', sans-serif; background-color: var(--bg-base); color: var(--text-main);
+            height: 100vh; display: flex; flex-direction: column; overflow: hidden; margin: 0;
         }
 
         /* -------------------------------------
@@ -41,8 +35,7 @@
         .topbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 25px; background-color: var(--bg-panel);
-            border-bottom: 1px solid var(--border-color); height: 75px; z-index: 100;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border-bottom: 1px solid var(--border-color); height: 75px; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
         .workspace { display: flex; height: calc(100vh - 75px); width: 100%; }
@@ -70,9 +63,7 @@
 
         .btn-gamer-top {
             background-color: transparent; color: var(--cyan-neon); border: 1px solid var(--cyan-neon);
-            font-weight: 900; padding: 8px 25px; border-radius: 6px; cursor: pointer;
-            text-transform: uppercase; font-size: 0.85rem; transition: all 0.2s;
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+            font-weight: 900; padding: 8px 25px; border-radius: 6px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; transition: all 0.2s; box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
         }
         .btn-gamer-top:hover { background-color: rgba(0, 229, 255, 0.1); box-shadow: 0 0 15px rgba(0, 229, 255, 0.5); }
 
@@ -80,72 +71,60 @@
             width: 100%; padding: 12px; text-align: center; border-radius: 8px; font-weight: 900;
             cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
             background-color: rgba(0, 0, 0, 0.5); border: 1px solid var(--border-color); transition: all 0.3s;
-            display: flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none;
+            display: flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; font-size: 0.85rem;
         }
         .btn-hero.purple { color: var(--purple-neon); border-color: rgba(164,80,255,0.3); }
         .btn-hero.purple:hover { background-color: rgba(164,80,255,0.1); border-color: var(--purple-neon); box-shadow: 0 0 20px rgba(164,80,255,0.2); }
         .btn-hero.cyan { color: var(--cyan-neon); border-color: rgba(0,229,255,0.3); }
         .btn-hero.cyan:hover { background-color: rgba(0,229,255,0.1); border-color: var(--cyan-neon); box-shadow: 0 0 20px rgba(0,229,255,0.2); }
 
-        /* Tarjeta Central */
+        /* Tarjeta Central & Tabla de Alertas */
         .tarjeta-central {
             background-color: rgba(13, 13, 18, 0.95); border: 1px solid var(--border-color);
             border-radius: 12px; display: flex; flex-direction: column;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+            min-height: 400px; /* Asegura espacio para la tabla */
         }
-        .tarjeta-header {
-            padding: 15px 20px; font-size: 1rem; font-weight: 900; border-bottom: 1px solid var(--border-color);
-            color: var(--cyan-neon); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;
+        
+        .alert-table th { font-weight: normal; color: var(--text-muted); border-bottom: 1px solid var(--border-color); text-align: left; padding: 12px 15px; font-size: 0.85rem; }
+        .alert-table td { padding: 10px 15px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .alert-table tr:hover { background-color: rgba(255,255,255,0.02); }
+
+        .select-trigger {
+            background-color: transparent; border: 1px solid transparent; color: var(--text-main); font-weight: bold;
+            padding: 5px; border-radius: 4px; outline: none; cursor: pointer; font-size: 0.85rem; appearance: none;
         }
+        .select-trigger:hover, .select-trigger:focus { border-color: var(--border-color); background-color: #000; }
+        .select-trigger option { background-color: #0d0d12; color: white; padding: 10px; }
+
+        .btn-select-sound {
+            background-color: transparent; border: 1px solid var(--border-color); color: var(--text-main);
+            padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-select-sound:hover { border-color: var(--cyan-neon); color: var(--cyan-neon); background-color: rgba(0,229,255,0.05); }
+
+        /* Sliders de Volumen Estilo Tabla */
+        input[type=range].table-slider { -webkit-appearance: none; width: 100%; background: transparent; height: 4px; border-radius: 2px; background-color: #1a1a25; outline: none; }
+        input[type=range].table-slider::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 8px; border-radius: 2px; background: var(--cyan-neon); cursor: pointer; box-shadow: 0 0 5px rgba(0,229,255,0.5); }
 
         /* Cuadricula 2x2 para Módulos */
-        .grid-modulos {
-            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; flex-grow: 1; min-height: 400px;
-        }
-        .modulo-box {
-            background-color: rgba(13, 13, 18, 0.8); border: 1px solid var(--border-color);
-            border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;
-        }
-        .modulo-header {
-            padding: 10px 15px; font-size: 0.8rem; font-weight: 900; border-bottom: 1px solid var(--border-color);
-            text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .btn-copy-link {
-            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px;
-            border-radius: 4px; color: #a1a1aa; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px;
-        }
+        .grid-modulos { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; flex-grow: 1; min-height: 300px; }
+        .modulo-box { background-color: rgba(13, 13, 18, 0.8); border: 1px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
+        .modulo-header { padding: 10px 15px; font-size: 0.8rem; font-weight: 900; border-bottom: 1px solid var(--border-color); text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-copy-link { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #a1a1aa; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
         .btn-copy-link:hover { color: var(--cyan-neon); border-color: var(--cyan-neon); background: rgba(0, 255, 255, 0.1); }
-
-        /* Elementos de Formulario */
-        .mode-btn { background: #000; color: #666; transition: all 0.3s; flex: 1; padding: 12px; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; border: none; }
-        .mode-btn.active { background: var(--purple-neon); color: white; }
-        .mode-btn.active.webhook-active { background: var(--cyan-neon); color: black; }
-
-        .upload-area {
-            border: 2px dashed rgba(0,229,255,0.3); border-radius: 8px; padding: 30px;
-            text-align: center; color: var(--text-muted); cursor: pointer; transition: all 0.3s;
-            background-color: rgba(0,0,0,0.3);
-        }
-        .upload-area:hover { border-color: var(--cyan-neon); color: white; background-color: rgba(0,229,255,0.05); }
 
         /* Scrollbars y Utilidades */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-base); }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--cyan-neon); }
-        
         .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        #loader {
-            position: fixed; inset: 0; background: rgba(5, 5, 7, 0.98);
-            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000;
-        }
-        .spinner {
-            width: 60px; height: 60px; border: 4px solid rgba(138, 43, 226, 0.1);
-            border-left-color: var(--cyan-neon); border-radius: 50%; animation: spin 1s linear infinite;
-        }
+        #loader { position: fixed; inset: 0; background: rgba(5, 5, 7, 0.98); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        .spinner { width: 60px; height: 60px; border: 4px solid rgba(138, 43, 226, 0.1); border-left-color: var(--cyan-neon); border-radius: 50%; animation: spin 1s linear infinite; }
     </style>
 </head>
 <body>
@@ -163,11 +142,8 @@
             
             document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById('nav-header').style.display = 'none';
-                document.getElementById('view-dashboard').style.display = 'none'; // Oculta el workspace completo
+                document.getElementById('view-dashboard').style.display = 'none';
                 
-                const ttsCheckbox = document.getElementById('tts-enabled');
-                if(ttsCheckbox) ttsCheckbox.checked = false; 
-
                 if (['chat', 'gifts', 'likes', 'donators'].includes(overlayType)) {
                     const widgetContainer = document.createElement('div');
                     widgetContainer.className = 'w-full h-full p-2 flex flex-col justify-start overflow-hidden bg-transparent';
@@ -184,10 +160,6 @@
                         targetEl.className = 'w-full h-full overflow-hidden flex flex-col bg-transparent';
                         widgetContainer.appendChild(targetEl);
                     }
-                    
-                    const style = document.createElement('style');
-                    style.innerHTML = `.bg-zinc-900\\/50, .bg-green-900\\/20, .bg-black\\/40 { background: rgba(10, 10, 15, 0.85) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(8px) !important; border-radius: 12px; }`;
-                    document.head.appendChild(style);
                 }
             });
         }
@@ -212,7 +184,6 @@
 
         <div class="flex items-center gap-3">
             <input id="username" type="text" placeholder="@usuario_tiktok" class="input-gamer w-40">
-            <input id="key" type="password" placeholder="Access Key" class="input-gamer w-32">
             <button id="btn-connect" class="btn-gamer-top">Conectar</button>
             <button id="btn-disconnect" class="hidden bg-red-900 border border-red-500 text-white font-black px-6 py-2 rounded-md uppercase tracking-widest text-xs">Salir</button>
         </div>
@@ -239,52 +210,52 @@
             <div class="px-5 py-3 flex items-center gap-3 text-zinc-500 font-bold hover:text-white cursor-pointer transition-colors">
                 <i data-lucide="settings"></i> Ajustes
             </div>
-            
-            <div class="px-5 mt-6 mb-2 text-xs font-black text-purple-400 uppercase tracking-widest italic">Alertas Guardadas</div>
-            <div id="actions-list" class="flex-1 overflow-y-auto px-4 space-y-2 pb-4">
-                </div>
         </aside>
 
         <main class="espacio-central">
             
-            <div class="tarjeta-central">
-                <div class="tarjeta-header">
-                    <i data-lucide="settings-2"></i> Configurar Eventos
-                </div>
+            <div class="tarjeta-central flex-1 min-h-[400px]">
                 
-                <div class="p-6 flex flex-col gap-4">
-                    <div class="flex bg-black border border-zinc-800 rounded-lg overflow-hidden">
-                        <button onclick="setMode('mp3')" id="mode-mp3" class="mode-btn active">Modo MP3</button>
-                        <button onclick="setMode('link')" id="mode-link" class="mode-btn">Webhook Juego</button>
+                <div class="p-4 border-b border-zinc-800 flex justify-between items-center bg-black/40 rounded-t-xl">
+                    <div class="flex items-center gap-6">
+                        <button onclick="addNewAlertRow()" class="bg-transparent border border-zinc-700 hover:border-cyan-400 text-white px-3 py-1.5 rounded flex items-center gap-2 text-sm transition-colors">
+                            <i data-lucide="plus" class="w-4 h-4 text-cyan-400"></i> Create Sound Alert
+                        </button>
+                        <label class="flex items-center gap-2 text-sm cursor-pointer text-zinc-300">
+                            <input type="checkbox" checked class="accent-cyan-500 w-4 h-4 cursor-pointer"> Sounds enabled
+                        </label>
                     </div>
-                    
-                    <select id="gift-select" class="w-full bg-black border border-zinc-700 p-3 rounded-lg text-sm text-zinc-300 font-bold outline-none focus:border-cyan-500">
-                        <option value="" disabled selected>Seleccionar Regalo (Trigger)...</option>
-                    </select>
-                    
-                    <div id="container-mp3">
-                        <input type="file" id="file-input" accept="audio/mpeg" class="hidden">
-                        <div onclick="document.getElementById('file-input').click()" class="upload-area flex flex-col items-center gap-2">
-                            <i data-lucide="music" class="w-8 h-8 text-cyan-400"></i>
-                            <span id="file-name" class="font-bold">Haz clic aquí para seleccionar MP3</span>
-                        </div>
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2 text-zinc-500"></i>
+                        <input type="text" placeholder="Search..." class="bg-black border border-zinc-800 text-zinc-300 rounded pl-9 pr-3 py-1.5 text-sm outline-none focus:border-cyan-500">
                     </div>
-                    
-                    <div id="container-link" class="hidden">
-                        <input id="link-input" type="text" placeholder="http://localhost:8080/comando" class="w-full bg-black border border-zinc-800 p-4 rounded-lg text-sm text-cyan-400 outline-none focus:border-cyan-500 font-mono">
-                    </div>
-                    
-                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-3 rounded-lg text-sm uppercase hover:bg-cyan-500 transition-all shadow-lg mt-2">
-                        Guardar y Vincular
-                    </button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto">
+                    <table class="w-full border-collapse alert-table">
+                        <thead class="bg-[#0a0a0f] sticky top-0 z-10">
+                            <tr>
+                                <th style="width: 80px;"></th>
+                                <th style="width: 80px;">Enabled</th>
+                                <th style="width: 25%;">Trigger</th>
+                                <th style="width: 30%;">Sound</th>
+                                <th>Key Shortcut</th>
+                                <th style="width: 150px;">Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alerts-table-body">
+                            </tbody>
+                    </table>
                 </div>
             </div>
+
+            <input type="file" id="global-file-input" accept="audio/mpeg" class="hidden">
 
             <div class="grid-modulos">
                 <div class="modulo-box">
                     <div class="modulo-header" style="color: var(--purple-neon);">
                         <span><i data-lucide="message-square" class="inline w-4 mr-1"></i> CHAT</span> 
-                        <button onclick="copyOverlayUrl('chat')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
+                        <button onclick="copyOverlayUrl('chat')" class="btn-copy-link"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
                     </div>
                     <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
                 </div>
@@ -292,7 +263,7 @@
                 <div class="modulo-box">
                     <div class="modulo-header" style="color: #39FF14;">
                         <span><i data-lucide="gift" class="inline w-4 mr-1"></i> REGALOS</span> 
-                        <button onclick="copyOverlayUrl('gifts')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
+                        <button onclick="copyOverlayUrl('gifts')" class="btn-copy-link"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
                     </div>
                     <div id="gift-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
                 </div>
@@ -300,7 +271,7 @@
                 <div class="modulo-box">
                     <div class="modulo-header" style="color: #FF3131;">
                         <span><i data-lucide="flame" class="inline w-4 mr-1"></i> TOP LIKES</span> 
-                        <button onclick="copyOverlayUrl('likes')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
+                        <button onclick="copyOverlayUrl('likes')" class="btn-copy-link"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
                     </div>
                     <div id="ranking-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
                 </div>
@@ -308,7 +279,7 @@
                 <div class="modulo-box">
                     <div class="modulo-header" style="color: #FFD700;">
                         <span><i data-lucide="award" class="inline w-4 mr-1"></i> TOP DONADORES</span> 
-                        <button onclick="copyOverlayUrl('donators')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
+                        <button onclick="copyOverlayUrl('donators')" class="btn-copy-link"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
                     </div>
                     <div id="dashboard-donators-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
                 </div>
@@ -369,6 +340,92 @@
         const donatorsMap = new Map();
         const giftersSet = new Set();
 
+        /* --- LÓGICA DE LA TABLA CENTRAL DE ALERTAS --- */
+        const alertsTableBody = document.getElementById('alerts-table-body');
+        const fileInput = document.getElementById('global-file-input');
+        let currentRowEditing = null;
+
+        // Estado inicial simulando la imagen de referencia
+        let tableAlerts = [
+            { id: 1, enabled: true, trigger: 'Share', sound: 'Discord Leave Noise', volume: 80 },
+            { id: 2, enabled: true, trigger: 'Follow', sound: 'Bad to the Bone Meme', volume: 80 },
+            { id: 3, enabled: true, trigger: 'Eres increíble (1 Coins)', sound: 'el gato', volume: 80 },
+            { id: 4, enabled: true, trigger: 'Rosa (1 Coins)', sound: 'Fart', volume: 80 }
+        ];
+
+        function renderAlertsTable() {
+            alertsTableBody.innerHTML = '';
+            tableAlerts.forEach((alert, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <button class="text-cyan-400 hover:text-white mr-2 transition-colors"><i data-lucide="play-circle" class="w-5 h-5 fill-cyan-400/20"></i></button>
+                        <button onclick="removeAlertRow(${index})" class="text-zinc-500 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                    <td>
+                        <input type="checkbox" ${alert.enabled ? 'checked' : ''} class="accent-cyan-500 w-4 h-4 cursor-pointer">
+                    </td>
+                    <td>
+                        <select class="select-trigger w-full max-w-[200px]">
+                            <option value="Follow" ${alert.trigger === 'Follow' ? 'selected' : ''}>👤 Follow</option>
+                            <option value="Share" ${alert.trigger === 'Share' ? 'selected' : ''}>🔁 Share</option>
+                            <option value="Rosa (1 Coins)" ${alert.trigger === 'Rosa (1 Coins)' ? 'selected' : ''}>🌹 Rosa (1 Coins)</option>
+                            <option value="Eres increíble (1 Coins)" ${alert.trigger === 'Eres increíble (1 Coins)' ? 'selected' : ''}>🐱 Eres increíble (1 Coins)</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-3">
+                            <button onclick="triggerFileSelect(${index})" class="btn-select-sound">Select Sound</button>
+                            <span class="text-xs text-zinc-300 w-32 truncate">${alert.sound}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <select class="bg-transparent border-none text-zinc-500 text-xs outline-none cursor-pointer appearance-none">
+                            <option>Not Set</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="inline w-3 h-3 text-zinc-500"></i>
+                    </td>
+                    <td>
+                        <input type="range" min="0" max="100" value="${alert.volume}" class="table-slider">
+                    </td>
+                `;
+                alertsTableBody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function addNewAlertRow() {
+            tableAlerts.unshift({ id: Date.now(), enabled: true, trigger: 'Follow', sound: '', volume: 70 });
+            renderAlertsTable();
+        }
+
+        function removeAlertRow(index) {
+            tableAlerts.splice(index, 1);
+            renderAlertsTable();
+        }
+
+        function triggerFileSelect(index) {
+            currentRowEditing = index;
+            fileInput.click();
+        }
+
+        // Simular la carga del archivo en la tabla visualmente
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0 && currentRowEditing !== null) {
+                const fileName = e.target.files[0].name.replace('.mp3', '');
+                tableAlerts[currentRowEditing].sound = fileName;
+                renderAlertsTable();
+                
+                // NOTA PARA BACKEND: Aquí iría el socket.emit('uploadAndSave', ...)
+                fileInput.value = ''; 
+                currentRowEditing = null;
+            }
+        });
+
+        // Inicializar tabla
+        renderAlertsTable();
+
+        /* --- RESTO DE LÓGICA (OVERLAYS, CONEXIÓN, TTS) --- */
         function copyOverlayUrl(type) {
             const url = window.location.origin + '/?overlay=' + type;
             navigator.clipboard.writeText(url).then(() => {
@@ -392,50 +449,13 @@
         const volInput = document.getElementById('tts-volume');
         if(volInput) volInput.oninput = (e) => document.getElementById('vol-perc').innerText = Math.round(e.target.value * 100) + "%";
 
-        let currentMode = 'mp3';
-        function setMode(mode) {
-            currentMode = mode;
-            // Adaptado para usar las clases CSS de la nueva UI
-            document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active" : "mode-btn";
-            document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active" : "mode-btn";
-            document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
-            document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
-        }
-
-        const btnSave = document.getElementById('btn-save-action');
-        if(btnSave) {
-            btnSave.onclick = () => {
-                const username = document.getElementById('username').value; const gift = document.getElementById('gift-select').value;
-                if(!username || !gift) return alert("Faltan datos");
-                if(currentMode === 'mp3') {
-                    const fileInput = document.getElementById('file-input'); const file = fileInput.files[0];
-                    if(!file) return alert("Selecciona un MP3");
-                    document.getElementById('loader').style.display = 'flex';
-                    const reader = new FileReader();
-                    reader.onload = (e) => { socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); fileInput.value = ""; document.getElementById('file-name').innerText = "Haz clic aquí para seleccionar MP3"; };
-                    reader.readAsDataURL(file);
-                } else {
-                    const link = document.getElementById('link-input').value; if(!link) return alert("Ingresa el Link");
-                    socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } }); document.getElementById('link-input').value = "";
-                }
-            };
-        }
-
-        const fileInput = document.getElementById('file-input');
-        if(fileInput) fileInput.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Haz clic aquí para seleccionar MP3";
-        function deleteAction(index) { socket.emit("deleteAction", { username: document.getElementById('username').value, index }); }
-
-        fetch('/gift-list').then(r => r.json()).then(d => {
-            const giftSelect = document.getElementById('gift-select');
-            if(giftSelect) giftSelect.innerHTML += d.map(g => `<option value="${g.name}">${g.name.toUpperCase()}</option>`).join('');
-        });
-
         const btnConnect = document.getElementById('btn-connect');
         if(btnConnect) {
             btnConnect.onclick = () => {
-                const username = document.getElementById('username').value; const key = document.getElementById('key').value;
-                if(!username || !key) return alert("Faltan datos");
-                document.getElementById('loader').style.display = 'flex'; socket.emit("startConnection", { username, key });
+                const username = document.getElementById('username').value;
+                if(!username) return alert("Ingresa tu usuario de TikTok");
+                document.getElementById('loader').style.display = 'flex'; 
+                socket.emit("startConnection", { username, key: "" }); // Se ignora la key
             };
         }
 
@@ -458,7 +478,6 @@
                 sPulse.className = "w-2 h-2 rounded-full bg-red-500";
                 document.getElementById('btn-connect').classList.remove('hidden'); document.getElementById('btn-disconnect').classList.add('hidden');
                 hostAvatar.src = "/Logo.png"; hostAvatar.classList.remove('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
-                hostTitle.innerHTML = `NEXORA <span style="color: var(--cyan-neon);">ULTRA</span>`;
             }
         });
 
@@ -479,26 +498,6 @@
 
             const dash = document.getElementById('dashboard-donators-container'); if(dash) dash.innerHTML = htmlContent;
         }
-
-        socket.on("actionsUpdated", (actions) => {
-            const list = document.getElementById('actions-list');
-            if(list) {
-                list.innerHTML = actions.map((a, i) => `
-                    <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-zinc-800">
-                        <div class="text-[10px]"><b class="${a.type === 'link' ? 'text-cyan-400' : 'text-purple-400'} uppercase">${a.type}</b><br><b class="text-white">${a.gift}</b></div>
-                        <button onclick="deleteAction(${i})" class="text-red-500 hover:text-white transition-colors"><i data-lucide="trash-2" class="w-4"></i></button>
-                    </div>`).join('');
-                lucide.createIcons();
-            }
-        });
-
-        socket.on("triggerSound", (fileUrl) => {
-            if(isOverlay) return; 
-            const audio = new Audio(fileUrl);
-            const volInput = document.getElementById('tts-volume');
-            if(volInput) audio.volume = volInput.value;
-            audio.play();
-        });
 
         socket.on("likeRanking", (ranking) => {
             const container = document.getElementById('ranking-container');
@@ -552,7 +551,7 @@
 
         socket.on("gift", (data) => {
             giftersSet.add(data.user);
-            const powerAdded = data.amount * 100; // Multiplicador estándar visual
+            const powerAdded = data.amount * 100;
             
             donatorsMap.set(data.user, (donatorsMap.get(data.user) || 0) + powerAdded);
             updateDonatorsRanking();
