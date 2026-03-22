@@ -12,7 +12,7 @@
         --neon-purple: #9d00ff;
         --dark-bg: #050505;
         --card-bg: rgba(20, 20, 20, 0.9);
-        --radius: 25px; /* Bordes extra redondos */
+        --radius: 25px; 
     }
 
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
@@ -26,7 +26,6 @@
         min-height: 100vh;
     }
 
-    /* HEADER */
     .header {
         display: flex;
         justify-content: space-between;
@@ -55,7 +54,6 @@
 
     .container { padding: 40px 20px; max-width: 1100px; margin: auto; }
 
-    /* INPUTS REDONDOS */
     input, select {
         padding: 12px 20px;
         border-radius: var(--radius);
@@ -67,10 +65,11 @@
     }
     input:focus { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0, 255, 65, 0.2); }
 
-    .top-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+    .top-controls { margin-bottom: 20px; }
+    #robloxUser { width: 100%; } /* Ahora ocupa todo el ancho */
+
     .search { width: 100%; margin-bottom: 25px; border-width: 2px; }
 
-    /* PANEL DE AGREGAR */
     .add-box {
         display: flex;
         gap: 12px;
@@ -83,7 +82,6 @@
         align-items: center;
     }
 
-    /* SELECTOR CON BUSCADOR */
     .selector-wrapper { position: relative; flex: 1; min-width: 250px; }
     .selected-box {
         background: #151515;
@@ -129,13 +127,11 @@
     .item:hover { background: rgba(157, 0, 255, 0.2); color: var(--neon-green); }
     .item img { width: 30px; height: 30px; border-radius: 8px; }
 
-    /* TABLA */
     .table-container { background: var(--card-bg); border-radius: 30px; border: 1px solid rgba(157, 0, 255, 0.1); overflow: hidden; }
     .table { width: 100%; border-collapse: collapse; }
     .table th { background: rgba(157, 0, 255, 0.1); color: var(--neon-green); padding: 20px; text-align: left; font-size: 11px; letter-spacing: 2px; }
     .row td { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); }
 
-    /* BOTONES */
     .btn-add { background: var(--neon-green); color: #000; font-weight: 800; padding: 12px 25px; border-radius: var(--radius); border: none; cursor: pointer; transition: 0.3s; }
     .btn-add:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--neon-green); }
 
@@ -157,7 +153,6 @@
     }
     .save-btn:hover { letter-spacing: 3px; filter: brightness(1.2); }
 
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 10px; }
 </style>
@@ -172,11 +167,10 @@
 
 <div class="container">
     <div class="top-controls">
-        <input id="robloxUser" placeholder="USUARIO ROBLOX">
-        <input id="adminCode" type="password" placeholder="ADMIN PASS">
+        <input id="robloxUser" placeholder="ESCRIBE EL USUARIO DE ROBLOX...">
     </div>
 
-    <input class="search" placeholder="🔍 BUSCAR EN TUS EVENTOS GUARDADOS..." onkeyup="filterTable()" id="searchTable">
+    <input class="search" placeholder="🔍 BUSCAR EVENTOS GUARDADOS..." onkeyup="filterTable()" id="searchTable">
 
     <div class="add-box">
         <select id="type" onchange="checkType()">
@@ -192,9 +186,8 @@
                 <small>▼</small>
             </div>
             <div id="dropdown" class="dropdown-content">
-                <input type="text" class="dropdown-search" id="giftSearch" placeholder="Buscar regalo..." onkeyup="filterGifts(event)">
-                <div id="itemsList" class="items-list">
-                    </div>
+                <input type="text" class="dropdown-search" id="giftSearch" placeholder="Escribe para buscar..." onkeyup="filterGifts(event)">
+                <div id="itemsList" class="items-list"></div>
             </div>
         </div>
 
@@ -214,7 +207,7 @@
     let allEvents = JSON.parse(localStorage.getItem("eventsByUser")) || {};
     let selectedGiftName = "";
     let giftImages = {};
-    let giftsData = []; // Para el buscador
+    let giftsData = [];
 
     function toggleDropdown() {
         const d = document.getElementById("dropdown");
@@ -222,7 +215,6 @@
         if(d.style.display === "block") document.getElementById("giftSearch").focus();
     }
 
-    // Cerrar dropdown si se hace click fuera
     window.onclick = function(event) {
         if (!event.target.closest('.selector-wrapper')) {
             document.getElementById("dropdown").style.display = "none";
@@ -236,7 +228,6 @@
             renderGiftList(giftsData);
         } catch (e) { 
             console.log("Error cargando lista");
-            // Placeholder para test
             giftsData = [{name: "Rose", image: ""}, {name: "Coffee", image: ""}, {name: "TikTok", image: ""}];
             renderGiftList(giftsData);
         }
@@ -280,17 +271,14 @@
     }
 
     function getUser() {
-        const user = document.getElementById("robloxUser").value.trim();
-        const code = document.getElementById("adminCode").value.trim();
-        if(user.toLowerCase() === "todos") return code === "admin24" ? "ALL_USERS" : null;
-        return user || null;
+        return document.getElementById("robloxUser").value.trim() || null;
     }
 
     function renderTable() {
         const user = getUser();
         const table = document.getElementById("mainTable");
         if(!user) {
-            table.innerHTML = "<tr><td style='text-align:center; padding:40px; color:#555;'>Ingresa usuario para editar</td></tr>";
+            table.innerHTML = "<tr><td style='text-align:center; padding:40px; color:#555;'>Escribe un usuario arriba para empezar</td></tr>";
             return;
         }
 
@@ -306,7 +294,7 @@
                 <td style="color:var(--neon-green)">${user}</td>
                 <td><b style="color:var(--neon-purple)">${e.type.toUpperCase()}</b></td>
                 <td>${id}</td>
-                <td><input value="${e.parts}" onchange="updateValue('${id}', this.value)" style="width:70px; padding:5px 10px;"></td>
+                <td><input value="${e.parts}" onchange="updateValue('${id}', this.value)" style="width:70px; padding:5px 10px; border-radius:10px;"></td>
                 <td>${e.targetLikes || '-'}</td>
                 <td>
                     <button class="test-btn" onclick="alert('Test: ${id}')">TEST</button>
@@ -319,15 +307,15 @@
 
     function addEvent() {
         const user = getUser();
-        if(!user) return alert("Usuario inválido");
+        if(!user) return alert("Escribe un usuario de Roblox");
         const type = document.getElementById("type").value;
         const parts = Number(document.getElementById("newParts").value);
         const targetLikes = Number(document.getElementById("targetLikes").value);
 
         if(!allEvents[user]) allEvents[user] = {};
         
-        let key = type === "gift" ? selectedGiftName : type + (targetLikes || "");
-        if(!key || key === "Seleccionar regalo") return alert("Elige un regalo");
+        let key = type === "gift" ? selectedGiftName : (type + (targetLikes || ""));
+        if(!key || key === "Seleccionar regalo") return alert("Elige un regalo de la lista");
 
         allEvents[user][key] = { type, parts, targetLikes };
         renderTable();
@@ -340,13 +328,15 @@
 
     function deleteEv(id) {
         const user = getUser();
-        delete allEvents[user][id];
-        renderTable();
+        if(confirm(`¿Eliminar ${id}?`)) {
+            delete allEvents[user][id];
+            renderTable();
+        }
     }
 
     function saveData() {
         localStorage.setItem("eventsByUser", JSON.stringify(allEvents));
-        alert("¡Configuración guardada!");
+        alert("¡Configuración guardada correctamente!");
     }
 
     function filterTable() {
