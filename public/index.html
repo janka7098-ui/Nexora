@@ -98,6 +98,7 @@
             
             document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById('nav-header').style.display = 'none';
+                document.getElementById('action-buttons').style.display = 'none';
                 document.getElementById('view-dashboard').style.display = 'none';
                 
                 const ttsCheckbox = document.getElementById('tts-enabled');
@@ -152,6 +153,17 @@
             <button id="btn-disconnect" class="hidden bg-zinc-900 border border-red-600 text-red-500 px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Salir</button>
         </div>
     </nav>
+
+    <div id="action-buttons" class="max-w-[1800px] mx-auto mb-6 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="juego.html" class="flex-1 max-w-[300px] bg-purple-600 hover:bg-purple-500 text-white text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-purple-400 shadow-[0_0_15px_rgba(138,43,226,0.4)] hover:shadow-[0_0_25px_rgba(138,43,226,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
+            <i data-lucide="gamepad-2" class="w-5 h-5"></i>
+            Ir a Juego
+        </a>
+        <a href="interactivo.html" class="flex-1 max-w-[300px] bg-cyan-600 hover:bg-cyan-400 text-black text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
+            <i data-lucide="mouse-pointer-click" class="w-5 h-5"></i>
+            Ir a Interactivo
+        </a>
+    </div>
 
     <main id="view-dashboard" class="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:h-[750px]">
         <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
