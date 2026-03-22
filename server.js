@@ -13,8 +13,18 @@ const io = socketIo(server, {
     maxHttpBufferSize: 1e7
 });
 
+// ✅ IMPORTANTE: SERVIR HTML
+app.use(express.static("public"));
+
 // Middleware
 app.use(express.json());
+
+/* =========================
+   RUTA PRINCIPAL (INDEX)
+========================= */
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 /* =========================
    ESTADO PARA ROBLOX
@@ -124,22 +134,14 @@ io.on("connection", (socket) => {
                         avatar: data.profilePictureUrl
                     });
 
-                    // ENVÍO AUTOMÁTICO A ROBLOX
                     currentEvent = {
                         id: Date.now().toString(),
                         action: "move",
                         amount: data.repeatCount,
                         target: "ALL"
                     };
-                    console.log(`🎁 Regalo en Vivo: ${data.giftName} x${data.repeatCount} -> Roblox`);
 
-                    const actions = userActions.get(username) || [];
-                    const action = actions.find(a => a.gift.toLowerCase() === data.giftName.toLowerCase());
-                    if (action) {
-                        if (action.type === "link") {
-                            axios.get(`${action.file}?user=${encodeURIComponent(data.nickname)}&gift=${data.giftName}&amount=${data.repeatCount}`).catch(() => console.log("URL offline"));
-                        } else { socket.emit("triggerSound", action.file); }
-                    }
+                    console.log(`🎁 Regalo en Vivo: ${data.giftName} x${data.repeatCount} -> Roblox`);
                 }
             });
 
@@ -154,62 +156,7 @@ io.on("connection", (socket) => {
                 });
             });
 
-            const likeRanking = new Map();
-            tiktok.on("like", (data) => {
-                const user = data.nickname;
-                const likes = data.likeCount || 1;
-                socket.emit("singleLike", { user: user, avatar: data.profilePictureUrl });
-                if (!likeRanking.has(user)) { likeRanking.set(user, 0); }
-                likeRanking.set(user, likeRanking.get(user) + likes);
-                const ranking = [...likeRanking.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10).map((u, i) => ({ rank: i + 1, user: u[0], likes: u[1] }));
-                socket.emit("likeRanking", ranking);
-            });
-
         } catch (err) { socket.emit("status", "error"); }
-    });
-
-    socket.on("uploadAndSave", ({ username, gift, fileName, fileData }) => {
-        if (!username || !fileData) return;
-        const userFolder = path.join(__dirname, "public", "uploads", username);
-        if (!fs.existsSync(userFolder)) fs.mkdirSync(userFolder, { recursive: true });
-        const base64Data = fileData.split(";base64,").pop();
-        const finalFileName = `${Date.now()}_${fileName}`;
-        const filePath = path.join(userFolder, finalFileName);
-        fs.writeFile(filePath, base64Data, { encoding: "base64" }, () => {
-            if (!userActions.has(username)) userActions.set(username, []);
-            const actions = userActions.get(username);
-            actions.push({ gift: gift, file: `/uploads/${username}/${finalFileName}`, type: "mp3" });
-            socket.emit("actionsUpdated", actions);
-            socket.emit("status", "connected");
-        });
-    });
-
-    socket.on("saveAction", ({ username, action }) => {
-        if (!username) return;
-        if (!userActions.has(username)) userActions.set(username, []);
-        const actions = userActions.get(username);
-        actions.push(action);
-        socket.emit("actionsUpdated", actions);
-    });
-
-    socket.on("getActions", (username) => {
-        const actions = userActions.get(username) || [];
-        socket.emit("actionsUpdated", actions);
-    });
-
-    socket.on("deleteAction", ({ username, index }) => {
-        if (!userActions.has(username)) return;
-        const actions = userActions.get(username);
-        actions.splice(index, 1);
-        socket.emit("actionsUpdated", actions);
-    });
-
-    socket.on("stopConnection", () => {
-        if (activeConnections.has(socket.id)) {
-            try { activeConnections.get(socket.id).disconnect(); } catch { }
-            activeConnections.delete(socket.id);
-        }
-        socket.emit("status", "disconnected");
     });
 
     socket.on("disconnect", () => {
@@ -220,7 +167,10 @@ io.on("connection", (socket) => {
     });
 });
 
+/* =========================
+   PUERTO (RENDER)
+========================= */
 const PORT = process.env.PORT || 10000;
+
 server.listen(PORT, () => {
-    console.log("🚀 Nexora Ultra activo en puerto", PORT);
-});
+    console.
