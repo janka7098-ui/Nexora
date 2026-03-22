@@ -3,87 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexora Ultra | Dashboard Maestro</title>
+    <title>Nexora Ultra | Workspace Maestro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700;900&display=swap');
-        
+
+        /* -------------------------------------
+           VARIABLES Y RESET GAMER
+        -------------------------------------- */
         :root {
-            --purple: #8A2BE2;
-            --green: #39FF14;
-            --red: #FF3131;
-            --bg: #050507;
-            --cyan: #00FFFF;
-            --gold: #FFD700;
+            --bg-base: #050507;       
+            --bg-panel: #0d0d12;      
+            --border-color: #1a1a25;  
+            --cyan-neon: #00e5ff;
+            --purple-neon: #a450ff;
+            --text-main: #f0f0f0;
+            --text-muted: #8a8a9a;
+            --hex-pattern: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="28" height="49" viewBox="0 0 28 49"%3E%3Cg fill-rule="evenodd"%3E%3Cg id="hexagons" fill="%23262630" fill-opacity="0.15" fill-rule="nonzero"%3E%3Cpath d="M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.25v12l11 6.35 11-6.35v-12L14 10.9 3 17.25zM0 15.5l14-8.07 14 8.07v16l-14 8.08L0 31.5v-16zm2 1.15v13.7l12 6.91 12-6.91v-13.7L14 12.23 2 16.65z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
         }
 
         body {
             font-family: 'Rajdhani', sans-serif;
-            background-color: var(--bg);
-            color: #efefef;
-            overflow-x: hidden;
-            background-image: radial-gradient(circle at 50% -20%, #1a0b2e 0%, var(--bg) 80%);
-            min-height: 100vh;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
             margin: 0;
         }
 
-        .glass {
-            background: rgba(15, 15, 22, 0.85);
-            backdrop-filter: blur(16px);
-            border-radius: 16px;
-            border: 1px solid rgba(138, 43, 226, 0.15);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* -------------------------------------
+           ESTILOS DEL WORKSPACE Y PANELES
+        -------------------------------------- */
+        .topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 25px; background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border-color); height: 75px; z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        .glass:hover {
-            border-color: rgba(0, 255, 255, 0.5);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        .workspace { display: flex; height: calc(100vh - 75px); width: 100%; }
+
+        .panel-lateral {
+            background-color: var(--bg-panel); width: 280px; min-width: 280px;
+            display: flex; flex-direction: column; overflow-y: auto; position: relative; z-index: 10;
         }
+        .panel-izquierdo { border-right: 1px solid var(--border-color); }
+        .panel-derecho { border-left: 1px solid var(--border-color); }
+
+        .espacio-central {
+            flex-grow: 1; background-image: var(--hex-pattern); padding: 25px;
+            display: flex; flex-direction: column; gap: 20px; overflow-y: auto; position: relative;
+        }
+
+        /* -------------------------------------
+           COMPONENTES Y BOTONES
+        -------------------------------------- */
+        .input-gamer {
+            background-color: #000; border: 1px solid var(--border-color); color: white;
+            padding: 8px 15px; border-radius: 6px; font-size: 0.9rem; outline: none; font-weight: bold;
+        }
+        .input-gamer:focus { border-color: var(--cyan-neon); }
+
+        .btn-gamer-top {
+            background-color: transparent; color: var(--cyan-neon); border: 1px solid var(--cyan-neon);
+            font-weight: 900; padding: 8px 25px; border-radius: 6px; cursor: pointer;
+            text-transform: uppercase; font-size: 0.85rem; transition: all 0.2s;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+        .btn-gamer-top:hover { background-color: rgba(0, 229, 255, 0.1); box-shadow: 0 0 15px rgba(0, 229, 255, 0.5); }
+
+        .btn-hero {
+            width: 100%; padding: 12px; text-align: center; border-radius: 8px; font-weight: 900;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+            background-color: rgba(0, 0, 0, 0.5); border: 1px solid var(--border-color); transition: all 0.3s;
+            display: flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .btn-hero.purple { color: var(--purple-neon); border-color: rgba(164,80,255,0.3); }
+        .btn-hero.purple:hover { background-color: rgba(164,80,255,0.1); border-color: var(--purple-neon); box-shadow: 0 0 20px rgba(164,80,255,0.2); }
+        .btn-hero.cyan { color: var(--cyan-neon); border-color: rgba(0,229,255,0.3); }
+        .btn-hero.cyan:hover { background-color: rgba(0,229,255,0.1); border-color: var(--cyan-neon); box-shadow: 0 0 20px rgba(0,229,255,0.2); }
+
+        /* Tarjeta Central */
+        .tarjeta-central {
+            background-color: rgba(13, 13, 18, 0.95); border: 1px solid var(--border-color);
+            border-radius: 12px; display: flex; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+        }
+        .tarjeta-header {
+            padding: 15px 20px; font-size: 1rem; font-weight: 900; border-bottom: 1px solid var(--border-color);
+            color: var(--cyan-neon); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;
+        }
+
+        /* Cuadricula 2x2 para Módulos */
+        .grid-modulos {
+            display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; flex-grow: 1; min-height: 400px;
+        }
+        .modulo-box {
+            background-color: rgba(13, 13, 18, 0.8); border: 1px solid var(--border-color);
+            border-radius: 12px; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .modulo-header {
+            padding: 10px 15px; font-size: 0.8rem; font-weight: 900; border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .btn-copy-link {
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px;
+            border-radius: 4px; color: #a1a1aa; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px;
+        }
+        .btn-copy-link:hover { color: var(--cyan-neon); border-color: var(--cyan-neon); background: rgba(0, 255, 255, 0.1); }
+
+        /* Elementos de Formulario */
+        .mode-btn { background: #000; color: #666; transition: all 0.3s; flex: 1; padding: 12px; font-weight: bold; cursor: pointer; text-align: center; text-transform: uppercase; border: none; }
+        .mode-btn.active { background: var(--purple-neon); color: white; }
+        .mode-btn.active.webhook-active { background: var(--cyan-neon); color: black; }
+
+        .upload-area {
+            border: 2px dashed rgba(0,229,255,0.3); border-radius: 8px; padding: 30px;
+            text-align: center; color: var(--text-muted); cursor: pointer; transition: all 0.3s;
+            background-color: rgba(0,0,0,0.3);
+        }
+        .upload-area:hover { border-color: var(--cyan-neon); color: white; background-color: rgba(0,229,255,0.05); }
+
+        /* Scrollbars y Utilidades */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--cyan-neon); }
+        
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         #loader {
-            position: fixed; inset: 0;
-            background: rgba(5, 5, 7, 0.98);
-            display: none; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 100;
+            position: fixed; inset: 0; background: rgba(5, 5, 7, 0.98);
+            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000;
         }
-
         .spinner {
-            width: 60px; height: 60px;
-            border: 4px solid rgba(138, 43, 226, 0.1);
-            border-left-color: var(--cyan);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            width: 60px; height: 60px; border: 4px solid rgba(138, 43, 226, 0.1);
+            border-left-color: var(--cyan-neon); border-radius: 50%; animation: spin 1s linear infinite;
         }
-
-        .gift-selector {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2300FFFF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em;
-        }
-
-        .mode-btn { background: rgba(255,255,255,0.05); color: #666; transition: all 0.3s; }
-        .mode-btn.active { background: var(--purple); color: white; }
-        .mode-btn.active.webhook-active { background: var(--cyan); color: black; }
-
-        details > summary { list-style: none; }
-        details > summary::-webkit-details-marker { display: none; }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 10px; }
-        .fade-in { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .btn-copy-link {
-            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 6px;
-            border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: all 0.2s;
-        }
-        .btn-copy-link:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 255, 0.1); }
     </style>
 </head>
-<body class="p-2 md:p-4 pb-12">
+<body>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -98,8 +163,7 @@
             
             document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById('nav-header').style.display = 'none';
-                document.getElementById('action-buttons').style.display = 'none';
-                document.getElementById('view-dashboard').style.display = 'none';
+                document.getElementById('view-dashboard').style.display = 'none'; // Oculta el workspace completo
                 
                 const ttsCheckbox = document.getElementById('tts-enabled');
                 if(ttsCheckbox) ttsCheckbox.checked = false; 
@@ -134,11 +198,11 @@
         <p class="mt-4 text-cyan-500 font-bold tracking-widest animate-pulse uppercase">Procesando Datos...</p>
     </div>
 
-    <nav id="nav-header" class="max-w-[1800px] mx-auto mb-6 flex flex-col lg:flex-row items-center justify-between glass p-4 gap-4">
-        <div class="flex items-center gap-4 w-full lg:w-auto justify-center lg:justify-start">
-            <img id="host-avatar" src="/Logo.png" alt="Logo" class="h-[50px] w-[50px] md:h-[60px] md:w-[60px] object-cover rounded-full border-2 border-transparent transition-all duration-500" onerror="this.src='/Logo.png'">
+    <nav id="nav-header" class="topbar">
+        <div class="flex items-center gap-4">
+            <img id="host-avatar" src="/Logo.png" alt="Logo" class="h-[50px] w-[50px] object-cover rounded-full border-2 border-transparent transition-all duration-500" onerror="this.src='/Logo.png'">
             <div class="flex flex-col">
-                <h1 id="host-title" class="text-2xl md:text-3xl font-black italic tracking-tighter leading-none uppercase">NEXORA <span class="text-cyan-500">ULTRA</span></h1>
+                <h1 id="host-title" class="text-2xl font-black italic tracking-tighter leading-none uppercase m-0">NEXORA <span style="color: var(--cyan-neon);">ULTRA</span></h1>
                 <div class="flex items-center gap-2 mt-1">
                     <div id="status-pulse" class="w-2 h-2 rounded-full bg-red-500"></div>
                     <span id="connection-status" class="text-[10px] uppercase tracking-[3px] text-red-500 font-bold italic">Desconectado</span>
@@ -146,106 +210,157 @@
             </div>
         </div>
 
-        <div class="flex flex-wrap justify-center gap-2 md:gap-4 items-center">
-            <input id="username" type="text" placeholder="@usuario_tiktok" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs focus:border-cyan-500 outline-none w-[140px] md:w-40 font-medium">
-            <input id="key" type="password" placeholder="Access Key" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs focus:border-cyan-500 outline-none w-[100px] md:w-32 font-medium">
-            <button id="btn-connect" class="bg-cyan-600 hover:bg-cyan-400 text-black px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Conectar</button>
-            <button id="btn-disconnect" class="hidden bg-zinc-900 border border-red-600 text-red-500 px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Salir</button>
+        <div class="flex items-center gap-3">
+            <input id="username" type="text" placeholder="@usuario_tiktok" class="input-gamer w-40">
+            <input id="key" type="password" placeholder="Access Key" class="input-gamer w-32">
+            <button id="btn-connect" class="btn-gamer-top">Conectar</button>
+            <button id="btn-disconnect" class="hidden bg-red-900 border border-red-500 text-white font-black px-6 py-2 rounded-md uppercase tracking-widest text-xs">Salir</button>
         </div>
     </nav>
 
-    <div id="action-buttons" class="max-w-[1800px] mx-auto mb-6 flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="juego.html" class="flex-1 max-w-[300px] bg-purple-600 hover:bg-purple-500 text-white text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-purple-400 shadow-[0_0_15px_rgba(138,43,226,0.4)] hover:shadow-[0_0_25px_rgba(138,43,226,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
-            <i data-lucide="gamepad-2" class="w-5 h-5"></i>
-            Ir a Juego
-        </a>
-        <a href="interactivo.html" class="flex-1 max-w-[300px] bg-cyan-600 hover:bg-cyan-400 text-black text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
-            <i data-lucide="mouse-pointer-click" class="w-5 h-5"></i>
-            Ir a Interactivo
-        </a>
-    </div>
+    <div id="view-dashboard" class="workspace">
 
-    <main id="view-dashboard" class="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:h-[750px]">
-        <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
-            <section class="glass p-6">
-                <h2 class="text-cyan-400 font-bold uppercase text-xs mb-4 flex items-center gap-2 italic tracking-widest"><i data-lucide="upload-cloud" class="w-4"></i> Configurar Alerta</h2>
-                <div class="flex bg-black/40 p-1 rounded-lg border border-zinc-800 mb-4">
-                    <button onclick="setMode('mp3')" id="mode-mp3" class="mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Modo MP3</button>
-                    <button onclick="setMode('link')" id="mode-link" class="mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Webhook Juego</button>
+        <aside class="panel-lateral panel-izquierdo">
+            <div id="action-buttons" class="flex flex-col gap-3 p-5">
+                <a href="juego.html" id="btn-juego" class="btn-hero purple">
+                    <i data-lucide="gamepad-2" class="w-5 h-5"></i> Ir a Juego
+                </a>
+                <a href="interactivo.html" id="btn-interactivo" class="btn-hero cyan">
+                    <i data-lucide="mouse-pointer-click" class="w-5 h-5"></i> Ir a Interactivo
+                </a>
+            </div>
+
+            <div class="px-5 py-3 text-xs font-black text-zinc-500 uppercase tracking-widest">Módulos Activos</div>
+            
+            <div class="px-5 py-3 flex items-center gap-3 text-white font-bold bg-purple-900/20 border-l-4 border-purple-500 shadow-[inset_10px_0_20px_-10px_rgba(164,80,255,0.4)] cursor-pointer">
+                <i data-lucide="upload-cloud" class="text-purple-400"></i> Panel Maestro
+            </div>
+            
+            <div class="px-5 py-3 flex items-center gap-3 text-zinc-500 font-bold hover:text-white cursor-pointer transition-colors">
+                <i data-lucide="settings"></i> Ajustes
+            </div>
+            
+            <div class="px-5 mt-6 mb-2 text-xs font-black text-purple-400 uppercase tracking-widest italic">Alertas Guardadas</div>
+            <div id="actions-list" class="flex-1 overflow-y-auto px-4 space-y-2 pb-4">
                 </div>
-                <div class="space-y-4">
-                    <select id="gift-select" class="gift-selector w-full bg-black/60 border border-zinc-700 p-3 rounded-xl text-xs outline-none focus:border-cyan-500 text-zinc-300 font-bold"><option value="" disabled selected>Seleccionar Regalo...</option></select>
+        </aside>
+
+        <main class="espacio-central">
+            
+            <div class="tarjeta-central">
+                <div class="tarjeta-header">
+                    <i data-lucide="settings-2"></i> Configurar Eventos
+                </div>
+                
+                <div class="p-6 flex flex-col gap-4">
+                    <div class="flex bg-black border border-zinc-800 rounded-lg overflow-hidden">
+                        <button onclick="setMode('mp3')" id="mode-mp3" class="mode-btn active">Modo MP3</button>
+                        <button onclick="setMode('link')" id="mode-link" class="mode-btn">Webhook Juego</button>
+                    </div>
+                    
+                    <select id="gift-select" class="w-full bg-black border border-zinc-700 p-3 rounded-lg text-sm text-zinc-300 font-bold outline-none focus:border-cyan-500">
+                        <option value="" disabled selected>Seleccionar Regalo (Trigger)...</option>
+                    </select>
+                    
                     <div id="container-mp3">
                         <input type="file" id="file-input" accept="audio/mpeg" class="hidden">
-                        <button onclick="document.getElementById('file-input').click()" class="w-full bg-zinc-900 border border-dashed border-zinc-700 p-3 rounded-lg text-xs text-zinc-400 hover:border-cyan-500 transition-all flex flex-col items-center gap-2"><i data-lucide="music" class="w-4 h-4 text-purple-500"></i><span id="file-name">Seleccionar MP3...</span></button>
+                        <div onclick="document.getElementById('file-input').click()" class="upload-area flex flex-col items-center gap-2">
+                            <i data-lucide="music" class="w-8 h-8 text-cyan-400"></i>
+                            <span id="file-name" class="font-bold">Haz clic aquí para seleccionar MP3</span>
+                        </div>
                     </div>
+                    
                     <div id="container-link" class="hidden">
-                        <input id="link-input" type="text" placeholder="http://localhost:8080/comando" class="w-full bg-black/60 border border-zinc-800 p-3 rounded-lg text-xs text-cyan-400 outline-none focus:border-cyan-500 font-mono">
+                        <input id="link-input" type="text" placeholder="http://localhost:8080/comando" class="w-full bg-black border border-zinc-800 p-4 rounded-lg text-sm text-cyan-400 outline-none focus:border-cyan-500 font-mono">
                     </div>
-                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all shadow-lg">Guardar y Vincular</button>
+                    
+                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-3 rounded-lg text-sm uppercase hover:bg-cyan-500 transition-all shadow-lg mt-2">
+                        Guardar y Vincular
+                    </button>
                 </div>
-            </section>
-            <section class="glass flex-1 p-6 flex flex-col overflow-hidden min-h-[250px] lg:min-h-0">
-                <h2 class="text-purple-400 font-bold uppercase text-xs mb-4 italic tracking-widest">Eventos Activos</h2>
-                <div id="actions-list" class="flex-1 overflow-y-auto space-y-2 pr-2"></div>
-            </section>
-        </div>
+            </div>
 
-        <div class="col-span-1 lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-purple-400 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="message-square" class="inline w-3 mr-1"></i> CHAT</span> <button onclick="copyOverlayUrl('chat')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
+            <div class="grid-modulos">
+                <div class="modulo-box">
+                    <div class="modulo-header" style="color: var(--purple-neon);">
+                        <span><i data-lucide="message-square" class="inline w-4 mr-1"></i> CHAT</span> 
+                        <button onclick="copyOverlayUrl('chat')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
+                    </div>
+                    <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
                 </div>
-                <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
-            </div>
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-green-400 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="gift" class="inline w-3 mr-1"></i> REGALOS</span> <button onclick="copyOverlayUrl('gifts')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
-                </div>
-                <div id="gift-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
-            </div>
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-red-500 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="flame" class="inline w-3 mr-1"></i> TOP LIKES</span> <button onclick="copyOverlayUrl('likes')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
-                </div>
-                <div id="ranking-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
-            </div>
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-yellow-500 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="award" class="inline w-3 mr-1"></i> TOP DONADORES</span> <button onclick="copyOverlayUrl('donators')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
-                </div>
-                <div id="dashboard-donators-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
-            </div>
-        </div>
 
-        <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
-            <section class="glass p-6">
-                <h2 class="text-xs font-bold uppercase mb-4 text-zinc-500 italic">Controles Maestro</h2>
-                <div class="space-y-6">
-                    <div>
-                        <div class="flex items-center gap-2 justify-between mb-2"><label class="text-[10px] text-zinc-500 uppercase">Activar Voz Bot (TTS)</label><input type="checkbox" id="tts-enabled" checked class="accent-cyan-500 h-4 w-4"></div>
-                        <select id="tts-voice" class="gift-selector w-full bg-black/40 border border-zinc-800 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-500"></select>
+                <div class="modulo-box">
+                    <div class="modulo-header" style="color: #39FF14;">
+                        <span><i data-lucide="gift" class="inline w-4 mr-1"></i> REGALOS</span> 
+                        <button onclick="copyOverlayUrl('gifts')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
                     </div>
-                    <div>
-                        <div class="flex justify-between mb-1"><label class="text-[10px] text-zinc-500 uppercase">Volumen General</label><span id="vol-perc" class="text-[10px] text-cyan-400 font-bold">70%</span></div>
-                        <input id="tts-volume" type="range" min="0" max="1" step="0.1" value="0.7" class="w-full accent-cyan-500 cursor-pointer">
-                    </div>
-                    <div class="pt-4 border-t border-zinc-800 space-y-3">
-                        <label class="text-[10px] text-zinc-500 uppercase block font-bold"><i data-lucide="shield" class="inline w-3 mr-1"></i> Filtro de Voz (TTS)</label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="all" checked class="accent-cyan-500 w-4 h-4 cursor-pointer"><span class="text-[11px] text-zinc-300 font-bold uppercase">Todos (Público)</span></label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="followers" class="accent-green-500 w-4 h-4 cursor-pointer"><span class="text-[11px] text-green-400 font-bold uppercase">Solo Seguidores</span></label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="vip" class="accent-purple-500 w-4 h-4 cursor-pointer"><span class="text-[11px] text-purple-400 font-bold uppercase">Solo Mods / Subs</span></label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="gifters" class="accent-yellow-400 w-4 h-4 cursor-pointer"><span class="text-[11px] text-yellow-400 font-bold uppercase">Solo Donadores (Regalos)</span></label>
-                    </div>
+                    <div id="gift-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
                 </div>
-            </section>
-            
-            <section class="glass flex flex-col flex-1 overflow-hidden min-h-[200px] lg:min-h-0">
-                <div class="p-4 border-b border-zinc-900 bg-black/20 text-center"><h2 class="text-xs font-bold uppercase tracking-widest italic text-zinc-500">Historial de Sesión</h2></div>
-                <div id="gift-history" class="flex-1 overflow-y-auto p-3 space-y-2 text-[11px] font-mono text-zinc-500"></div>
-            </section>
-        </div>
-    </main>
+
+                <div class="modulo-box">
+                    <div class="modulo-header" style="color: #FF3131;">
+                        <span><i data-lucide="flame" class="inline w-4 mr-1"></i> TOP LIKES</span> 
+                        <button onclick="copyOverlayUrl('likes')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
+                    </div>
+                    <div id="ranking-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+                </div>
+
+                <div class="modulo-box">
+                    <div class="modulo-header" style="color: #FFD700;">
+                        <span><i data-lucide="award" class="inline w-4 mr-1"></i> TOP DONADORES</span> 
+                        <button onclick="copyOverlayUrl('donators')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i> Copiar</button>
+                    </div>
+                    <div id="dashboard-donators-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+                </div>
+            </div>
+
+        </main>
+
+        <aside class="panel-lateral panel-derecho">
+            <div class="p-5 border-b border-zinc-800">
+                <h2 class="text-xs font-black uppercase mb-4 text-zinc-500 italic tracking-widest">Ajustes de Audio (TTS)</h2>
+                
+                <div class="flex items-center gap-2 justify-between mb-3">
+                    <label class="text-[11px] text-zinc-400 font-bold uppercase">Activar Voz Bot</label>
+                    <input type="checkbox" id="tts-enabled" checked class="accent-cyan-500 h-5 w-5 cursor-pointer">
+                </div>
+                
+                <select id="tts-voice" class="w-full bg-black border border-zinc-800 p-2 rounded-lg text-xs text-white outline-none focus:border-cyan-500 mb-4 font-bold"></select>
+                
+                <div class="flex justify-between mb-2">
+                    <label class="text-[11px] text-zinc-400 font-bold uppercase">Volumen General</label>
+                    <span id="vol-perc" class="text-[11px] text-cyan-400 font-black">70%</span>
+                </div>
+                <input id="tts-volume" type="range" min="0" max="1" step="0.1" value="0.7" class="w-full accent-cyan-500 cursor-pointer mb-5">
+                
+                <label class="text-[11px] text-zinc-500 uppercase block font-black mb-3"><i data-lucide="shield" class="inline w-3 mr-1"></i> Filtro de Lectura</label>
+                <div class="flex flex-col gap-2">
+                    <label class="flex items-center gap-3 cursor-pointer bg-black/50 p-3 rounded-lg hover:bg-black transition border border-zinc-800">
+                        <input type="radio" name="tts-filter" value="all" checked class="accent-cyan-500 w-4 h-4 cursor-pointer">
+                        <span class="text-[11px] text-zinc-300 font-bold uppercase">Todos (Público)</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer bg-black/50 p-3 rounded-lg hover:bg-black transition border border-zinc-800">
+                        <input type="radio" name="tts-filter" value="followers" class="accent-green-500 w-4 h-4 cursor-pointer">
+                        <span class="text-[11px] text-green-400 font-bold uppercase">Solo Seguidores</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer bg-black/50 p-3 rounded-lg hover:bg-black transition border border-zinc-800">
+                        <input type="radio" name="tts-filter" value="vip" class="accent-purple-500 w-4 h-4 cursor-pointer">
+                        <span class="text-[11px] text-purple-400 font-bold uppercase">Solo Mods / Subs</span>
+                    </label>
+                    <label class="flex items-center gap-3 cursor-pointer bg-black/50 p-3 rounded-lg hover:bg-black transition border border-zinc-800">
+                        <input type="radio" name="tts-filter" value="gifters" class="accent-yellow-400 w-4 h-4 cursor-pointer">
+                        <span class="text-[11px] text-yellow-400 font-bold uppercase">Solo Donadores</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="p-5 flex flex-col flex-1 overflow-hidden">
+                <h2 class="text-xs font-black uppercase mb-2 text-zinc-500 italic tracking-widest">Historial de Sesión</h2>
+                <div id="gift-history" class="flex-1 overflow-y-auto space-y-2 text-[11px] font-mono text-zinc-500 pr-2 pb-5"></div>
+            </div>
+        </aside>
+
+    </div>
 
     <script>
         const socket = io();
@@ -280,8 +395,9 @@
         let currentMode = 'mp3';
         function setMode(mode) {
             currentMode = mode;
-            document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
-            document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
+            // Adaptado para usar las clases CSS de la nueva UI
+            document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active" : "mode-btn";
+            document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active" : "mode-btn";
             document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
             document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
         }
@@ -296,7 +412,7 @@
                     if(!file) return alert("Selecciona un MP3");
                     document.getElementById('loader').style.display = 'flex';
                     const reader = new FileReader();
-                    reader.onload = (e) => { socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); fileInput.value = ""; document.getElementById('file-name').innerText = "Seleccionar MP3..."; };
+                    reader.onload = (e) => { socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); fileInput.value = ""; document.getElementById('file-name').innerText = "Haz clic aquí para seleccionar MP3"; };
                     reader.readAsDataURL(file);
                 } else {
                     const link = document.getElementById('link-input').value; if(!link) return alert("Ingresa el Link");
@@ -306,7 +422,7 @@
         }
 
         const fileInput = document.getElementById('file-input');
-        if(fileInput) fileInput.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Seleccionar MP3...";
+        if(fileInput) fileInput.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Haz clic aquí para seleccionar MP3";
         function deleteAction(index) { socket.emit("deleteAction", { username: document.getElementById('username').value, index }); }
 
         fetch('/gift-list').then(r => r.json()).then(d => {
@@ -342,14 +458,14 @@
                 sPulse.className = "w-2 h-2 rounded-full bg-red-500";
                 document.getElementById('btn-connect').classList.remove('hidden'); document.getElementById('btn-disconnect').classList.add('hidden');
                 hostAvatar.src = "/Logo.png"; hostAvatar.classList.remove('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
-                hostTitle.innerHTML = `NEXORA <span class="text-cyan-500">ULTRA</span>`;
+                hostTitle.innerHTML = `NEXORA <span style="color: var(--cyan-neon);">ULTRA</span>`;
             }
         });
 
         socket.on("connectedUserData", (data) => {
             if(isOverlay) return;
             if(data.profilePictureUrl) document.getElementById('host-avatar').src = data.profilePictureUrl;
-            if(data.username) document.getElementById('host-title').innerHTML = `${data.username} <span class="text-cyan-500 text-sm md:text-lg">LIVE</span>`;
+            if(data.username) document.getElementById('host-title').innerHTML = `${data.username} <span style="color: var(--cyan-neon); font-size: 1rem;">LIVE</span>`;
         });
 
         function updateDonatorsRanking() {
