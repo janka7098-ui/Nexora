@@ -7,13 +7,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-    /* VARIABLES DE COLOR GAMER */
     :root {
         --neon-green: #00ff41;
         --neon-purple: #9d00ff;
         --dark-bg: #050505;
-        --card-bg: rgba(15, 15, 15, 0.95);
-        --glow: 0 0 10px rgba(157, 0, 255, 0.5);
+        --card-bg: rgba(20, 20, 20, 0.9);
+        --radius: 25px; /* Bordes extra redondos */
     }
 
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
@@ -22,16 +21,12 @@
         background: var(--dark-bg);
         color: #e0e0e0;
         background-image: 
-            radial-gradient(circle at 20% 30%, rgba(157, 0, 255, 0.15) 0%, transparent 40%),
-            radial-gradient(circle at 80% 70%, rgba(0, 255, 65, 0.1) 0%, transparent 40%);
+            radial-gradient(circle at 10% 10%, rgba(157, 0, 255, 0.1) 0%, transparent 30%),
+            radial-gradient(circle at 90% 90%, rgba(0, 255, 65, 0.05) 0%, transparent 30%);
         min-height: 100vh;
     }
 
-    h1, .logo, .save, th {
-        font-family: 'Orbitron', sans-serif;
-    }
-
-    /* HEADER GAMER */
+    /* HEADER */
     .header {
         display: flex;
         justify-content: space-between;
@@ -40,75 +35,40 @@
         background: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(15px);
         border-bottom: 2px solid var(--neon-purple);
-        box-shadow: 0 4px 20px rgba(157, 0, 255, 0.3);
         position: sticky;
-        top: 0;
-        z-index: 100;
+        top: 0; z-index: 1000;
     }
 
-    .logo {
-        font-size: 24px;
-        font-weight: 900;
-        letter-spacing: 3px;
-        color: #fff;
-        text-shadow: 0 0 10px var(--neon-purple);
-    }
-
-    .logo span { color: var(--neon-green); text-shadow: 0 0 10px var(--neon-green); }
+    .logo { font-family: 'Orbitron'; font-size: 24px; font-weight: 900; color: #fff; text-shadow: 0 0 10px var(--neon-purple); }
+    .logo span { color: var(--neon-green); }
 
     .back-btn {
         text-decoration: none;
         color: var(--neon-green);
-        background: transparent;
-        padding: 8px 16px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: 700;
+        padding: 8px 20px;
+        border-radius: var(--radius);
         border: 1px solid var(--neon-green);
+        font-size: 12px;
         transition: 0.3s;
-        text-transform: uppercase;
     }
+    .back-btn:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 15px var(--neon-green); }
 
-    .back-btn:hover {
-        background: var(--neon-green);
-        color: #000;
-        box-shadow: 0 0 15px var(--neon-green);
-    }
+    .container { padding: 40px 20px; max-width: 1100px; margin: auto; }
 
-    .container {
-        padding: 40px 20px;
-        max-width: 1100px;
-        margin: auto;
-    }
-
-    /* INPUTS ESTILO HUD */
-    .top-controls {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
+    /* INPUTS REDONDOS */
     input, select {
-        padding: 12px;
-        border-radius: 4px;
+        padding: 12px 20px;
+        border-radius: var(--radius);
         border: 1px solid rgba(157, 0, 255, 0.3);
-        background: rgba(20, 20, 20, 0.8);
+        background: #111;
         color: white;
         outline: none;
         transition: 0.3s;
     }
+    input:focus { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0, 255, 65, 0.2); }
 
-    input:focus, select:focus {
-        border-color: var(--neon-green);
-        box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
-    }
-
-    .search {
-        width: 100%;
-        margin-bottom: 25px;
-        border-left: 4px solid var(--neon-green);
-    }
+    .top-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+    .search { width: 100%; margin-bottom: 25px; border-width: 2px; }
 
     /* PANEL DE AGREGAR */
     .add-box {
@@ -117,109 +77,89 @@
         flex-wrap: wrap;
         margin-bottom: 30px;
         padding: 25px;
-        border-radius: 8px;
+        border-radius: 30px;
         background: var(--card-bg);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-top: 2px solid var(--neon-purple);
+        border: 1px solid rgba(157, 0, 255, 0.2);
         align-items: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    /* SELECTOR DROPDOWN */
-    .selected {
+    /* SELECTOR CON BUSCADOR */
+    .selector-wrapper { position: relative; flex: 1; min-width: 250px; }
+    .selected-box {
         background: #151515;
-        padding: 12px;
-        border-radius: 4px;
+        padding: 12px 20px;
+        border-radius: var(--radius);
         cursor: pointer;
         border: 1px solid var(--neon-purple);
-        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .dropdown {
-        background: #111;
+    .dropdown-content {
+        position: absolute;
+        top: calc(100% + 10px);
+        width: 100%;
+        background: #0f0f0f;
         border: 1px solid var(--neon-purple);
-        box-shadow: 0 0 20px rgba(157, 0, 255, 0.2);
-    }
-
-    .item:hover { background: rgba(157, 0, 255, 0.2); color: var(--neon-green); }
-
-    /* TABLA CYBER */
-    .table-container {
-        background: var(--card-bg);
-        border-radius: 8px;
-        border: 1px solid rgba(157, 0, 255, 0.2);
+        border-radius: 20px;
+        display: none;
+        z-index: 1100;
         overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     }
 
-    .table th {
-        background: rgba(157, 0, 255, 0.1);
-        color: var(--neon-green);
-        padding: 18px;
-        font-size: 12px;
-        letter-spacing: 2px;
+    .dropdown-search {
+        width: 90%;
+        margin: 10px 5%;
+        padding: 8px 15px;
+        font-size: 13px;
+        border-color: rgba(255,255,255,0.1);
     }
 
-    .row td {
-        padding: 15px;
-        border-bottom: 1px solid rgba(157, 0, 255, 0.1);
-        font-size: 14px;
+    .items-list { max-height: 200px; overflow-y: auto; }
+    .item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: 0.2s;
     }
+    .item:hover { background: rgba(157, 0, 255, 0.2); color: var(--neon-green); }
+    .item img { width: 30px; height: 30px; border-radius: 8px; }
 
-    .row:hover { background: rgba(255, 255, 255, 0.02); }
+    /* TABLA */
+    .table-container { background: var(--card-bg); border-radius: 30px; border: 1px solid rgba(157, 0, 255, 0.1); overflow: hidden; }
+    .table { width: 100%; border-collapse: collapse; }
+    .table th { background: rgba(157, 0, 255, 0.1); color: var(--neon-green); padding: 20px; text-align: left; font-size: 11px; letter-spacing: 2px; }
+    .row td { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); }
 
     /* BOTONES */
-    .btn {
-        padding: 10px 20px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 700;
-        text-transform: uppercase;
-        transition: 0.3s;
-    }
+    .btn-add { background: var(--neon-green); color: #000; font-weight: 800; padding: 12px 25px; border-radius: var(--radius); border: none; cursor: pointer; transition: 0.3s; }
+    .btn-add:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--neon-green); }
 
-    .test { 
-        background: var(--neon-purple); 
-        color: white; 
-        border: none;
-        box-shadow: 0 0 10px rgba(157, 0, 255, 0.4);
-    }
-    .test:hover { 
-        background: #b133ff;
-        transform: scale(1.05);
-    }
+    .test-btn { background: var(--neon-purple); color: white; border: none; padding: 8px 15px; border-radius: 15px; cursor: pointer; }
+    .delete-btn { background: transparent; color: #ff4444; border: 1px solid #ff4444; padding: 8px 15px; border-radius: 15px; cursor: pointer; }
 
-    .delete-btn { 
-        background: transparent; 
-        color: #ff4444; 
-        border: 1px solid #ff4444;
-    }
-    .delete-btn:hover { background: #ff4444; color: white; }
-
-    .save {
+    .save-btn {
         margin-top: 30px;
         width: 100%;
         padding: 20px;
-        border-radius: 4px;
+        border-radius: var(--radius);
         background: linear-gradient(90deg, var(--neon-purple), var(--neon-green));
         color: #000;
+        font-family: 'Orbitron';
         font-weight: 900;
-        font-size: 16px;
         border: none;
         cursor: pointer;
         transition: 0.4s;
     }
+    .save-btn:hover { letter-spacing: 3px; filter: brightness(1.2); }
 
-    .save:hover { 
-        filter: brightness(1.2);
-        letter-spacing: 4px;
-        box-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
-    }
-
-    /* Scrollbar Personalizada */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #050505; }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 10px; }
-
 </style>
 </head>
 
@@ -227,20 +167,16 @@
 
 <header class="header">
     <div class="logo">LEXORA <span>INTERACTIVE</span></div>
-    <a href="index.html" class="back-btn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="vertical-align:middle; margin-right:5px"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Regresar
-    </a>
+    <a href="index.html" class="back-btn">VOLVER</a>
 </header>
 
 <div class="container">
-
     <div class="top-controls">
         <input id="robloxUser" placeholder="USUARIO ROBLOX">
         <input id="adminCode" type="password" placeholder="ADMIN PASS">
     </div>
 
-    <input class="search" placeholder=" BUSCAR EVENTO O COMANDO..." onkeyup="filter()" id="search">
+    <input class="search" placeholder="🔍 BUSCAR EN TUS EVENTOS GUARDADOS..." onkeyup="filterTable()" id="searchTable">
 
     <div class="add-box">
         <select id="type" onchange="checkType()">
@@ -250,185 +186,179 @@
             <option value="win">🏆 WIN</option> 
         </select>
 
-        <div id="giftSelector" class="selector" style="position:relative; flex: 1; min-width:200px;">
-            <div class="selected" onclick="toggleDropdown()" id="selectedBox">
+        <div class="selector-wrapper" id="giftWrapper">
+            <div class="selected-box" onclick="toggleDropdown()">
                 <span id="selectedText">Seleccionar regalo</span>
+                <small>▼</small>
             </div>
-            <div id="dropdown" class="dropdown" style="position:absolute; width:100%; max-height:250px; overflow-y:auto; margin-top:5px; display:none; z-index:110; border-radius:4px;"></div>
+            <div id="dropdown" class="dropdown-content">
+                <input type="text" class="dropdown-search" id="giftSearch" placeholder="Buscar regalo..." onkeyup="filterGifts(event)">
+                <div id="itemsList" class="items-list">
+                    </div>
+            </div>
         </div>
 
         <input id="newParts" style="width: 100px;" placeholder="PARTS">
         <input id="targetLikes" style="width: 130px;" placeholder="META">
-        <button class="btn test" onclick="add()" style="background:var(--neon-green); color:#000">+ AÑADIR</button>
+        <button class="btn-add" onclick="addEvent()">+ AÑADIR</button>
     </div>
 
     <div class="table-container">
-        <table class="table" id="table"></table>
+        <table class="table" id="mainTable"></table>
     </div>
 
-    <button class="save" onclick="save()">GUARDAR EN LA NUBE</button>
-
+    <button class="save-btn" onclick="saveData()">GUARDAR CONFIGURACIÓN</button>
 </div>
 
 <script>
-    // Se mantiene tu lógica original de JS (solo se quitan los filtros grayscale de las imágenes para que luzcan mejor)
-    let allEvents = JSON.parse(localStorage.getItem("eventsByUser")) || {}
-    let selectedGift = ""
-    let giftImages = {}
+    let allEvents = JSON.parse(localStorage.getItem("eventsByUser")) || {};
+    let selectedGiftName = "";
+    let giftImages = {};
+    let giftsData = []; // Para el buscador
+
+    function toggleDropdown() {
+        const d = document.getElementById("dropdown");
+        d.style.display = d.style.display === "block" ? "none" : "block";
+        if(d.style.display === "block") document.getElementById("giftSearch").focus();
+    }
+
+    // Cerrar dropdown si se hace click fuera
+    window.onclick = function(event) {
+        if (!event.target.closest('.selector-wrapper')) {
+            document.getElementById("dropdown").style.display = "none";
+        }
+    }
+
+    async function loadGifts() {
+        try {
+            const res = await fetch("/gift-list");
+            giftsData = await res.json();
+            renderGiftList(giftsData);
+        } catch (e) { 
+            console.log("Error cargando lista");
+            // Placeholder para test
+            giftsData = [{name: "Rose", image: ""}, {name: "Coffee", image: ""}, {name: "TikTok", image: ""}];
+            renderGiftList(giftsData);
+        }
+    }
+
+    function renderGiftList(list) {
+        const container = document.getElementById("itemsList");
+        container.innerHTML = "";
+        list.forEach(g => {
+            giftImages[g.name.toLowerCase()] = g.image;
+            const div = document.createElement("div");
+            div.className = "item";
+            div.innerHTML = `<img src="${g.image || 'https://via.placeholder.com/30'}"><span>${g.name}</span>`;
+            div.onclick = () => {
+                selectedGiftName = g.name;
+                document.getElementById("selectedText").innerText = g.name;
+                document.getElementById("dropdown").style.display = "none";
+            };
+            container.appendChild(div);
+        });
+    }
+
+    function filterGifts(e) {
+        const text = e.target.value.toLowerCase();
+        const filtered = giftsData.filter(g => g.name.toLowerCase().includes(text));
+        renderGiftList(filtered);
+    }
 
     function checkType() {
         const type = document.getElementById("type").value;
-        const giftSelector = document.getElementById("selectedBox");
-        const selectedText = document.getElementById("selectedText");
-
-        if (type === "like" || type === "follow") {
-            giftSelector.style.opacity = "0.3";
-            giftSelector.style.pointerEvents = "none";
-            selectedText.innerText = "N/A";
-            selectedGift = "Ninguno";
+        const wrapper = document.getElementById("giftWrapper");
+        if (type !== "gift") {
+            wrapper.style.opacity = "0.3";
+            wrapper.style.pointerEvents = "none";
+            selectedGiftName = "N/A";
         } else {
-            giftSelector.style.opacity = "1";
-            giftSelector.style.pointerEvents = "auto";
-            selectedText.innerText = "Seleccionar regalo";
-            selectedGift = "";
+            wrapper.style.opacity = "1";
+            wrapper.style.pointerEvents = "auto";
+            selectedGiftName = "";
         }
     }
 
-    function getUser(){
-        const user = document.getElementById("robloxUser").value.trim()
-        const code = document.getElementById("adminCode").value.trim()
-        if(user.toLowerCase() === "todos"){
-            if(code !== "admin24"){ return null }
-            return "ALL_USERS"
-        }
+    function getUser() {
+        const user = document.getElementById("robloxUser").value.trim();
+        const code = document.getElementById("adminCode").value.trim();
+        if(user.toLowerCase() === "todos") return code === "admin24" ? "ALL_USERS" : null;
         return user || null;
     }
 
-    function toggleDropdown(){
-        const d = document.getElementById("dropdown")
-        d.style.display = d.style.display === "block" ? "none" : "block"
-    }
-
-    async function loadGifts(){
-        try {
-            const res = await fetch("/gift-list")
-            const gifts = await res.json()
-            const dropdown = document.getElementById("dropdown")
-
-            gifts.forEach(g=>{
-                giftImages[g.name.toLowerCase()] = g.image
-                const div = document.createElement("div")
-                div.className = "item"
-                div.style.cssText = "display:flex; align-items:center; gap:10px; padding:10px; cursor:pointer; transition:0.2s;"
-                div.innerHTML = `<img src="${g.image}" style="width:30px; height:30px; border-radius:4px;"><span>${g.name}</span>`
-                div.onclick = ()=>{
-                    selectedGift = g.name
-                    document.getElementById("selectedText").innerText = g.name
-                    dropdown.style.display = "none"
-                }
-                dropdown.appendChild(div)
-            })
-        } catch (e) { console.log("Usando placeholders para visualización") }
-    }
-
-    loadGifts()
-
-    const table = document.getElementById("table")
-
-    function render(){
-        const user = getUser()
+    function renderTable() {
+        const user = getUser();
+        const table = document.getElementById("mainTable");
         if(!user) {
-            table.innerHTML = "<tr><td style='text-align:center; padding:40px; color:var(--neon-purple); font-weight:bold;'>[ ESPERANDO IDENTIFICACIÓN DE USUARIO... ]</td></tr>";
+            table.innerHTML = "<tr><td style='text-align:center; padding:40px; color:#555;'>Ingresa usuario para editar</td></tr>";
             return;
         }
 
-        table.innerHTML = `
-        <tr>
-            <th>USUARIO</th>
-            <th>TIPO</th>
-            <th>EVENTO</th>
-            <th>PARTS</th>
-            <th>META</th>
-            <th>TEST</th>
-            <th>ACCIÓN</th>
-        </tr>`;
-
-        if(!allEvents[user]) return
-
-        Object.keys(allEvents[user]).forEach(name=>{
-            const e = allEvents[user][name]
-            const img = giftImages[name?.toLowerCase()]
-            const row = document.createElement("tr")
-            row.className="row"
-            row.innerHTML = `
-            <td style="color:var(--neon-green)">${user}</td>
-            <td><span style="color:var(--neon-purple); font-weight:bold">${e.type.toUpperCase()}</span></td>
-            <td>${img?`<img src="${img}" style="width:24px; vertical-align:middle; margin-right:8px; border-radius:2px;">`:""} ${name}</td>
-            <td><input value="${e.parts}" onchange="update('${name}',this.value)" style="width:70px; padding:5px; border-color:var(--neon-green)"></td>
-            <td>${e.targetLikes||"-"}</td>
-            <td>
-                <button class="btn test" onclick="test('${name}')" style="padding:5px 10px; font-size:10px;">EJECUTAR</button>
-            </td>
-            <td>
-                <button class="btn delete-btn" onclick="deleteEvent('${name}')" style="padding:5px 10px; font-size:10px;">X</button>
-            </td>`;
-            table.appendChild(row)
-        })
-    }
-
-    function add(){
-        const user = getUser()
-        if(!user) { alert("ERROR: Usuario no identificado"); return; }
-        const type = document.getElementById("type").value
-        const parts = Number(document.getElementById("newParts").value)
-        const targetLikes = Number(document.getElementById("targetLikes").value)
-
-        if(!allEvents[user]) allEvents[user] = {}
-        let nameKey = (type === "gift") ? selectedGift : (type.charAt(0).toUpperCase() + type.slice(1));
+        table.innerHTML = `<tr><th>USUARIO</th><th>TIPO</th><th>NOMBRE</th><th>PARTS</th><th>META</th><th>ACCIONES</th></tr>`;
         
-        if(!nameKey || nameKey === "Seleccionar regalo") {
-            alert("Selecciona un elemento de la lista");
-            return;
-        }
+        if(!allEvents[user]) return;
 
-        let key = type==="gift"?selectedGift:type==="like"?"like_"+targetLikes:type;
-        allEvents[user][key]={ type, parts, targetLikes, robloxUser:user }
-        render()
+        Object.keys(allEvents[user]).forEach(id => {
+            const e = allEvents[user][id];
+            const row = document.createElement("tr");
+            row.className = "row";
+            row.innerHTML = `
+                <td style="color:var(--neon-green)">${user}</td>
+                <td><b style="color:var(--neon-purple)">${e.type.toUpperCase()}</b></td>
+                <td>${id}</td>
+                <td><input value="${e.parts}" onchange="updateValue('${id}', this.value)" style="width:70px; padding:5px 10px;"></td>
+                <td>${e.targetLikes || '-'}</td>
+                <td>
+                    <button class="test-btn" onclick="alert('Test: ${id}')">TEST</button>
+                    <button class="delete-btn" onclick="deleteEv('${id}')">X</button>
+                </td>
+            `;
+            table.appendChild(row);
+        });
     }
 
-    function update(name,value){
-        const user=getUser()
-        if(allEvents[user][name]) allEvents[user][name].parts=Number(value)
+    function addEvent() {
+        const user = getUser();
+        if(!user) return alert("Usuario inválido");
+        const type = document.getElementById("type").value;
+        const parts = Number(document.getElementById("newParts").value);
+        const targetLikes = Number(document.getElementById("targetLikes").value);
+
+        if(!allEvents[user]) allEvents[user] = {};
+        
+        let key = type === "gift" ? selectedGiftName : type + (targetLikes || "");
+        if(!key || key === "Seleccionar regalo") return alert("Elige un regalo");
+
+        allEvents[user][key] = { type, parts, targetLikes };
+        renderTable();
     }
 
-    function test(name){
-        alert(`SEÑAL ENVIADA: Ejecutando test para ${name}`);
+    function updateValue(id, val) {
+        const user = getUser();
+        if(allEvents[user][id]) allEvents[user][id].parts = Number(val);
     }
 
-    function deleteEvent(name) {
-        const user = getUser()
-        if(confirm(`¿ELIMINAR ${name}?`)) {
-            delete allEvents[user][name] 
-            render() 
-            save() 
-        }
+    function deleteEv(id) {
+        const user = getUser();
+        delete allEvents[user][id];
+        renderTable();
     }
 
-    function save(){
-        localStorage.setItem("eventsByUser",JSON.stringify(allEvents))
-        alert("SISTEMA ACTUALIZADO: Datos guardados.")
+    function saveData() {
+        localStorage.setItem("eventsByUser", JSON.stringify(allEvents));
+        alert("¡Configuración guardada!");
     }
 
-    function filter(){
-        const s=document.getElementById("search").value.toLowerCase()
-        document.querySelectorAll(".row").forEach(r=>{
-            r.style.display=r.innerText.toLowerCase().includes(s)?"":"none"
-        })
+    function filterTable() {
+        const s = document.getElementById("searchTable").value.toLowerCase();
+        document.querySelectorAll(".row").forEach(r => {
+            r.style.display = r.innerText.toLowerCase().includes(s) ? "" : "none";
+        });
     }
 
-    document.getElementById("robloxUser").addEventListener("input", render)
-    render()
+    document.getElementById("robloxUser").addEventListener("input", renderTable);
+    loadGifts();
+    renderTable();
 </script>
-
 </body>
 </html>
