@@ -17,23 +17,6 @@ const io = socketIo(server, {
 app.use(express.json());
 
 /* =========================
-   CONFIGURACIÓN DE RUTAS
-========================= */
-
-// 1. Carga el menú principal al entrar a la IP o dominio
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// 2. Carga el panel de configuración de regalos
-app.get('/interactive', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'interactivoR.html'));
-});
-
-// 3. Servir archivos estáticos (imágenes, sonidos, regalos)
-app.use(express.static(path.join(__dirname, "public")));
-
-/* =========================
    ESTADO PARA ROBLOX
 ========================= */
 let currentEvent = {
