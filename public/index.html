@@ -61,14 +61,13 @@
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2300FFFF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em;
+            cursor: pointer;
         }
 
-        .mode-btn { background: rgba(255,255,255,0.05); color: #666; transition: all 0.3s; }
+        .mode-btn { background: rgba(255,255,255,0.05); color: #666; transition: all 0.3s; cursor: pointer; }
+        .mode-btn:hover { background: rgba(255,255,255,0.1); color: #ccc; }
         .mode-btn.active { background: var(--purple); color: white; }
         .mode-btn.active.webhook-active { background: var(--cyan); color: black; }
-
-        details > summary { list-style: none; }
-        details > summary::-webkit-details-marker { display: none; }
 
         @keyframes spin { to { transform: rotate(360deg); } }
         ::-webkit-scrollbar { width: 4px; }
@@ -81,6 +80,21 @@
             border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: all 0.2s;
         }
         .btn-copy-link:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 255, 0.1); }
+
+        .gift-card {
+            background: linear-gradient(135deg, rgba(57, 255, 20, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%);
+            border: 1px solid rgba(57, 255, 20, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .gift-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--green), transparent);
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
     </style>
 </head>
 <body class="p-2 md:p-4 pb-12">
@@ -149,17 +163,17 @@
         <div class="flex flex-wrap justify-center gap-2 md:gap-4 items-center">
             <input id="username" type="text" placeholder="@usuario_tiktok" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs focus:border-cyan-500 outline-none w-[140px] md:w-40 font-medium">
             <input id="key" type="password" placeholder="Access Key" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs focus:border-cyan-500 outline-none w-[100px] md:w-32 font-medium">
-            <button id="btn-connect" class="bg-cyan-600 hover:bg-cyan-400 text-black px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Conectar</button>
+            <button id="btn-connect" onmouseover="playHover()" class="bg-cyan-600 hover:bg-cyan-400 text-black px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Conectar</button>
             <button id="btn-disconnect" class="hidden bg-zinc-900 border border-red-600 text-red-500 px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Salir</button>
         </div>
     </nav>
 
     <div id="action-buttons" class="max-w-[1800px] mx-auto mb-6 flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="juego.html" class="flex-1 max-w-[300px] bg-purple-600 hover:bg-purple-500 text-white text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-purple-400 shadow-[0_0_15px_rgba(138,43,226,0.4)] hover:shadow-[0_0_25px_rgba(138,43,226,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
+        <a href="juego.html" onmouseover="playHover()" class="flex-1 max-w-[300px] bg-purple-600 hover:bg-purple-500 text-white text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-purple-400 shadow-[0_0_15px_rgba(138,43,226,0.4)] hover:shadow-[0_0_25px_rgba(138,43,226,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
             <i data-lucide="gamepad-2" class="w-5 h-5"></i>
             Ir a Juego
         </a>
-        <a href="interactivo.html" class="flex-1 max-w-[300px] bg-cyan-600 hover:bg-cyan-400 text-black text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
+        <a href="interactivo.html" onmouseover="playHover()" class="flex-1 max-w-[300px] bg-cyan-600 hover:bg-cyan-400 text-black text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
             <i data-lucide="mouse-pointer-click" class="w-5 h-5"></i>
             Ir a Interactivo
         </a>
@@ -170,19 +184,29 @@
             <section class="glass p-6">
                 <h2 class="text-cyan-400 font-bold uppercase text-xs mb-4 flex items-center gap-2 italic tracking-widest"><i data-lucide="upload-cloud" class="w-4"></i> Configurar Alerta</h2>
                 <div class="flex bg-black/40 p-1 rounded-lg border border-zinc-800 mb-4">
-                    <button onclick="setMode('mp3')" id="mode-mp3" class="mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Modo MP3</button>
-                    <button onclick="setMode('link')" id="mode-link" class="mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Webhook Juego</button>
+                    <button onclick="setMode('mp3')" onmouseover="playHover()" id="mode-mp3" class="mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Modo MP3</button>
+                    <button onclick="setMode('link')" onmouseover="playHover()" id="mode-link" class="mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Webhook Juego</button>
                 </div>
                 <div class="space-y-4">
-                    <select id="gift-select" class="gift-selector w-full bg-black/60 border border-zinc-700 p-3 rounded-xl text-xs outline-none focus:border-cyan-500 text-zinc-300 font-bold"><option value="" disabled selected>Seleccionar Regalo...</option></select>
+                    <div class="relative group">
+                        <select id="gift-select" onmouseover="playHover()" onchange="updateGiftPreview(this.value)" class="gift-selector w-full bg-black/60 border border-zinc-700 p-3 rounded-xl text-xs outline-none focus:border-cyan-500 text-zinc-300 font-bold">
+                            <option value="" disabled selected>Seleccionar Regalo...</option>
+                        </select>
+                    </div>
+                    
+                    <div id="gift-preview-container" class="hidden flex flex-col items-center justify-center p-4 bg-black/40 border border-zinc-800 rounded-xl animate-pulse">
+                        <p class="text-[10px] text-cyan-500 uppercase font-black mb-2">Vista Previa</p>
+                        <img id="gift-preview-img" src="" class="w-16 h-16 object-contain" onerror="this.src='https://via.placeholder.com/64?text=Regalo'">
+                    </div>
+
                     <div id="container-mp3">
                         <input type="file" id="file-input" accept="audio/mpeg" class="hidden">
-                        <button onclick="document.getElementById('file-input').click()" class="w-full bg-zinc-900 border border-dashed border-zinc-700 p-3 rounded-lg text-xs text-zinc-400 hover:border-cyan-500 transition-all flex flex-col items-center gap-2"><i data-lucide="music" class="w-4 h-4 text-purple-500"></i><span id="file-name">Seleccionar MP3...</span></button>
+                        <button onclick="document.getElementById('file-input').click()" onmouseover="playHover()" class="w-full bg-zinc-900 border border-dashed border-zinc-700 p-3 rounded-lg text-xs text-zinc-400 hover:border-cyan-500 transition-all flex flex-col items-center gap-2"><i data-lucide="music" class="w-4 h-4 text-purple-500"></i><span id="file-name">Seleccionar MP3...</span></button>
                     </div>
                     <div id="container-link" class="hidden">
                         <input id="link-input" type="text" placeholder="http://localhost:8080/comando" class="w-full bg-black/60 border border-zinc-800 p-3 rounded-lg text-xs text-cyan-400 outline-none focus:border-cyan-500 font-mono">
                     </div>
-                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all shadow-lg">Guardar y Vincular</button>
+                    <button id="btn-save-action" onmouseover="playHover()" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all shadow-lg">Guardar y Vincular</button>
                 </div>
             </section>
             <section class="glass flex-1 p-6 flex flex-col overflow-hidden min-h-[250px] lg:min-h-0">
@@ -254,6 +278,25 @@
         const donatorsMap = new Map();
         const giftersSet = new Set();
 
+        // Configuración de Sonidos de Interfaz
+        const sndHover = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        const sndSelect = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+        sndHover.volume = 0.2;
+        sndSelect.volume = 0.4;
+
+        function playHover() { if(!isOverlay) sndHover.cloneNode().play().catch(()=>{}); }
+        function playSelect() { if(!isOverlay) sndSelect.cloneNode().play().catch(()=>{}); }
+
+        function updateGiftPreview(giftName) {
+            playSelect();
+            const container = document.getElementById('gift-preview-container');
+            const img = document.getElementById('gift-preview-img');
+            if (giftName) {
+                container.classList.remove('hidden');
+                img.src = `/regalos/${giftName.toLowerCase()}.png`;
+            }
+        }
+
         function copyOverlayUrl(type) {
             const url = window.location.origin + '/?overlay=' + type;
             navigator.clipboard.writeText(url).then(() => {
@@ -279,6 +322,7 @@
 
         let currentMode = 'mp3';
         function setMode(mode) {
+            playSelect();
             currentMode = mode;
             document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
             document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
@@ -370,7 +414,7 @@
                 list.innerHTML = actions.map((a, i) => `
                     <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-zinc-800">
                         <div class="text-[10px]"><b class="${a.type === 'link' ? 'text-cyan-400' : 'text-purple-400'} uppercase">${a.type}</b><br><b class="text-white">${a.gift}</b></div>
-                        <button onclick="deleteAction(${i})" class="text-red-500 hover:text-white transition-colors"><i data-lucide="trash-2" class="w-4"></i></button>
+                        <button onclick="deleteAction(${i})" onmouseover="playHover()" class="text-red-500 hover:text-white transition-colors"><i data-lucide="trash-2" class="w-4"></i></button>
                     </div>`).join('');
                 lucide.createIcons();
             }
@@ -436,7 +480,7 @@
 
         socket.on("gift", (data) => {
             giftersSet.add(data.user);
-            const powerAdded = data.amount * 100; // Multiplicador estándar visual
+            const powerAdded = data.amount * 100; 
             
             donatorsMap.set(data.user, (donatorsMap.get(data.user) || 0) + powerAdded);
             updateDonatorsRanking();
@@ -444,10 +488,20 @@
             const giftContainer = document.getElementById('gift-container');
             if(giftContainer) {
                 const div = document.createElement('div');
-                div.className = "bg-green-900/20 p-2 rounded-lg border border-green-500/30 flex items-center gap-2 fade-in";
-                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-8 h-8 rounded-full border border-green-500">
-                    <img src="${data.image}" class="w-8 h-8 object-contain" onerror="this.src='https://via.placeholder.com/32?text=🎁'">
-                    <div class="text-[10px]"><b class="text-white">${data.user}</b> x${data.amount} <span class="text-green-400">${data.gift}</span></div>`;
+                div.className = "gift-card p-3 rounded-xl flex items-center gap-3 fade-in shadow-[0_0_10px_rgba(57,255,20,0.1)]";
+                div.innerHTML = `
+                    <div class="relative">
+                        <img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-10 h-10 rounded-full border-2 border-green-500">
+                        <div class="absolute -bottom-1 -right-1 bg-black text-green-400 text-[8px] px-1 rounded border border-green-500 font-bold">LIVE</div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <b class="text-white text-xs">${data.user}</b>
+                            <span class="text-green-400 font-black text-xs">x${data.amount}</span>
+                        </div>
+                        <p class="text-[9px] text-zinc-400 uppercase tracking-tighter">Envió <span class="text-green-300">${data.gift}</span></p>
+                    </div>
+                    <img src="${data.image}" class="w-10 h-10 object-contain drop-shadow-[0_0_5px_rgba(57,255,20,0.5)]" onerror="this.src='https://via.placeholder.com/32?text=🎁'">`;
                 
                 giftContainer.prepend(div);
                 if (giftContainer.children.length > 10) giftContainer.removeChild(giftContainer.lastElementChild);
