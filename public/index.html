@@ -340,46 +340,32 @@
         if(volInput) volInput.oninput = (e) => document.getElementById('vol-perc').innerText = Math.round(e.target.value * 100) + "%";
 
         function setMode(mode) {
-           // Cambia visualmente los botones
+            currentMode = mode; // Ahora sí modificará la variable global
             document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
             document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
-            
-            // Muestra u oculta los inputs correspondientes
             document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
             document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
         }
 
         const btnSave = document.getElementById('btn-save-action');
         if(btnSave) {
-           btnSave.onclick = () => {
+            btnSave.onclick = () => {
                 const username = document.getElementById('username').value; 
-                const gift = hiddenInput.value; // El valor del dropdown personalizado
-                
-                if(!username || !gift) return alert("⚠️ Error: Falta el usuario de TikTok o seleccionar un regalo.");
-
-                console.log("Enviando evento:", { username, gift, mode: currentMode });
-
+                const gift = hiddenInput.value;
+                if(!username || !gift) return alert("Faltan datos");
                 if(currentMode === 'mp3') {
-                    const fileInput = document.getElementById('file-input'); 
-                    const file = fileInput.files[0];
-                    if(!file) return alert("Selecciona un archivo MP3 primero.");
-                    
+                    const fileInput = document.getElementById('file-input'); const file = fileInput.files[0];
+                    if(!file) return alert("Selecciona un MP3");
                     document.getElementById('loader').style.display = 'flex';
                     const reader = new FileReader();
-                    reader.onload = (e) => { 
-                        socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); 
-                        fileInput.value = ""; 
-                        document.getElementById('file-name').innerText = "Seleccionar MP3..."; 
-                    };
+                    reader.onload = (e) => { socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); fileInput.value = ""; document.getElementById('file-name').innerText = "Seleccionar MP3..."; };
                     reader.readAsDataURL(file);
                 } else {
-                    const link = document.getElementById('link-input').value; 
-                    if(!link) return alert("Ingresa el Link del Webhook.");
-                    socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } }); 
-                    document.getElementById('link-input').value = "";
+                    const link = document.getElementById('link-input').value; if(!link) return alert("Ingresa el Link");
+                    socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } }); document.getElementById('link-input').value = "";
                 }
             };
-}
+        }
 
         const fileInput = document.getElementById('file-input');
         if(fileInput) fileInput.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Seleccionar MP3...";
