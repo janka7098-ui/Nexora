@@ -400,12 +400,23 @@
         sndHover.volume = 0.2;
         sndSelect.volume = 0.4;
 
-        // --- AUTOMATIC IMAGE PATH FIXER ---
-        // Esta función limpia el nombre del regalo para que coincida con archivos sin acentos si fuera necesario
-        function getCleanImagePath(name) {
-            if (!name) return '';
-            // Codifica el nombre para que el navegador maneje espacios y tildes correctamente en la URL
-            return `/regalos/${encodeURIComponent(name)}.png`;
+        // --- TRADUCCIÓN AUTOMÁTICA EN TIEMPO REAL ---
+        async function getTranslatedImagePath(englishName) {
+            try {
+                // Llamamos a la API de Google Translate (Gratis para uso ligero)
+                const apiURL = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=es&dt=t&q=${encodeURIComponent(englishName)}`;
+                const response = await fetch(apiURL);
+                const result = await response.json();
+                
+                // Obtenemos la traducción (ej: "Rosa")
+                const translatedName = result[0][0][0];
+                
+                // Devolvemos la ruta con el nombre en español
+                return `/regalos/${encodeURIComponent(translatedName)}.png`;
+            } catch (e) {
+                // Si falla la API, intentamos cargar el nombre original por si acaso
+                return `/regalos/${encodeURIComponent(englishName)}.png`;
+            }
         }
 
         function playHover() { if(!isOverlay) sndHover.cloneNode().play().catch(()=>{}); }
@@ -448,12 +459,13 @@
             updateGiftPreview(value);
         }
         
-        function updateGiftPreview(giftName) {
+        async function updateGiftPreview(giftName) {
             const container = document.getElementById('gift-preview-container');
             const img = document.getElementById('gift-preview-img');
             if (giftName) {
                 container.classList.remove('hidden');
-                img.src = getCleanImagePath(giftName);
+                // En la vista previa también traducimos por si acaso
+                img.src = await getTranslatedImagePath(giftName);
             } else {
                 container.classList.add('hidden');
             }
@@ -560,17 +572,49 @@
             }
         });
 
-        // Carga la lista de regalos con el nuevo formateador automático de imágenes
-        fetch('/gift-list').then(r => r.json()).then(d => {
-            const list = document.getElementById('custom-options-list');
-            if(list) list.innerHTML = d.map(g => `
-                <div class="custom-select-option" onmouseover="playHover()" onclick="selectCustomOption('${g.name}', '${g.name}')">
-                    <img src="${getCleanImagePath(g.name)}" class="custom-select-option-img" onerror="this.src='https://via.placeholder.com/24?text=🎁'">
-                    <span class="custom-select-option-text">${g.name}</span>
-                </div>`).join('');
+        // --- EVENTO DE REGALOS ACTUALIZADO CON TRADUCCIÓN ---
+        socket.on("gift", async (data) => {
+            giftersSet.add(data.user);
+            const container = document.getElementById('gift-container');
+            if(!container) return;
+            
+            const div = document.createElement('div');
+            div.className = "gift-card p-3 rounded-xl flex items-center gap-3 fade-in mb-3";
+            
+            // Traducimos automáticamente el nombre del regalo antes de buscar la imagen
+            const giftImgUrl = await getTranslatedImagePath(data.gift);
+
+            div.innerHTML = `
+                <img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-10 h-10 rounded-full border-2 border-green-500">
+                <div class="flex-1">
+                    <b class="text-white text-xs">${data.user}</b>
+                    <p class="text-[9px] text-zinc-400">Envió ${data.gift} x${data.amount}</p>
+                </div>
+                <img src="${giftImgUrl}" 
+                     class="w-12 h-12 object-contain" 
+                     onerror="this.src='https://via.placeholder.com/40?text=🎁'">`;
+            
+            container.prepend(div);
         });
 
-        // --- REAL-TIME DATA ---
+        fetch('/gift-list').then(r => r.json()).then(async d => {
+            const list = document.getElementById('custom-options-list');
+            if(list) {
+                // Para la lista inicial también intentamos traducir para mostrar las imágenes correctas
+                let html = "";
+                for(let g of d) {
+                    const img = await getTranslatedImagePath(g.name);
+                    html += `
+                        <div class="custom-select-option" onmouseover="playHover()" onclick="selectCustomOption('${g.name}', '${g.name}')">
+                            <img src="${img}" class="custom-select-option-img" onerror="this.src='https://via.placeholder.com/24?text=🎁'">
+                            <span class="custom-select-option-text">${g.name}</span>
+                        </div>`;
+                }
+                list.innerHTML = html;
+            }
+        });
+
+        // --- REAL-TIME CHAT ---
         socket.on("chat", (data) => {
             const container = document.getElementById('chat-container');
             if(!container) return;
@@ -582,19 +626,6 @@
             speak(`${data.user} dice: ${data.message}`);
         });
 
-        socket.on("gift", (data) => {
-            giftersSet.add(data.user);
-            const container = document.getElementById('gift-container');
-            if(!container) return;
-            const div = document.createElement('div');
-            div.className = "gift-card p-3 rounded-xl flex items-center gap-3 fade-in";
-            // Aquí también usamos la lógica de imagen limpia para los regalos recibidos en tiempo real
-            const giftImg = data.image ? data.image : getCleanImagePath(data.gift);
-            div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-10 h-10 rounded-full border-2 border-green-500">
-                <div class="flex-1"><b class="text-white text-xs">${data.user}</b><p class="text-[9px] text-zinc-400">Envió ${data.gift} x${data.amount}</p></div>
-                <img src="${giftImg}" class="w-10 h-10 object-contain" onerror="this.src='https://via.placeholder.com/40?text=🎁'">`;
-            container.prepend(div);
-        });
     </script>
 </body>
 </html>
