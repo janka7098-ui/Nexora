@@ -35,9 +35,9 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 /* =========================
     RUTAS DE NAVEGACIÓN
 ========================= */
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
+app.get('/index', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/interactive', (req, res) => res.sendFile(path.join(__dirname, 'public', 'interactivo.html')));
-
 /* =========================
     PUENTE PARA ROBLOX
 ========================= */
