@@ -37,11 +37,49 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .glass:hover {
-            border-color: rgba(0, 255, 255, 0.5);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+        /* --- ESTILOS SELECT PERSONALIZADO (IMAGEN 1) --- */
+        #custom-select-trigger {
+            border: 2px solid var(--purple);
+            border-radius: 50px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
+        #custom-select-trigger:hover {
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.4);
+        }
+
+        #custom-options {
+            background: #0f0f16;
+            border: 2px solid var(--purple);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        #gift-search {
+            border: 2px solid var(--green) !important;
+            border-radius: 50px;
+            background: transparent;
+            color: white;
+        }
+
+        /* Scrollbar estilo Imagen 1 */
+        #options-list::-webkit-scrollbar { width: 6px; }
+        #options-list::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
+
+        .custom-option {
+            transition: 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .custom-option:hover {
+            background: rgba(138, 43, 226, 0.15);
+        }
+
+        /* --- OTROS ESTILOS --- */
         #loader {
             position: fixed; inset: 0;
             background: rgba(5, 5, 7, 0.98);
@@ -50,202 +88,130 @@
         }
 
         .spinner {
-            width: 60px; height: 60px;
+            width: 50px; height: 50px;
             border: 4px solid rgba(138, 43, 226, 0.1);
             border-left-color: var(--cyan);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
-        /* Estilos del Dropdown Personalizado */
-        #custom-options::-webkit-scrollbar { width: 4px; }
-        #custom-options::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
-        .custom-option:hover { background: rgba(138, 43, 226, 0.2); }
-
-        .mode-btn { background: rgba(255,255,255,0.05); color: #666; transition: all 0.3s; }
-        .mode-btn.active { background: var(--purple); color: white; }
-        .mode-btn.active.webhook-active { background: var(--cyan); color: black; }
-
         @keyframes spin { to { transform: rotate(360deg); } }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 10px; }
-        .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .btn-copy-link {
-            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 6px;
-            border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: all 0.2s;
-        }
-        .btn-copy-link:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 255, 0.1); }
+
+        .btn-copy-link { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 6px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .btn-copy-link:hover { color: var(--cyan); border-color: var(--cyan); }
     </style>
 </head>
 <body class="p-2 md:p-4 pb-12">
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const overlayType = urlParams.get('overlay'); 
-        const isOverlay = !!overlayType;
-
-        if(isOverlay) {
-            document.documentElement.style.background = 'transparent';
-            document.body.style.background = 'transparent';
-            document.body.style.backgroundImage = 'none';
-            document.body.className = 'm-0 p-0 w-screen h-screen overflow-hidden bg-transparent';
-            
-            document.addEventListener("DOMContentLoaded", () => {
-                document.getElementById('nav-header').style.display = 'none';
-                document.getElementById('action-buttons').style.display = 'none';
-                document.getElementById('view-dashboard').style.display = 'none';
-                
-                const ttsCheckbox = document.getElementById('tts-enabled');
-                if(ttsCheckbox) ttsCheckbox.checked = false; 
-
-                if (['chat', 'gifts', 'likes', 'donators'].includes(overlayType)) {
-                    const widgetContainer = document.createElement('div');
-                    widgetContainer.className = 'w-full h-full p-2 flex flex-col justify-start overflow-hidden bg-transparent';
-                    document.body.appendChild(widgetContainer);
-
-                    let targetId = '';
-                    if (overlayType === 'chat') targetId = 'chat-container';
-                    if (overlayType === 'gifts') targetId = 'gift-container';
-                    if (overlayType === 'likes') targetId = 'ranking-container';
-                    if (overlayType === 'donators') targetId = 'dashboard-donators-container';
-                    
-                    const targetEl = document.getElementById(targetId);
-                    if(targetEl) {
-                        targetEl.className = 'w-full h-full overflow-hidden flex flex-col bg-transparent';
-                        widgetContainer.appendChild(targetEl);
-                    }
-                    
-                    const style = document.createElement('style');
-                    style.innerHTML = `.bg-zinc-900\\/50, .bg-green-900\\/20, .bg-black\\/40 { background: rgba(10, 10, 15, 0.85) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(8px) !important; border-radius: 12px; }`;
-                    document.head.appendChild(style);
-                }
-            });
-        }
-    </script>
-
     <div id="loader">
         <div class="spinner"></div>
-        <p class="mt-4 text-cyan-500 font-bold tracking-widest animate-pulse uppercase">Procesando Datos...</p>
+        <p class="mt-4 text-cyan-500 font-bold tracking-widest animate-pulse uppercase">Sincronizando...</p>
     </div>
 
     <nav id="nav-header" class="max-w-[1800px] mx-auto mb-6 flex flex-col lg:flex-row items-center justify-between glass p-4 gap-4">
-        <div class="flex items-center gap-4 w-full lg:w-auto justify-center lg:justify-start">
-            <img id="host-avatar" src="/Logo.png" alt="Logo" class="h-[50px] w-[50px] md:h-[60px] md:w-[60px] object-cover rounded-full border-2 border-transparent transition-all duration-500" onerror="this.src='/Logo.png'">
-            <div class="flex flex-col">
-                <h1 id="host-title" class="text-2xl md:text-3xl font-black italic tracking-tighter leading-none uppercase">NEXORA <span class="text-cyan-500">ULTRA</span></h1>
+        <div class="flex items-center gap-4">
+            <img id="host-avatar" src="/Logo.png" class="h-[50px] w-[50px] rounded-full border-2 border-transparent">
+            <div>
+                <h1 id="host-title" class="text-2xl font-black italic uppercase">NEXORA <span class="text-cyan-500">ULTRA</span></h1>
                 <div class="flex items-center gap-2 mt-1">
                     <div id="status-pulse" class="w-2 h-2 rounded-full bg-red-500"></div>
-                    <span id="connection-status" class="text-[10px] uppercase tracking-[3px] text-red-500 font-bold italic">Desconectado</span>
+                    <span id="connection-status" class="text-[10px] uppercase tracking-widest text-red-500 font-bold">Desconectado</span>
                 </div>
             </div>
         </div>
 
-        <div class="flex flex-wrap justify-center gap-2 md:gap-4 items-center">
-            <input id="username" type="text" placeholder="@usuario_tiktok" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs focus:border-cyan-500 outline-none w-[140px] md:w-40 font-medium">
-            <input id="key" type="password" placeholder="Access Key" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs focus:border-cyan-500 outline-none w-[100px] md:w-32 font-medium">
-            <button id="btn-connect" class="bg-cyan-600 hover:bg-cyan-400 text-black px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Conectar</button>
-            <button id="btn-disconnect" class="hidden bg-zinc-900 border border-red-600 text-red-500 px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Salir</button>
+        <div class="flex gap-2">
+            <input id="username" type="text" placeholder="@usuario_tiktok" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs outline-none">
+            <input id="key" type="password" placeholder="Key" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs outline-none">
+            <button id="btn-connect" class="bg-cyan-600 hover:bg-cyan-400 text-black px-6 py-2 rounded-lg font-black text-xs uppercase transition-all">Conectar</button>
+            <button id="btn-disconnect" class="hidden bg-red-600 text-white px-6 py-2 rounded-lg font-black text-xs uppercase">Salir</button>
         </div>
     </nav>
 
-    <div id="action-buttons" class="max-w-[1800px] mx-auto mb-6 flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="juego.html" class="flex-1 max-w-[300px] bg-purple-600 hover:bg-purple-500 text-white text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-purple-400 shadow-[0_0_15px_rgba(138,43,226,0.4)] hover:shadow-[0_0_25px_rgba(138,43,226,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
-            <i data-lucide="gamepad-2" class="w-5 h-5"></i> Ir a Juego
-        </a>
-        <a href="interactivo.html" class="flex-1 max-w-[300px] bg-cyan-600 hover:bg-cyan-400 text-black text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
-            <i data-lucide="mouse-pointer-click" class="w-5 h-5"></i> Ir a Interactivo
-        </a>
-    </div>
-
-    <main id="view-dashboard" class="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:h-[750px]">
+    <main id="view-dashboard" class="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:h-[700px]">
+        
         <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
             <section class="glass p-6">
-                <h2 class="text-cyan-400 font-bold uppercase text-xs mb-4 flex items-center gap-2 italic tracking-widest"><i data-lucide="upload-cloud" class="w-4"></i> Configurar Alerta</h2>
-                <div class="flex bg-black/40 p-1 rounded-lg border border-zinc-800 mb-4">
-                    <button onclick="setMode('mp3')" id="mode-mp3" class="mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Modo MP3</button>
-                    <button onclick="setMode('link')" id="mode-link" class="mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Webhook Juego</button>
-                </div>
+                <h2 class="text-cyan-400 font-bold uppercase text-xs mb-4 italic tracking-widest">Configurar Alerta</h2>
                 
+                <div class="flex bg-black/40 p-1 rounded-lg border border-zinc-800 mb-4">
+                    <button onclick="setMode('mp3')" id="mode-mp3" class="bg-purple-600 text-white flex-1 py-2 text-[10px] font-bold uppercase rounded-md transition-all">Modo MP3</button>
+                    <button onclick="setMode('link')" id="mode-link" class="hover:bg-zinc-800 flex-1 py-2 text-[10px] font-bold uppercase rounded-md transition-all">Webhook</button>
+                </div>
+
                 <div class="space-y-4">
                     <div class="relative w-full" id="custom-select-container">
-                        <button type="button" id="custom-select-trigger" class="w-full bg-black/60 border border-zinc-700 p-3 rounded-xl text-xs outline-none focus:border-cyan-500 text-zinc-300 font-bold flex justify-between items-center transition-all">
-                            <span id="selected-gift-label">Seleccionar Regalo...</span>
-                            <i data-lucide="chevron-down" class="w-4 h-4 text-cyan-500"></i>
-                        </button>
+                        <div id="custom-select-trigger" class="flex justify-between items-center">
+                            <span id="selected-gift-label" class="text-white font-bold text-sm">Seleccionar Regalo</span>
+                            <i data-lucide="chevron-down" class="text-purple-500 w-4 h-4"></i>
+                        </div>
                         
-                        <div id="custom-options" class="hidden absolute z-50 w-full mt-2 bg-[#0a0a0f] border border-purple-500/30 rounded-xl max-h-[350px] overflow-y-auto shadow-[0_10px_40px_rgba(0,0,0,0.8)] backdrop-blur-xl">
-                            <div class="p-2 sticky top-0 bg-[#0a0a0f] border-b border-zinc-800">
-                                <input type="text" id="gift-search" placeholder="Escribe para buscar..." class="w-full bg-black/60 border border-green-500/60 rounded-full px-4 py-2 text-[11px] outline-none focus:border-green-400 text-white placeholder-zinc-600">
+                        <div id="custom-options" class="hidden absolute z-50 w-full mt-2">
+                            <div class="p-3">
+                                <input type="text" id="gift-search" placeholder="Escribe para buscar..." class="w-full px-4 py-2 text-xs outline-none">
                             </div>
-                            <ul id="options-list" class="py-1"></ul>
+                            <ul id="options-list" class="max-h-60 overflow-y-auto py-1"></ul>
                         </div>
                         <input type="hidden" id="gift-select" value="">
                     </div>
 
                     <div id="container-mp3">
                         <input type="file" id="file-input" accept="audio/mpeg" class="hidden">
-                        <button onclick="document.getElementById('file-input').click()" class="w-full bg-zinc-900 border border-dashed border-zinc-700 p-3 rounded-lg text-xs text-zinc-400 hover:border-cyan-500 transition-all flex flex-col items-center gap-2"><i data-lucide="music" class="w-4 h-4 text-purple-500"></i><span id="file-name">Seleccionar MP3...</span></button>
+                        <button onclick="document.getElementById('file-input').click()" class="w-full bg-zinc-900 border border-dashed border-zinc-700 p-3 rounded-lg text-xs text-zinc-400 hover:border-cyan-500 flex flex-col items-center gap-2">
+                            <i data-lucide="music" class="text-purple-500 w-4 h-4"></i>
+                            <span id="file-name">Elegir Sonido...</span>
+                        </button>
                     </div>
+
                     <div id="container-link" class="hidden">
-                        <input id="link-input" type="text" placeholder="http://localhost:8080/comando" class="w-full bg-black/60 border border-zinc-800 p-3 rounded-lg text-xs text-cyan-400 outline-none focus:border-cyan-500 font-mono">
+                        <input id="link-input" type="text" placeholder="http://..." class="w-full bg-black/60 border border-zinc-800 p-3 rounded-lg text-xs text-cyan-400 outline-none">
                     </div>
-                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all shadow-lg">Guardar y Vincular</button>
+
+                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all">Guardar y Vincular</button>
                 </div>
             </section>
-            
-            <section class="glass flex-1 p-6 flex flex-col overflow-hidden min-h-[250px] lg:min-h-0">
-                <h2 class="text-purple-400 font-bold uppercase text-xs mb-4 italic tracking-widest">Eventos Activos</h2>
+
+            <section class="glass flex-1 p-6 flex flex-col overflow-hidden">
+                <h2 class="text-purple-400 font-bold uppercase text-xs mb-4 italic tracking-widest">Alertas Activas</h2>
                 <div id="actions-list" class="flex-1 overflow-y-auto space-y-2 pr-2"></div>
             </section>
         </div>
 
         <div class="col-span-1 lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-purple-400 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="message-square" class="inline w-3 mr-1"></i> CHAT</span> <button onclick="copyOverlayUrl('chat')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
+            <div class="glass flex flex-col overflow-hidden">
+                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold text-purple-400 flex justify-between items-center">
+                    <span>CHAT</span> <button onclick="copyOverlayUrl('chat')" class="btn-copy-link"><i data-lucide="link" class="w-3"></i></button>
                 </div>
                 <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
             </div>
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-green-400 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="gift" class="inline w-3 mr-1"></i> REGALOS</span> <button onclick="copyOverlayUrl('gifts')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
+            <div class="glass flex flex-col overflow-hidden">
+                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold text-green-400 flex justify-between items-center">
+                    <span>REGALOS</span> <button onclick="copyOverlayUrl('gifts')" class="btn-copy-link"><i data-lucide="link" class="w-3"></i></button>
                 </div>
                 <div id="gift-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
-            </div>
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-red-500 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="flame" class="inline w-3 mr-1"></i> TOP LIKES</span> <button onclick="copyOverlayUrl('likes')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
-                </div>
-                <div id="ranking-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
-            </div>
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-yellow-500 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="award" class="inline w-3 mr-1"></i> TOP DONADORES</span> <button onclick="copyOverlayUrl('donators')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
-                </div>
-                <div id="dashboard-donators-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
             </div>
         </div>
 
         <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
             <section class="glass p-6">
                 <h2 class="text-xs font-bold uppercase mb-4 text-zinc-500 italic">Controles Maestro</h2>
-                <div class="space-y-6">
-                    <div>
-                        <div class="flex items-center gap-2 justify-between mb-2"><label class="text-[10px] text-zinc-500 uppercase">Activar Voz Bot (TTS)</label><input type="checkbox" id="tts-enabled" checked class="accent-cyan-500 h-4 w-4"></div>
-                        <select id="tts-voice" class="w-full bg-black/40 border border-zinc-800 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-500"></select>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[10px] text-zinc-500 uppercase">Bot TTS</label>
+                        <input type="checkbox" id="tts-enabled" checked class="accent-cyan-500 h-4 w-4">
                     </div>
+                    <select id="tts-voice" class="w-full bg-black/40 border border-zinc-800 p-2 rounded-lg text-xs text-white outline-none"></select>
                     <div>
-                        <div class="flex justify-between mb-1"><label class="text-[10px] text-zinc-500 uppercase">Volumen General</label><span id="vol-perc" class="text-[10px] text-cyan-400 font-bold">70%</span></div>
+                        <div class="flex justify-between mb-1"><label class="text-[10px] text-zinc-500 uppercase">Volumen</label><span id="vol-perc" class="text-[10px] text-cyan-400 font-bold">70%</span></div>
                         <input id="tts-volume" type="range" min="0" max="1" step="0.1" value="0.7" class="w-full accent-cyan-500 cursor-pointer">
                     </div>
                 </div>
             </section>
             
-            <section class="glass flex flex-col flex-1 overflow-hidden min-h-[200px] lg:min-h-0">
-                <div class="p-4 border-b border-zinc-900 bg-black/20 text-center"><h2 class="text-xs font-bold uppercase tracking-widest italic text-zinc-500">Historial de Sesión</h2></div>
-                <div id="gift-history" class="flex-1 overflow-y-auto p-3 space-y-2 text-[11px] font-mono text-zinc-500"></div>
+            <section class="glass flex-1 flex flex-col overflow-hidden">
+                <div class="p-4 border-b border-zinc-900 bg-black/20 text-center text-xs font-bold uppercase text-zinc-500">Historial</div>
+                <div id="gift-history" class="flex-1 overflow-y-auto p-3 text-[11px] font-mono text-zinc-500"></div>
             </section>
         </div>
     </main>
@@ -253,12 +219,10 @@
     <script>
         const socket = io();
         lucide.createIcons();
-        
-        const donatorsMap = new Map();
-        const giftersSet = new Set();
         let allGifts = [];
+        let currentMode = 'mp3';
 
-        // --- LÓGICA DROPDOWN PERSONALIZADO ---
+        // --- SELECTOR DE REGALOS (IMAGEN 1 & 2) ---
         const trigger = document.getElementById('custom-select-trigger');
         const optionsMenu = document.getElementById('custom-options');
         const optionsList = document.getElementById('options-list');
@@ -271,33 +235,19 @@
             optionsMenu.classList.toggle('hidden');
         };
 
+        // Renderizar opciones basadas en los archivos de la Imagen 2
         function renderOptions(list) {
-            optionsList.innerHTML = list.map(g => {
-                // Generamos ruta: regalos/nombre_con_guiones.png
-                const fileName = g.name.toLowerCase().replace(/\s+/g, '_') + '.png';
-                const imagePath = `regalos/${fileName}`;
-
-                return `
-                <li class="custom-option flex items-center gap-3 p-3 cursor-pointer border-b border-zinc-900/50 last:border-0" 
-                    onclick="selectOption('${g.name}')">
-                    <div class="w-10 h-10 flex items-center justify-center bg-black/40 rounded-lg p-1">
-                        <img src="${imagePath}" class="w-full h-full object-contain" 
-                             onerror="this.src='https://via.placeholder.com/40?text=🎁'">
-                    </div>
-                    <span class="text-xs font-bold text-zinc-200 uppercase tracking-widest">${g.name}</span>
-                </li>`;
-            }).join('');
+            optionsList.innerHTML = list.map(g => `
+                <li class="custom-option flex items-center gap-4 p-3 cursor-pointer" onclick="selectOption('${g.name}', '${g.image}')">
+                    <img src="${g.image}" class="w-8 h-8 object-contain" onerror="this.src='/regalos/default.png'">
+                    <span class="text-xs font-bold uppercase tracking-wider">${g.name.replace(/_/g, ' ')}</span>
+                </li>
+            `).join('');
         }
 
-        function selectOption(name) {
-            const fileName = name.toLowerCase().replace(/\s+/g, '_') + '.png';
-            const imagePath = `regalos/${fileName}`;
+        function selectOption(name, img) {
             hiddenInput.value = name;
-            selectedLabel.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <img src="${imagePath}" class="w-5 h-5 object-contain" onerror="this.src='https://via.placeholder.com/20?text=🎁'">
-                    <span>${name.toUpperCase()}</span>
-                </div>`;
+            selectedLabel.innerHTML = `<div class="flex items-center gap-2"><img src="${img}" class="w-5 h-5 object-contain"><span>${name.toUpperCase()}</span></div>`;
             optionsMenu.classList.add('hidden');
         }
 
@@ -308,91 +258,68 @@
         };
 
         window.onclick = () => optionsMenu.classList.add('hidden');
-        // --- FIN DROPDOWN ---
 
-        function copyOverlayUrl(type) {
-            const url = window.location.origin + '/?overlay=' + type;
-            navigator.clipboard.writeText(url).then(() => alert('Enlace copiado!'));
-        }
-
-        const synth = window.speechSynthesis; let voices = [];
-        function loadVoices() { 
-            voices = synth.getVoices(); 
-            const voiceSelect = document.getElementById('tts-voice'); 
-            if(voiceSelect) voiceSelect.innerHTML = voices.map((v, i) => `<option value="${i}" ${v.lang.includes('es') ? 'selected' : ''}>${v.name}</option>`).join(''); 
-        }
-        speechSynthesis.onvoiceschanged = loadVoices; loadVoices();
-
-        function speak(text) {
-            const ttsCheckbox = document.getElementById('tts-enabled');
-            if (!ttsCheckbox || !ttsCheckbox.checked || isOverlay) return;
-            const utter = new SpeechSynthesisUtterance(text);
-            utter.voice = voices[document.getElementById('tts-voice').value] || voices[0];
-            utter.volume = document.getElementById('tts-volume').value;
-            synth.speak(utter);
-        }
-
-        let currentMode = 'mp3';
-        function setMode(mode) {
-            currentMode = mode;
-            document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
-            document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
-            document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
-            document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
-        }
-
-        document.getElementById('btn-save-action').onclick = () => {
-            const username = document.getElementById('username').value; 
-            const gift = hiddenInput.value;
-            if(!username || !gift) return alert("Faltan datos");
-            if(currentMode === 'mp3') {
-                const fileInput = document.getElementById('file-input');
-                const file = fileInput.files[0];
-                if(!file) return alert("Selecciona MP3");
-                document.getElementById('loader').style.display = 'flex';
-                const reader = new FileReader();
-                reader.onload = (e) => { 
-                    socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); 
-                    document.getElementById('loader').style.display = 'none';
-                    alert("Alerta vinculada!");
-                };
-                reader.readAsDataURL(file);
-            } else {
-                const link = document.getElementById('link-input').value;
-                socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } });
-                alert("Webhook vinculado!");
-            }
-        };
-
-        // CARGA INICIAL
+        // Cargar lista desde servidor
         fetch('/gift-list').then(r => r.json()).then(d => {
             allGifts = d;
             renderOptions(allGifts);
         });
 
-        const btnConnect = document.getElementById('btn-connect');
-        if(btnConnect) btnConnect.onclick = () => {
-            const u = document.getElementById('username').value;
-            const k = document.getElementById('key').value;
-            if(u && k) {
+        // --- LÓGICA DE ALERTAS ---
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('mode-mp3').className = mode === 'mp3' ? "bg-purple-600 text-white flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "hover:bg-zinc-800 flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
+            document.getElementById('mode-link').className = mode === 'link' ? "bg-cyan-500 text-black flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "hover:bg-zinc-800 flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
+            document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
+            document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
+        }
+
+        document.getElementById('btn-save-action').onclick = () => {
+            const username = document.getElementById('username').value;
+            const gift = hiddenInput.value;
+            if(!username || !gift) return alert("Completa usuario y regalo");
+
+            if(currentMode === 'mp3') {
+                const file = document.getElementById('file-input').files[0];
+                if(!file) return alert("Elige un MP3");
                 document.getElementById('loader').style.display = 'flex';
-                socket.emit("startConnection", { username: u, key: k });
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result });
+                    document.getElementById('loader').style.display = 'none';
+                    alert("¡Alerta MP3 guardada!");
+                };
+                reader.readAsDataURL(file);
+            } else {
+                const link = document.getElementById('link-input').value;
+                if(!link) return alert("Pon el URL");
+                socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } });
+                alert("¡Webhook guardado!");
+            }
+        };
+
+        // --- CONEXIÓN TIKTOK ---
+        document.getElementById('btn-connect').onclick = () => {
+            const user = document.getElementById('username').value;
+            const key = document.getElementById('key').value;
+            if(user && key) {
+                document.getElementById('loader').style.display = 'flex';
+                socket.emit("startConnection", { username: user, key: key });
             }
         };
 
         socket.on("status", (s) => {
             document.getElementById('loader').style.display = 'none';
-            const statusText = document.getElementById('connection-status');
+            const sText = document.getElementById('connection-status');
+            const sPulse = document.getElementById('status-pulse');
             if(s === "connected") {
-                statusText.innerText = "SISTEMA ONLINE";
-                statusText.className = "text-[10px] uppercase tracking-[3px] text-cyan-400 font-bold italic";
+                sText.innerText = "ONLINE"; sText.className = "text-cyan-400 font-bold";
+                sPulse.className = "w-2 h-2 rounded-full bg-cyan-400 animate-ping";
                 document.getElementById('btn-connect').classList.add('hidden');
                 document.getElementById('btn-disconnect').classList.remove('hidden');
             } else {
-                statusText.innerText = "OFFLINE";
-                statusText.className = "text-[10px] uppercase tracking-[3px] text-red-500 font-bold italic";
-                document.getElementById('btn-connect').classList.remove('hidden');
-                document.getElementById('btn-disconnect').classList.add('hidden');
+                sText.innerText = "OFFLINE"; sText.className = "text-red-500 font-bold";
+                sPulse.className = "w-2 h-2 rounded-full bg-red-500";
             }
         });
 
@@ -400,11 +327,15 @@
             const list = document.getElementById('actions-list');
             list.innerHTML = actions.map((a, i) => `
                 <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-zinc-800">
-                    <div class="text-[10px]"><b class="text-purple-400 uppercase">${a.type}</b><br><b class="text-white">${a.gift}</b></div>
-                    <button onclick="socket.emit('deleteAction', {username: document.getElementById('username').value, index: ${i}})" class="text-red-500"><i data-lucide="trash-2" class="w-4"></i></button>
-                </div>`).join('');
+                    <div class="text-[10px] font-bold"><span class="text-purple-400">${a.type.toUpperCase()}</span><br>${a.gift}</div>
+                    <button onclick="socket.emit('deleteAction', {username: document.getElementById('username').value, index: ${i}})" class="text-red-500 hover:text-white"><i data-lucide="trash-2" class="w-4"></i></button>
+                </div>
+            `).join('');
             lucide.createIcons();
         });
+
+        // Volumen UI
+        document.getElementById('tts-volume').oninput = (e) => document.getElementById('vol-perc').innerText = Math.round(e.target.value * 100) + "%";
     </script>
 </body>
 </html>
