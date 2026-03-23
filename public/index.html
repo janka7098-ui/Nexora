@@ -35,7 +35,6 @@
             border-radius: 16px;
             border: 1px solid rgba(138, 43, 226, 0.15);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
         }
 
         .glass:hover {
@@ -58,6 +57,7 @@
             animation: spin 1s linear infinite;
         }
 
+        /* Estilos del Dropdown Personalizado */
         #custom-options::-webkit-scrollbar { width: 6px; }
         #custom-options::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
 
@@ -180,7 +180,8 @@
                             <div class="p-2 sticky top-0 bg-[#0f0f16] border-b border-zinc-800">
                                 <input type="text" id="gift-search" placeholder="Escribe para buscar..." class="w-full bg-black/40 border border-green-500/50 rounded-full px-3 py-1 text-[10px] outline-none focus:border-green-500 text-white">
                             </div>
-                            <ul id="options-list" class="py-1"></ul>
+                            <ul id="options-list" class="py-1">
+                                </ul>
                         </div>
                         <input type="hidden" id="gift-select" value="">
                     </div>
@@ -261,35 +262,11 @@
         const socket = io();
         lucide.createIcons();
         
-        // --- VARIABLES GLOBALES CORREGIDAS ---
-        let currentMode = 'mp3'; 
         const donatorsMap = new Map();
         const giftersSet = new Set();
         let allGifts = [];
 
-        // --- SONIDOS ---
-        const sounds = {
-            connect: "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3",
-            disconnect: "https://assets.mixkit.co/active_storage/sfx/2560/2560-preview.mp3",
-            chat: "https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3",
-            gift: "https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3",
-            click: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3"
-        };
-
-        function playSound(type) {
-            if(isOverlay) return;
-            const audio = new Audio(sounds[type]);
-            audio.volume = document.getElementById('tts-volume')?.value || 0.5;
-            audio.play().catch(e => {});
-        }
-
-        document.addEventListener('click', (e) => {
-            if (e.target.closest('.glass')) {
-                playSound('click');
-            }
-        });
-
-        // --- LÓGICA DROPDOWN ---
+        // --- LÓGICA DROPDOWN PERSONALIZADO ---
         const trigger = document.getElementById('custom-select-trigger');
         const optionsMenu = document.getElementById('custom-options');
         const optionsList = document.getElementById('options-list');
@@ -297,10 +274,9 @@
         const hiddenInput = document.getElementById('gift-select');
         const selectedText = document.getElementById('selected-gift-text');
 
-        if(trigger) trigger.onclick = () => optionsMenu.classList.toggle('hidden');
+        trigger.onclick = () => optionsMenu.classList.toggle('hidden');
 
         function renderGifts(gifts) {
-            if(!optionsList) return;
             optionsList.innerHTML = gifts.map(g => `
                 <li class="flex items-center gap-3 p-3 hover:bg-purple-900/40 cursor-pointer transition-colors border-b border-zinc-900/50 last:border-0" 
                     onclick="selectGift('${g.name}', '${g.image}')">
@@ -320,13 +296,47 @@
             optionsMenu.classList.add('hidden');
         }
 
-        if(searchInput) searchInput.oninput = (e) => {
+        searchInput.oninput = (e) => {
             const term = e.target.value.toLowerCase();
             const filtered = allGifts.filter(g => g.name.toLowerCase().includes(term));
             renderGifts(filtered);
         };
 
-        // --- LÓGICA DE MODOS ---
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('custom-select-container').contains(e.target)) {
+                optionsMenu.classList.add('hidden');
+            }
+        });
+
+        fetch('/gift-list').then(r => r.json()).then(d => {
+            allGifts = d;
+            renderGifts(allGifts);
+        });
+        // --- FIN LÓGICA DROPDOWN ---
+
+        function copyOverlayUrl(type) {
+            const url = window.location.origin + '/?overlay=' + type;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('¡Enlace copiado!\n' + url);
+            });
+        }
+
+        const synth = window.speechSynthesis; let voices = [];
+        function loadVoices() { voices = synth.getVoices(); const voiceSelect = document.getElementById('tts-voice'); if(voiceSelect) voiceSelect.innerHTML = voices.map((v, i) => `<option value="${i}" ${v.lang.includes('es') ? 'selected' : ''}>${v.name}</option>`).join(''); }
+        speechSynthesis.onvoiceschanged = loadVoices; loadVoices();
+
+        function speak(text) {
+            const ttsCheckbox = document.getElementById('tts-enabled');
+            if (!ttsCheckbox || !ttsCheckbox.checked || isOverlay) return;
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.voice = voices[document.getElementById('tts-voice').value] || voices[0];
+            utter.volume = document.getElementById('tts-volume').value;
+            synth.speak(utter);
+        }
+
+        const volInput = document.getElementById('tts-volume');
+        if(volInput) volInput.oninput = (e) => document.getElementById('vol-perc').innerText = Math.round(e.target.value * 100) + "%";
+
         function setMode(mode) {
             currentMode = mode;
             document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
@@ -335,52 +345,36 @@
             document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
         }
 
-        // --- GUARDADO DE EVENTOS (CORREGIDO) ---
         const btnSave = document.getElementById('btn-save-action');
         if(btnSave) {
             btnSave.onclick = () => {
                 const username = document.getElementById('username').value; 
                 const gift = hiddenInput.value;
-                if(!username || !gift) return alert("Faltan datos (Usuario o Regalo)");
-
+                if(!username || !gift) return alert("Faltan datos");
                 if(currentMode === 'mp3') {
-                    const fileInput = document.getElementById('file-input'); 
-                    const file = fileInput.files[0];
+                    const fileInput = document.getElementById('file-input'); const file = fileInput.files[0];
                     if(!file) return alert("Selecciona un MP3");
-
                     document.getElementById('loader').style.display = 'flex';
                     const reader = new FileReader();
-                    reader.onload = (e) => { 
-                        socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); 
-                        fileInput.value = ""; 
-                        document.getElementById('file-name').innerText = "Seleccionar MP3...";
-                        document.getElementById('loader').style.display = 'none';
-                    };
+                    reader.onload = (e) => { socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); fileInput.value = ""; document.getElementById('file-name').innerText = "Seleccionar MP3..."; };
                     reader.readAsDataURL(file);
                 } else {
-                    const link = document.getElementById('link-input').value; 
-                    if(!link) return alert("Ingresa el Link");
-                    socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } }); 
-                    document.getElementById('link-input').value = "";
+                    const link = document.getElementById('link-input').value; if(!link) return alert("Ingresa el Link");
+                    socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } }); document.getElementById('link-input').value = "";
                 }
             };
         }
 
-        // --- BORRADO (CORREGIDO) ---
-        function deleteAction(index) { 
-            const username = document.getElementById('username').value;
-            if(!username) return alert("Ingresa tu usuario");
-            socket.emit("deleteAction", { username, index }); 
-        }
+        const fileInput = document.getElementById('file-input');
+        if(fileInput) fileInput.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Seleccionar MP3...";
+        function deleteAction(index) { socket.emit("deleteAction", { username: document.getElementById('username').value, index }); }
 
-        // --- CONEXIÓN ---
         const btnConnect = document.getElementById('btn-connect');
         if(btnConnect) {
             btnConnect.onclick = () => {
                 const username = document.getElementById('username').value; const key = document.getElementById('key').value;
                 if(!username || !key) return alert("Faltan datos");
-                document.getElementById('loader').style.display = 'flex'; 
-                socket.emit("startConnection", { username, key });
+                document.getElementById('loader').style.display = 'flex'; socket.emit("startConnection", { username, key });
             };
         }
 
@@ -393,11 +387,17 @@
             if (status === "connected") {
                 sText.innerText = "SISTEMA ONLINE"; sPulse.className = "w-2 h-2 rounded-full bg-cyan-400 animate-ping";
                 document.getElementById('btn-connect').classList.add('hidden'); document.getElementById('btn-disconnect').classList.remove('hidden');
-                socket.emit("getActions", document.getElementById('username').value);
+                speak("Sistemas en línea."); socket.emit("getActions", document.getElementById('username').value);
             } else {
                 sText.innerText = "OFFLINE"; sPulse.className = "w-2 h-2 rounded-full bg-red-500";
                 document.getElementById('btn-connect').classList.remove('hidden'); document.getElementById('btn-disconnect').classList.add('hidden');
             }
+        });
+
+        socket.on("connectedUserData", (data) => {
+            if(isOverlay) return;
+            if(data.profilePictureUrl) document.getElementById('host-avatar').src = data.profilePictureUrl;
+            if(data.username) document.getElementById('host-title').innerHTML = `${data.username} <span class="text-cyan-500 text-sm md:text-lg">LIVE</span>`;
         });
 
         socket.on("actionsUpdated", (actions) => {
@@ -412,42 +412,29 @@
             }
         });
 
-        // --- UTILIDADES ---
-        fetch('/gift-list').then(r => r.json()).then(d => { allGifts = d; renderGifts(allGifts); });
-        
-        const synth = window.speechSynthesis; let voices = [];
-        function loadVoices() { voices = synth.getVoices(); const vs = document.getElementById('tts-voice'); if(vs) vs.innerHTML = voices.map((v, i) => `<option value="${i}" ${v.lang.includes('es') ? 'selected' : ''}>${v.name}</option>`).join(''); }
-        speechSynthesis.onvoiceschanged = loadVoices; loadVoices();
-
-        function copyOverlayUrl(type) {
-            const url = window.location.origin + '/?overlay=' + type;
-            navigator.clipboard.writeText(url).then(() => alert('Enlace OBS copiado'));
-        }
-
-        // --- EVENTOS DE CHAT/REGALOS ---
         socket.on("chat", (data) => {
-            const container = document.getElementById('chat-container');
-            if(container) {
+            const chatContainer = document.getElementById('chat-container');
+            if(chatContainer) {
                 const div = document.createElement('div');
                 div.className = "bg-zinc-900/50 p-2 rounded-lg border-l-2 border-purple-500 text-xs flex items-center gap-2 fade-in";
                 div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-6 h-6 rounded-full bg-zinc-800">
                     <div><span class="text-purple-400 font-bold">${data.user}:</span> <span class="text-zinc-300">${data.message}</span></div>`;
-                container.prepend(div);
-                if (container.children.length > 15) container.removeChild(container.lastElementChild);
-                playSound('chat');
+                chatContainer.prepend(div);
+                if (chatContainer.children.length > 10) chatContainer.removeChild(chatContainer.lastElementChild);
             }
+            speak(`${data.user} dice: ${data.message}`);
         });
 
         socket.on("gift", (data) => {
-            const container = document.getElementById('gift-container');
-            if(container) {
+            giftersSet.add(data.user);
+            const giftContainer = document.getElementById('gift-container');
+            if(giftContainer) {
                 const div = document.createElement('div');
                 div.className = "bg-green-900/20 p-2 rounded-lg border border-green-500/30 flex items-center gap-2 fade-in";
                 div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-8 h-8 rounded-full border border-green-500">
                     <img src="${data.image}" class="w-8 h-8 object-contain">
                     <div class="text-[10px]"><b class="text-white">${data.user}</b> x${data.amount} <span class="text-green-400">${data.gift}</span></div>`;
-                container.prepend(div);
-                playSound('gift');
+                giftContainer.prepend(div);
             }
         });
     </script>
