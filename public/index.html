@@ -400,6 +400,14 @@
         sndHover.volume = 0.2;
         sndSelect.volume = 0.4;
 
+        // --- AUTOMATIC IMAGE PATH FIXER ---
+        // Esta función limpia el nombre del regalo para que coincida con archivos sin acentos si fuera necesario
+        function getCleanImagePath(name) {
+            if (!name) return '';
+            // Codifica el nombre para que el navegador maneje espacios y tildes correctamente en la URL
+            return `/regalos/${encodeURIComponent(name)}.png`;
+        }
+
         function playHover() { if(!isOverlay) sndHover.cloneNode().play().catch(()=>{}); }
         function playSelect() { if(!isOverlay) sndSelect.cloneNode().play().catch(()=>{}); }
 
@@ -432,7 +440,7 @@
             });
         }
 
-        function selectCustomOption(value, name, imgSrc) {
+        function selectCustomOption(value, name) {
             playSelect();
             document.getElementById('gift-select-value').value = value;
             document.getElementById('custom-select-label').innerText = name.toUpperCase();
@@ -445,7 +453,7 @@
             const img = document.getElementById('gift-preview-img');
             if (giftName) {
                 container.classList.remove('hidden');
-                img.src = `/regalos/${giftName}.png`;
+                img.src = getCleanImagePath(giftName);
             } else {
                 container.classList.add('hidden');
             }
@@ -552,11 +560,12 @@
             }
         });
 
+        // Carga la lista de regalos con el nuevo formateador automático de imágenes
         fetch('/gift-list').then(r => r.json()).then(d => {
             const list = document.getElementById('custom-options-list');
             if(list) list.innerHTML = d.map(g => `
-                <div class="custom-select-option" onmouseover="playHover()" onclick="selectCustomOption('${g.name}', '${g.name}', '/regalos/${g.name.toLowerCase()}.png')">
-                    <img src="/regalos/${g.name}.png" class="custom-select-option-img" onerror="this.src='https://via.placeholder.com/24?text=🎁'">
+                <div class="custom-select-option" onmouseover="playHover()" onclick="selectCustomOption('${g.name}', '${g.name}')">
+                    <img src="${getCleanImagePath(g.name)}" class="custom-select-option-img" onerror="this.src='https://via.placeholder.com/24?text=🎁'">
                     <span class="custom-select-option-text">${g.name}</span>
                 </div>`).join('');
         });
@@ -579,9 +588,11 @@
             if(!container) return;
             const div = document.createElement('div');
             div.className = "gift-card p-3 rounded-xl flex items-center gap-3 fade-in";
+            // Aquí también usamos la lógica de imagen limpia para los regalos recibidos en tiempo real
+            const giftImg = data.image ? data.image : getCleanImagePath(data.gift);
             div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-10 h-10 rounded-full border-2 border-green-500">
                 <div class="flex-1"><b class="text-white text-xs">${data.user}</b><p class="text-[9px] text-zinc-400">Envió ${data.gift} x${data.amount}</p></div>
-                <img src="${data.image}" class="w-10 h-10 object-contain">`;
+                <img src="${giftImg}" class="w-10 h-10 object-contain" onerror="this.src='https://via.placeholder.com/40?text=🎁'">`;
             container.prepend(div);
         });
     </script>
