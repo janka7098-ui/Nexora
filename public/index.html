@@ -266,6 +266,21 @@
         const giftersSet = new Set();
         let allGifts = [];
 
+        // --- SISTEMA DE SONIDOS BÁSICOS ---
+        const sounds = {
+            connect: "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3",
+            disconnect: "https://assets.mixkit.co/active_storage/sfx/2560/2560-preview.mp3",
+            chat: "https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3",
+            gift: "https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"
+        };
+
+        function playSound(type) {
+            if(isOverlay) return; // No sonar en el overlay para evitar eco
+            const audio = new Audio(sounds[type]);
+            audio.volume = document.getElementById('tts-volume').value || 0.5;
+            audio.play().catch(e => console.log("Interacción requerida para audio"));
+        }
+
         // --- LÓGICA DROPDOWN PERSONALIZADO ---
         const trigger = document.getElementById('custom-select-trigger');
         const optionsMenu = document.getElementById('custom-options');
@@ -387,10 +402,13 @@
             if (status === "connected") {
                 sText.innerText = "SISTEMA ONLINE"; sPulse.className = "w-2 h-2 rounded-full bg-cyan-400 animate-ping";
                 document.getElementById('btn-connect').classList.add('hidden'); document.getElementById('btn-disconnect').classList.remove('hidden');
-                speak("Sistemas en línea."); socket.emit("getActions", document.getElementById('username').value);
+                speak("Sistemas en línea."); 
+                playSound('connect');
+                socket.emit("getActions", document.getElementById('username').value);
             } else {
                 sText.innerText = "OFFLINE"; sPulse.className = "w-2 h-2 rounded-full bg-red-500";
                 document.getElementById('btn-connect').classList.remove('hidden'); document.getElementById('btn-disconnect').classList.add('hidden');
+                playSound('disconnect');
             }
         });
 
@@ -421,6 +439,7 @@
                     <div><span class="text-purple-400 font-bold">${data.user}:</span> <span class="text-zinc-300">${data.message}</span></div>`;
                 chatContainer.prepend(div);
                 if (chatContainer.children.length > 10) chatContainer.removeChild(chatContainer.lastElementChild);
+                playSound('chat');
             }
             speak(`${data.user} dice: ${data.message}`);
         });
@@ -435,6 +454,7 @@
                     <img src="${data.image}" class="w-8 h-8 object-contain">
                     <div class="text-[10px]"><b class="text-white">${data.user}</b> x${data.amount} <span class="text-green-400">${data.gift}</span></div>`;
                 giftContainer.prepend(div);
+                playSound('gift');
             }
         });
     </script>
