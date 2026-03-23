@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;700;900&display=swap');
+
+:root {
+    --purple: #8A2BE2;
+    --cyan: #00FFFF;
+    --bg: #050507;
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg);
+    color: white;
+}
+
+/* GLASS */
+.glass {
+    background: rgba(15,15,22,0.85);
+    backdrop-filter: blur(16px);
+    border-radius: 16px;
+    border: 1px solid rgba(138,43,226,0.2);
+}
+
+/* BOTONES */
+.btn-cyan {
+    background: var(--cyan);
+    color: black;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-purple {
+    background: var(--purple);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.btn-red {
+    background: black;
+    border: 1px solid red;
+    color: red;
+    padding: 8px 16px;
+}
+
+.btn-white {
+    background: white;
+    color: black;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* INPUT */
+.input {
+    background: black;
+    border: 1px solid #333;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+/* BOXES */
+.box {
+    background: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* LOADER */
+#loader {
+    position: fixed;
+    inset: 0;
+    background: black;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #222;
+    border-left-color: var(--cyan);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
