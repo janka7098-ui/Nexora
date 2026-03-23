@@ -35,6 +35,7 @@
             border-radius: 16px;
             border: 1px solid rgba(138, 43, 226, 0.15);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer; /* Agregado para indicar que se puede hacer clic */
         }
 
         .glass:hover {
@@ -266,20 +267,28 @@
         const giftersSet = new Set();
         let allGifts = [];
 
-        // --- SISTEMA DE SONIDOS BÁSICOS ---
+        // --- SONIDOS ---
         const sounds = {
             connect: "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3",
             disconnect: "https://assets.mixkit.co/active_storage/sfx/2560/2560-preview.mp3",
             chat: "https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3",
-            gift: "https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3"
+            gift: "https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3",
+            click: "https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" // Sonido de clic
         };
 
         function playSound(type) {
-            if(isOverlay) return; // No sonar en el overlay para evitar eco
+            if(isOverlay) return;
             const audio = new Audio(sounds[type]);
             audio.volume = document.getElementById('tts-volume').value || 0.5;
-            audio.play().catch(e => console.log("Interacción requerida para audio"));
+            audio.play().catch(e => {});
         }
+
+        // --- DISPARADOR DE CLIC EN CUADROS (GLASS) ---
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.glass')) {
+                playSound('click');
+            }
+        });
 
         // --- LÓGICA DROPDOWN PERSONALIZADO ---
         const trigger = document.getElementById('custom-select-trigger');
@@ -289,9 +298,10 @@
         const hiddenInput = document.getElementById('gift-select');
         const selectedText = document.getElementById('selected-gift-text');
 
-        trigger.onclick = () => optionsMenu.classList.toggle('hidden');
+        if(trigger) trigger.onclick = () => optionsMenu.classList.toggle('hidden');
 
         function renderGifts(gifts) {
+            if(!optionsList) return;
             optionsList.innerHTML = gifts.map(g => `
                 <li class="flex items-center gap-3 p-3 hover:bg-purple-900/40 cursor-pointer transition-colors border-b border-zinc-900/50 last:border-0" 
                     onclick="selectGift('${g.name}', '${g.image}')">
@@ -311,14 +321,15 @@
             optionsMenu.classList.add('hidden');
         }
 
-        searchInput.oninput = (e) => {
+        if(searchInput) searchInput.oninput = (e) => {
             const term = e.target.value.toLowerCase();
             const filtered = allGifts.filter(g => g.name.toLowerCase().includes(term));
             renderGifts(filtered);
         };
 
         document.addEventListener('click', (e) => {
-            if (!document.getElementById('custom-select-container').contains(e.target)) {
+            const container = document.getElementById('custom-select-container');
+            if (container && !container.contains(e.target) && optionsMenu) {
                 optionsMenu.classList.add('hidden');
             }
         });
@@ -327,7 +338,6 @@
             allGifts = d;
             renderGifts(allGifts);
         });
-        // --- FIN LÓGICA DROPDOWN ---
 
         function copyOverlayUrl(type) {
             const url = window.location.origin + '/?overlay=' + type;
