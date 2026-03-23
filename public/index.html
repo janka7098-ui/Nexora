@@ -57,12 +57,18 @@
             animation: spin 1s linear infinite;
         }
 
-        .mode-btn, .custom-select-trigger, .custom-select-option, button, a { cursor: pointer; }
+        .gift-selector {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2300FFFF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em;
+        }
 
         .mode-btn { background: rgba(255,255,255,0.05); color: #666; transition: all 0.3s; }
-        .mode-btn:hover { background: rgba(255,255,255,0.1); color: #ccc; }
         .mode-btn.active { background: var(--purple); color: white; }
         .mode-btn.active.webhook-active { background: var(--cyan); color: black; }
+
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
 
         @keyframes spin { to { transform: rotate(360deg); } }
         ::-webkit-scrollbar { width: 4px; }
@@ -72,136 +78,9 @@
         
         .btn-copy-link {
             background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 6px;
-            border-radius: 6px; color: #a1a1aa; transition: all 0.2s;
+            border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: all 0.2s;
         }
         .btn-copy-link:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 255, 0.1); }
-
-        .gift-card {
-            background: linear-gradient(135deg, rgba(57, 255, 20, 0.05) 0%, rgba(0, 0, 0, 0.4) 100%);
-            border: 1px solid rgba(57, 255, 20, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .gift-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--green), transparent);
-            animation: scan 3s linear infinite;
-        }
-        @keyframes scan { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-
-        .custom-select-wrapper {
-            position: relative;
-            user-select: none;
-            width: 100%;
-        }
-
-        .custom-select-trigger {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background-color: rgba(0, 0, 0, 0.6);
-            border: 1px solid #8A2BE2;
-            border-radius: 9999px;
-            color: #efefef;
-            font-size: 0.75rem;
-            font-weight: 700;
-            transition: all 0.3s;
-        }
-
-        .custom-select-trigger:hover {
-            border-color: var(--cyan);
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-        }
-
-        .custom-select-options {
-            position: absolute;
-            top: calc(100% + 5px);
-            left: 0;
-            right: 0;
-            background-color: #0a0a0a;
-            border: 1px solid #8A2BE2;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            z-index: 50;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-            max-height: 300px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .custom-select-wrapper.open .custom-select-options {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .custom-select-search-container {
-            padding: 0.75rem;
-            border-bottom: 1px solid rgba(138, 43, 226, 0.2);
-        }
-
-        .custom-select-search {
-            width: 100%;
-            padding: 0.5rem 1rem;
-            background-color: rgba(0, 0, 0, 0.4);
-            border: 1px solid #39FF14;
-            border-radius: 9999px;
-            color: #efefef;
-            font-size: 0.75rem;
-            outline: none;
-            transition: all 0.3s;
-        }
-        
-        .custom-select-search:focus {
-            box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
-        }
-
-        .custom-select-options-list {
-            overflow-y: auto;
-            flex: 1;
-            padding: 0.5rem 0;
-        }
-
-        .custom-select-option {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            transition: background 0.2s;
-            color: #a1a1aa;
-            font-weight: 600;
-        }
-
-        .custom-select-option:hover {
-            background-color: rgba(138, 43, 226, 0.1);
-            color: white;
-        }
-
-        .custom-select-option-img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-        }
-
-        .custom-select-option-text {
-            font-size: 0.875rem;
-            text-transform: capitalize;
-        }
-        
-        .custom-select-option.hidden {
-            display: none;
-        }
-
-        .custom-select-options-list::-webkit-scrollbar { width: 4px; }
-        .custom-select-options-list::-webkit-scrollbar-thumb { background: #8A2BE2; border-radius: 10px; }
-
     </style>
 </head>
 <body class="p-2 md:p-4 pb-12">
@@ -270,17 +149,17 @@
         <div class="flex flex-wrap justify-center gap-2 md:gap-4 items-center">
             <input id="username" type="text" placeholder="@usuario_tiktok" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs focus:border-cyan-500 outline-none w-[140px] md:w-40 font-medium">
             <input id="key" type="password" placeholder="Access Key" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs focus:border-cyan-500 outline-none w-[100px] md:w-32 font-medium">
-            <button id="btn-connect" onmouseover="playHover()" class="bg-cyan-600 hover:bg-cyan-400 text-black px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Conectar</button>
+            <button id="btn-connect" class="bg-cyan-600 hover:bg-cyan-400 text-black px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Conectar</button>
             <button id="btn-disconnect" class="hidden bg-zinc-900 border border-red-600 text-red-500 px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Salir</button>
         </div>
     </nav>
 
     <div id="action-buttons" class="max-w-[1800px] mx-auto mb-6 flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="juego.html" onmouseover="playHover()" class="flex-1 max-w-[300px] bg-purple-600 hover:bg-purple-500 text-white text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-purple-400 shadow-[0_0_15px_rgba(138,43,226,0.4)] hover:shadow-[0_0_25px_rgba(138,43,226,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
+        <a href="juego.html" class="flex-1 max-w-[300px] bg-purple-600 hover:bg-purple-500 text-white text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-purple-400 shadow-[0_0_15px_rgba(138,43,226,0.4)] hover:shadow-[0_0_25px_rgba(138,43,226,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
             <i data-lucide="gamepad-2" class="w-5 h-5"></i>
             Ir a Juego
         </a>
-        <a href="interactivo.html" onmouseover="playHover()" class="flex-1 max-w-[300px] bg-cyan-600 hover:bg-cyan-400 text-black text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
+        <a href="interactivo.html" class="flex-1 max-w-[300px] bg-cyan-600 hover:bg-cyan-400 text-black text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
             <i data-lucide="mouse-pointer-click" class="w-5 h-5"></i>
             Ir a Interactivo
         </a>
@@ -291,40 +170,19 @@
             <section class="glass p-6">
                 <h2 class="text-cyan-400 font-bold uppercase text-xs mb-4 flex items-center gap-2 italic tracking-widest"><i data-lucide="upload-cloud" class="w-4"></i> Configurar Alerta</h2>
                 <div class="flex bg-black/40 p-1 rounded-lg border border-zinc-800 mb-4">
-                    <button onclick="setMode('mp3')" onmouseover="playHover()" id="mode-mp3" class="mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Modo MP3</button>
-                    <button onclick="setMode('link')" onmouseover="playHover()" id="mode-link" class="mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Webhook Juego</button>
+                    <button onclick="setMode('mp3')" id="mode-mp3" class="mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Modo MP3</button>
+                    <button onclick="setMode('link')" id="mode-link" class="mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Webhook Juego</button>
                 </div>
                 <div class="space-y-4">
-                    
-                    <div class="custom-select-wrapper" id="gift-select-wrapper">
-                        <div class="custom-select-trigger" onmouseover="playHover()" onclick="toggleCustomSelect()">
-                            <span id="custom-select-label">Seleccionar regalo</span>
-                            <i data-lucide="chevron-down" class="w-4 h-4 text-purple-500 transition-transform duration-300" id="custom-select-arrow"></i>
-                        </div>
-                        
-                        <div class="custom-select-options">
-                            <div class="custom-select-search-container">
-                                <input type="text" class="custom-select-search" placeholder="Escribe para buscar..." onkeyup="filterCustomOptions(this.value)">
-                            </div>
-                            <div class="custom-select-options-list" id="custom-options-list"></div>
-                        </div>
-                        
-                        <input type="hidden" id="gift-select-value" value="">
-                    </div>
-
-                    <div id="gift-preview-container" class="hidden flex flex-col items-center justify-center p-4 bg-black/40 border border-zinc-800 rounded-xl animate-pulse">
-                        <p class="text-[10px] text-cyan-500 uppercase font-black mb-2">Vista Previa</p>
-                        <img id="gift-preview-img" src="" class="w-16 h-16 object-contain" onerror="this.src='https://via.placeholder.com/64?text=Regalo'">
-                    </div>
-
+                    <select id="gift-select" class="gift-selector w-full bg-black/60 border border-zinc-700 p-3 rounded-xl text-xs outline-none focus:border-cyan-500 text-zinc-300 font-bold"><option value="" disabled selected>Seleccionar Regalo...</option></select>
                     <div id="container-mp3">
                         <input type="file" id="file-input" accept="audio/mpeg" class="hidden">
-                        <button onclick="document.getElementById('file-input').click()" onmouseover="playHover()" class="w-full bg-zinc-900 border border-dashed border-zinc-700 p-3 rounded-lg text-xs text-zinc-400 hover:border-cyan-500 transition-all flex flex-col items-center gap-2"><i data-lucide="music" class="w-4 h-4 text-purple-500"></i><span id="file-name">Seleccionar MP3...</span></button>
+                        <button onclick="document.getElementById('file-input').click()" class="w-full bg-zinc-900 border border-dashed border-zinc-700 p-3 rounded-lg text-xs text-zinc-400 hover:border-cyan-500 transition-all flex flex-col items-center gap-2"><i data-lucide="music" class="w-4 h-4 text-purple-500"></i><span id="file-name">Seleccionar MP3...</span></button>
                     </div>
                     <div id="container-link" class="hidden">
                         <input id="link-input" type="text" placeholder="http://localhost:8080/comando" class="w-full bg-black/60 border border-zinc-800 p-3 rounded-lg text-xs text-cyan-400 outline-none focus:border-cyan-500 font-mono">
                     </div>
-                    <button id="btn-save-action" onmouseover="playHover()" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all shadow-lg">Guardar y Vincular</button>
+                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all shadow-lg">Guardar y Vincular</button>
                 </div>
             </section>
             <section class="glass flex-1 p-6 flex flex-col overflow-hidden min-h-[250px] lg:min-h-0">
@@ -366,7 +224,7 @@
                 <div class="space-y-6">
                     <div>
                         <div class="flex items-center gap-2 justify-between mb-2"><label class="text-[10px] text-zinc-500 uppercase">Activar Voz Bot (TTS)</label><input type="checkbox" id="tts-enabled" checked class="accent-cyan-500 h-4 w-4"></div>
-                        <select id="tts-voice" class="w-full bg-black/40 border border-zinc-800 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-500 appearance-none"></select>
+                        <select id="tts-voice" class="gift-selector w-full bg-black/40 border border-zinc-800 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-500"></select>
                     </div>
                     <div>
                         <div class="flex justify-between mb-1"><label class="text-[10px] text-zinc-500 uppercase">Volumen General</label><span id="vol-perc" class="text-[10px] text-cyan-400 font-bold">70%</span></div>
@@ -377,7 +235,7 @@
                         <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="all" checked class="accent-cyan-500 w-4 h-4 cursor-pointer"><span class="text-[11px] text-zinc-300 font-bold uppercase">Todos (Público)</span></label>
                         <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="followers" class="accent-green-500 w-4 h-4 cursor-pointer"><span class="text-[11px] text-green-400 font-bold uppercase">Solo Seguidores</span></label>
                         <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="vip" class="accent-purple-500 w-4 h-4 cursor-pointer"><span class="text-[11px] text-purple-400 font-bold uppercase">Solo Mods / Subs</span></label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="gifters" class="accent-yellow-400 w-4 h-4 cursor-pointer"><span class="text-[11px] text-yellow-400 font-bold uppercase">Solo Donadores</span></label>
+                        <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="gifters" class="accent-yellow-400 w-4 h-4 cursor-pointer"><span class="text-[11px] text-yellow-400 font-bold uppercase">Solo Donadores (Regalos)</span></label>
                     </div>
                 </div>
             </section>
@@ -395,94 +253,16 @@
         
         const donatorsMap = new Map();
         const giftersSet = new Set();
-        const sndHover = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
-        const sndSelect = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-        sndHover.volume = 0.2;
-        sndSelect.volume = 0.4;
 
-        // --- TRADUCCIÓN AUTOMÁTICA EN TIEMPO REAL ---
-        async function getTranslatedImagePath(englishName) {
-            try {
-                // Llamamos a la API de Google Translate (Gratis para uso ligero)
-                const apiURL = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=es&dt=t&q=${encodeURIComponent(englishName)}`;
-                const response = await fetch(apiURL);
-                const result = await response.json();
-                
-                // Obtenemos la traducción (ej: "Rosa")
-                const translatedName = result[0][0][0];
-                
-                // Devolvemos la ruta con el nombre en español
-                return `/regalos/${encodeURIComponent(translatedName)}.png`;
-            } catch (e) {
-                // Si falla la API, intentamos cargar el nombre original por si acaso
-                return `/regalos/${encodeURIComponent(englishName)}.png`;
-            }
-        }
-
-        function playHover() { if(!isOverlay) sndHover.cloneNode().play().catch(()=>{}); }
-        function playSelect() { if(!isOverlay) sndSelect.cloneNode().play().catch(()=>{}); }
-
-        // --- SELECTOR VISUAL LOGIC ---
-        function toggleCustomSelect() {
-            if(isOverlay) return;
-            const wrapper = document.getElementById('gift-select-wrapper');
-            const arrow = document.getElementById('custom-select-arrow');
-            wrapper.classList.toggle('open');
-            if(wrapper.classList.contains('open')) {
-                arrow.style.transform = 'rotate(180deg)';
-                setTimeout(() => wrapper.querySelector('.custom-select-search').focus(), 100);
-            } else {
-                arrow.style.transform = 'rotate(0deg)';
-            }
-        }
-
-        window.addEventListener('click', (e) => {
-            const wrapper = document.getElementById('gift-select-wrapper');
-            if (wrapper && !wrapper.contains(e.target) && wrapper.classList.contains('open')) toggleCustomSelect();
-        });
-
-        function filterCustomOptions(searchTerm) {
-            const list = document.getElementById('custom-options-list');
-            const options = list.querySelectorAll('.custom-select-option');
-            const term = searchTerm.toLowerCase();
-            options.forEach(opt => {
-                const text = opt.querySelector('.custom-select-option-text').innerText.toLowerCase();
-                opt.classList.toggle('hidden', !text.includes(term));
-            });
-        }
-
-        function selectCustomOption(value, name) {
-            playSelect();
-            document.getElementById('gift-select-value').value = value;
-            document.getElementById('custom-select-label').innerText = name.toUpperCase();
-            toggleCustomSelect();
-            updateGiftPreview(value);
-        }
-        
-        async function updateGiftPreview(giftName) {
-            const container = document.getElementById('gift-preview-container');
-            const img = document.getElementById('gift-preview-img');
-            if (giftName) {
-                container.classList.remove('hidden');
-                // En la vista previa también traducimos por si acaso
-                img.src = await getTranslatedImagePath(giftName);
-            } else {
-                container.classList.add('hidden');
-            }
-        }
-
-        // --- OVERLAY & TTS LOGIC ---
         function copyOverlayUrl(type) {
             const url = window.location.origin + '/?overlay=' + type;
-            navigator.clipboard.writeText(url).then(() => alert('Enlace copiado!')).catch(() => alert(url));
+            navigator.clipboard.writeText(url).then(() => {
+                alert('¡Enlace copiado con éxito!\n\nPega esta URL en una fuente de Navegador en OBS:\n' + url);
+            }).catch(err => alert('Hubo un error al copiar. Copia manualmente esta URL:\n' + url));
         }
 
         const synth = window.speechSynthesis; let voices = [];
-        function loadVoices() { 
-            voices = synth.getVoices(); 
-            const voiceSelect = document.getElementById('tts-voice'); 
-            if(voiceSelect) voiceSelect.innerHTML = voices.map((v, i) => `<option value="${i}" ${v.lang.includes('es') ? 'selected' : ''}>${v.name}</option>`).join(''); 
-        }
+        function loadVoices() { voices = synth.getVoices(); const voiceSelect = document.getElementById('tts-voice'); if(voiceSelect) voiceSelect.innerHTML = voices.map((v, i) => `<option value="${i}" ${v.lang.includes('es') ? 'selected' : ''}>${v.name}</option>`).join(''); }
         speechSynthesis.onvoiceschanged = loadVoices; loadVoices();
 
         function speak(text) {
@@ -494,71 +274,95 @@
             synth.speak(utter);
         }
 
-        // --- SOCKET CONNECTION ---
-        const btnConnect = document.getElementById('btn-connect');
-        if(btnConnect) btnConnect.onclick = () => {
-            const username = document.getElementById('username').value; 
-            const key = document.getElementById('key').value;
-            if(!username || !key) return alert("Faltan datos");
-            document.getElementById('loader').style.display = 'flex'; 
-            socket.emit("startConnection", { username, key });
-        };
+        const volInput = document.getElementById('tts-volume');
+        if(volInput) volInput.oninput = (e) => document.getElementById('vol-perc').innerText = Math.round(e.target.value * 100) + "%";
 
-        const btnDisconnect = document.getElementById('btn-disconnect');
-        if(btnDisconnect) btnDisconnect.onclick = () => socket.emit("stopConnection");
-
-        socket.on("status", (status) => {
-            if(isOverlay) return; 
-            document.getElementById('loader').style.display = 'none';
-            const sText = document.getElementById('connection-status'); 
-            const sPulse = document.getElementById('status-pulse');
-            const hostAvatar = document.getElementById('host-avatar');
-            
-            if (status === "connected") {
-                sText.innerText = "SISTEMA ONLINE"; sText.className = "text-[10px] text-cyan-400 font-bold italic";
-                sPulse.className = "w-2 h-2 rounded-full bg-cyan-400 animate-ping";
-                document.getElementById('btn-connect').classList.add('hidden');
-                document.getElementById('btn-disconnect').classList.remove('hidden');
-                hostAvatar.classList.add('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
-                speak("Sistemas en línea."); 
-                socket.emit("getActions", document.getElementById('username').value);
-            } else {
-                sText.innerText = "OFFLINE"; sText.className = "text-[10px] text-red-500 font-bold italic";
-                sPulse.className = "w-2 h-2 rounded-full bg-red-500";
-                document.getElementById('btn-connect').classList.remove('hidden');
-                document.getElementById('btn-disconnect').classList.add('hidden');
-                hostAvatar.classList.remove('border-cyan-500');
-            }
-        });
-
-        // --- ACTIONS & EVENTS ---
+        let currentMode = 'mp3';
         function setMode(mode) {
-            playSelect();
-            document.getElementById('mode-mp3').classList.toggle('active', mode === 'mp3');
-            document.getElementById('mode-link').classList.toggle('active', mode === 'link');
+            currentMode = mode;
+            document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
+            document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
             document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
             document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
         }
 
         const btnSave = document.getElementById('btn-save-action');
-        if(btnSave) btnSave.onclick = () => {
-            const username = document.getElementById('username').value;
-            const gift = document.getElementById('gift-select-value').value;
-            if(!username || !gift) return alert("Faltan datos");
+        if(btnSave) {
+            btnSave.onclick = () => {
+                const username = document.getElementById('username').value; const gift = document.getElementById('gift-select').value;
+                if(!username || !gift) return alert("Faltan datos");
+                if(currentMode === 'mp3') {
+                    const fileInput = document.getElementById('file-input'); const file = fileInput.files[0];
+                    if(!file) return alert("Selecciona un MP3");
+                    document.getElementById('loader').style.display = 'flex';
+                    const reader = new FileReader();
+                    reader.onload = (e) => { socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); fileInput.value = ""; document.getElementById('file-name').innerText = "Seleccionar MP3..."; };
+                    reader.readAsDataURL(file);
+                } else {
+                    const link = document.getElementById('link-input').value; if(!link) return alert("Ingresa el Link");
+                    socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } }); document.getElementById('link-input').value = "";
+                }
+            };
+        }
+
+        const fileInput = document.getElementById('file-input');
+        if(fileInput) fileInput.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Seleccionar MP3...";
+        function deleteAction(index) { socket.emit("deleteAction", { username: document.getElementById('username').value, index }); }
+
+        fetch('/gift-list').then(r => r.json()).then(d => {
+            const giftSelect = document.getElementById('gift-select');
+            if(giftSelect) giftSelect.innerHTML += d.map(g => `<option value="${g.name}">${g.name.toUpperCase()}</option>`).join('');
+        });
+
+        const btnConnect = document.getElementById('btn-connect');
+        if(btnConnect) {
+            btnConnect.onclick = () => {
+                const username = document.getElementById('username').value; const key = document.getElementById('key').value;
+                if(!username || !key) return alert("Faltan datos");
+                document.getElementById('loader').style.display = 'flex'; socket.emit("startConnection", { username, key });
+            };
+        }
+
+        const btnDisconnect = document.getElementById('btn-disconnect');
+        if(btnDisconnect) btnDisconnect.onclick = () => { socket.emit("stopConnection"); };
+
+        socket.on("status", (status) => {
+            if(isOverlay) return; document.getElementById('loader').style.display = 'none';
+            const sText = document.getElementById('connection-status'); const sPulse = document.getElementById('status-pulse');
+            const hostAvatar = document.getElementById('host-avatar'); const hostTitle = document.getElementById('host-title');
             
-            const mode = document.getElementById('mode-mp3').classList.contains('active') ? 'mp3' : 'link';
-            if(mode === 'mp3') {
-                const file = document.getElementById('file-input').files[0];
-                if(!file) return alert("Selecciona MP3");
-                const reader = new FileReader();
-                reader.onload = (e) => socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result });
-                reader.readAsDataURL(file);
+            if (status === "connected") {
+                sText.innerText = "SISTEMA ONLINE"; sText.className = "text-[10px] uppercase tracking-[3px] text-cyan-400 font-bold italic";
+                sPulse.className = "w-2 h-2 rounded-full bg-cyan-400 animate-ping";
+                document.getElementById('btn-connect').classList.add('hidden'); document.getElementById('btn-disconnect').classList.remove('hidden');
+                hostAvatar.classList.add('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
+                speak("Sistemas en línea."); socket.emit("getActions", document.getElementById('username').value);
             } else {
-                const link = document.getElementById('link-input').value;
-                if(!link) return alert("Ingresa el Link");
-                socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } });
+                sText.innerText = "OFFLINE"; sText.className = "text-[10px] uppercase tracking-[3px] text-red-500 font-bold italic";
+                sPulse.className = "w-2 h-2 rounded-full bg-red-500";
+                document.getElementById('btn-connect').classList.remove('hidden'); document.getElementById('btn-disconnect').classList.add('hidden');
+                hostAvatar.src = "/Logo.png"; hostAvatar.classList.remove('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
+                hostTitle.innerHTML = `NEXORA <span class="text-cyan-500">ULTRA</span>`;
             }
-        };
+        });
+
+        socket.on("connectedUserData", (data) => {
+            if(isOverlay) return;
+            if(data.profilePictureUrl) document.getElementById('host-avatar').src = data.profilePictureUrl;
+            if(data.username) document.getElementById('host-title').innerHTML = `${data.username} <span class="text-cyan-500 text-sm md:text-lg">LIVE</span>`;
+        });
+
+        function updateDonatorsRanking() {
+            const sorted = Array.from(donatorsMap.entries()).sort((a,b) => b[1] - a[1]).slice(0, 10);
+            const htmlContent = sorted.map((d, i) => `
+                <div class="flex items-center justify-between bg-black/40 p-2 rounded border border-yellow-500/20 ${i===0 ? 'border-yellow-500/50 bg-yellow-900/10' : ''}">
+                    <div class="flex items-center gap-2 text-xs"><span class="text-yellow-500 font-black ${i===0 ? 'text-lg' : 'text-sm'}">${i === 0 ? '👑' : '#' + (i+1)}</span><span class="font-bold text-zinc-300 truncate max-w-[80px] md:max-w-[100px]">${d[0]}</span></div>
+                    <span class="text-yellow-400 font-mono text-[10px] md:text-[11px] bg-yellow-500/10 px-2 py-1 rounded font-bold">${Math.floor(d[1])} pts</span>
+                </div>
+            `).join('');
+
+            const dash = document.getElementById('dashboard-donators-container'); if(dash) dash.innerHTML = htmlContent;
+        }
 
         socket.on("actionsUpdated", (actions) => {
             const list = document.getElementById('actions-list');
@@ -566,66 +370,97 @@
                 list.innerHTML = actions.map((a, i) => `
                     <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-zinc-800">
                         <div class="text-[10px]"><b class="${a.type === 'link' ? 'text-cyan-400' : 'text-purple-400'} uppercase">${a.type}</b><br><b class="text-white">${a.gift}</b></div>
-                        <button onclick="socket.emit('deleteAction', {username: document.getElementById('username').value, index: ${i}})" class="text-red-500"><i data-lucide="trash-2" class="w-4"></i></button>
+                        <button onclick="deleteAction(${i})" class="text-red-500 hover:text-white transition-colors"><i data-lucide="trash-2" class="w-4"></i></button>
                     </div>`).join('');
                 lucide.createIcons();
             }
         });
 
-        // --- EVENTO DE REGALOS ACTUALIZADO CON TRADUCCIÓN ---
-        socket.on("gift", async (data) => {
-            giftersSet.add(data.user);
-            const container = document.getElementById('gift-container');
-            if(!container) return;
-            
-            const div = document.createElement('div');
-            div.className = "gift-card p-3 rounded-xl flex items-center gap-3 fade-in mb-3";
-            
-            // Traducimos automáticamente el nombre del regalo antes de buscar la imagen
-            const giftImgUrl = await getTranslatedImagePath(data.gift);
-
-            div.innerHTML = `
-                <img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-10 h-10 rounded-full border-2 border-green-500">
-                <div class="flex-1">
-                    <b class="text-white text-xs">${data.user}</b>
-                    <p class="text-[9px] text-zinc-400">Envió ${data.gift} x${data.amount}</p>
-                </div>
-                <img src="${giftImgUrl}" 
-                     class="w-12 h-12 object-contain" 
-                     onerror="this.src='https://via.placeholder.com/40?text=🎁'">`;
-            
-            container.prepend(div);
+        socket.on("triggerSound", (fileUrl) => {
+            if(isOverlay) return; 
+            const audio = new Audio(fileUrl);
+            const volInput = document.getElementById('tts-volume');
+            if(volInput) audio.volume = volInput.value;
+            audio.play();
         });
 
-        fetch('/gift-list').then(r => r.json()).then(async d => {
-            const list = document.getElementById('custom-options-list');
-            if(list) {
-                // Para la lista inicial también intentamos traducir para mostrar las imágenes correctas
-                let html = "";
-                for(let g of d) {
-                    const img = await getTranslatedImagePath(g.name);
-                    html += `
-                        <div class="custom-select-option" onmouseover="playHover()" onclick="selectCustomOption('${g.name}', '${g.name}')">
-                            <img src="${img}" class="custom-select-option-img" onerror="this.src='https://via.placeholder.com/24?text=🎁'">
-                            <span class="custom-select-option-text">${g.name}</span>
-                        </div>`;
-                }
-                list.innerHTML = html;
+        socket.on("likeRanking", (ranking) => {
+            const container = document.getElementById('ranking-container');
+            if(container) {
+                container.innerHTML = ranking.map((user, i) => `
+                    <div class="flex items-center justify-between bg-black/40 p-3 rounded-lg border border-red-500/20 hover:border-red-500/50 transition-colors">
+                        <div class="flex items-center gap-3 text-xs"><span class="text-red-500 font-black text-sm">${i===0?'👑':'#'+user.rank}</span><span class="font-bold text-zinc-300 truncate max-w-[100px]">${user.user}</span></div>
+                        <span class="text-red-400 font-mono text-[11px] bg-red-500/10 px-2 py-1 rounded font-bold">${user.likes} ❤</span>
+                    </div>
+                `).join('');
             }
         });
 
-        // --- REAL-TIME CHAT ---
+        function checkVoicePermission(data) {
+            const radio = document.querySelector('input[name="tts-filter"]:checked');
+            if (!radio) return true;
+            const filter = radio.value;
+            if (filter === 'all') return true;
+            if (filter === 'followers' && (data.isFollower || data.isMod || data.isSub)) return true;
+            if (filter === 'vip' && (data.isMod || data.isSub)) return true;
+            if (filter === 'gifters' && giftersSet.has(data.user)) return true; 
+            return false;
+        }
+
+        function getBadges(data) {
+            let badges = '';
+            if (data.isMod) badges += '<span class="bg-red-500 text-black text-[8px] px-1 rounded font-bold mr-1">MOD</span>';
+            if (data.isSub) badges += '<span class="bg-purple-500 text-white text-[8px] px-1 rounded font-bold mr-1">SUB</span>';
+            if (data.isFollower && !data.isMod && !data.isSub) badges += '<span class="bg-green-500 text-black text-[8px] px-1 rounded font-bold mr-1">SIGUE</span>';
+            if (giftersSet.has(data.user)) badges += '<span class="bg-yellow-500 text-black text-[8px] px-1 rounded font-bold mr-1">DONADOR</span>';
+            return badges;
+        }
+
         socket.on("chat", (data) => {
-            const container = document.getElementById('chat-container');
-            if(!container) return;
-            const div = document.createElement('div');
-            div.className = "bg-zinc-900/50 p-2 rounded-lg border-l-2 border-purple-500 text-xs flex items-center gap-2 fade-in";
-            div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-6 h-6 rounded-full"><span class="text-purple-400 font-bold">${data.user}:</span> <span class="text-zinc-300">${data.message}</span>`;
-            container.prepend(div);
-            if (container.children.length > 15) container.removeChild(container.lastElementChild);
-            speak(`${data.user} dice: ${data.message}`);
+            const badges = getBadges(data);
+            const canSpeak = !isOverlay ? checkVoicePermission(data) : false; 
+            
+            const chatContainer = document.getElementById('chat-container');
+            if(chatContainer) {
+                const div = document.createElement('div');
+                div.className = "bg-zinc-900/50 p-2 rounded-lg border-l-2 border-purple-500 text-xs flex items-center gap-2 fade-in";
+                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-6 h-6 rounded-full bg-zinc-800" onerror="this.style.display='none'">
+                    <div>${badges}<span class="text-purple-400 font-bold">${data.user}:</span> <span class="text-zinc-300">${data.message}</span></div>`;
+                
+                chatContainer.prepend(div);
+                if (chatContainer.children.length > 10) chatContainer.removeChild(chatContainer.lastElementChild);
+            }
+
+            if (canSpeak) speak(`${data.user} dice: ${data.message}`);
         });
 
+        socket.on("gift", (data) => {
+            giftersSet.add(data.user);
+            const powerAdded = data.amount * 100; // Multiplicador estándar visual
+            
+            donatorsMap.set(data.user, (donatorsMap.get(data.user) || 0) + powerAdded);
+            updateDonatorsRanking();
+            
+            const giftContainer = document.getElementById('gift-container');
+            if(giftContainer) {
+                const div = document.createElement('div');
+                div.className = "bg-green-900/20 p-2 rounded-lg border border-green-500/30 flex items-center gap-2 fade-in";
+                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-8 h-8 rounded-full border border-green-500">
+                    <img src="${data.image}" class="w-8 h-8 object-contain" onerror="this.src='https://via.placeholder.com/32?text=🎁'">
+                    <div class="text-[10px]"><b class="text-white">${data.user}</b> x${data.amount} <span class="text-green-400">${data.gift}</span></div>`;
+                
+                giftContainer.prepend(div);
+                if (giftContainer.children.length > 10) giftContainer.removeChild(giftContainer.lastElementChild);
+            }
+
+            const histContainer = document.getElementById('gift-history');
+            if(histContainer && !isOverlay) {
+                const hist = document.createElement('div');
+                hist.innerText = `[${new Date().toLocaleTimeString()}] ${data.user} envió ${data.amount} ${data.gift}`;
+                histContainer.prepend(hist);
+                if (histContainer.children.length > 30) histContainer.removeChild(histContainer.lastElementChild);
+            }
+        });
     </script>
 </body>
 </html>
