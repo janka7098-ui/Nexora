@@ -57,18 +57,30 @@
             animation: spin 1s linear infinite;
         }
 
-        .gift-selector {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2300FFFF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em;
+        /* Estilos del nuevo Buscador de Regalos */
+        .gift-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
         }
+        .gift-option:hover {
+            background: rgba(138, 43, 226, 0.2);
+        }
+        .gift-option img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
 
         .mode-btn { background: rgba(255,255,255,0.05); color: #666; transition: all 0.3s; }
         .mode-btn.active { background: var(--purple); color: white; }
         .mode-btn.active.webhook-active { background: var(--cyan); color: black; }
-
-        details > summary { list-style: none; }
-        details > summary::-webkit-details-marker { display: none; }
 
         @keyframes spin { to { transform: rotate(360deg); } }
         ::-webkit-scrollbar { width: 4px; }
@@ -169,22 +181,45 @@
         <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
             <section class="glass p-6">
                 <h2 class="text-cyan-400 font-bold uppercase text-xs mb-4 flex items-center gap-2 italic tracking-widest"><i data-lucide="upload-cloud" class="w-4"></i> Configurar Alerta</h2>
+                
                 <div class="flex bg-black/40 p-1 rounded-lg border border-zinc-800 mb-4">
                     <button onclick="setMode('mp3')" id="mode-mp3" class="mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Modo MP3</button>
                     <button onclick="setMode('link')" id="mode-link" class="mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Webhook Juego</button>
                 </div>
+
                 <div class="space-y-4">
-                    <select id="gift-select" class="gift-selector w-full bg-black/60 border border-zinc-700 p-3 rounded-xl text-xs outline-none focus:border-cyan-500 text-zinc-300 font-bold"><option value="" disabled selected>Seleccionar Regalo...</option></select>
+                    <div class="relative group" id="custom-gift-dropdown">
+                        <button type="button" id="selected-gift-display" class="w-full bg-black/60 border border-zinc-700 p-3 rounded-xl text-xs flex items-center justify-between hover:border-purple-500 transition-all text-zinc-300 font-bold">
+                            <span id="current-gift-text">Seleccionar Regalo...</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-cyan-400"></i>
+                        </button>
+
+                        <div id="gift-list-panel" class="hidden absolute z-50 mt-2 w-full bg-[#0a0a0f] border-2 border-purple-600 rounded-2xl shadow-[0_0_20px_rgba(138,43,226,0.3)] overflow-hidden">
+                            <div class="p-2 border-b border-zinc-800">
+                                <div class="relative">
+                                    <input type="text" id="gift-search" placeholder="Escribe para buscar..." class="w-full bg-black border border-green-500 rounded-lg p-2 pl-8 text-xs text-white outline-none focus:border-green-400 shadow-[0_0_10px_rgba(57,255,20,0.2)]">
+                                    <i data-lucide="search" class="absolute left-2 top-2.5 w-4 h-4 text-zinc-500"></i>
+                                </div>
+                            </div>
+                            <div id="gift-options-container" class="max-h-64 overflow-y-auto p-1 custom-scrollbar">
+                                </div>
+                        </div>
+                        <input type="hidden" id="gift-select" value="">
+                    </div>
+
                     <div id="container-mp3">
                         <input type="file" id="file-input" accept="audio/mpeg" class="hidden">
                         <button onclick="document.getElementById('file-input').click()" class="w-full bg-zinc-900 border border-dashed border-zinc-700 p-3 rounded-lg text-xs text-zinc-400 hover:border-cyan-500 transition-all flex flex-col items-center gap-2"><i data-lucide="music" class="w-4 h-4 text-purple-500"></i><span id="file-name">Seleccionar MP3...</span></button>
                     </div>
+                    
                     <div id="container-link" class="hidden">
                         <input id="link-input" type="text" placeholder="http://localhost:8080/comando" class="w-full bg-black/60 border border-zinc-800 p-3 rounded-lg text-xs text-cyan-400 outline-none focus:border-cyan-500 font-mono">
                     </div>
+                    
                     <button id="btn-save-action" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all shadow-lg">Guardar y Vincular</button>
                 </div>
             </section>
+            
             <section class="glass flex-1 p-6 flex flex-col overflow-hidden min-h-[250px] lg:min-h-0">
                 <h2 class="text-purple-400 font-bold uppercase text-xs mb-4 italic tracking-widest">Eventos Activos</h2>
                 <div id="actions-list" class="flex-1 overflow-y-auto space-y-2 pr-2"></div>
@@ -224,7 +259,7 @@
                 <div class="space-y-6">
                     <div>
                         <div class="flex items-center gap-2 justify-between mb-2"><label class="text-[10px] text-zinc-500 uppercase">Activar Voz Bot (TTS)</label><input type="checkbox" id="tts-enabled" checked class="accent-cyan-500 h-4 w-4"></div>
-                        <select id="tts-voice" class="gift-selector w-full bg-black/40 border border-zinc-800 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-500"></select>
+                        <select id="tts-voice" class="w-full bg-black/40 border border-zinc-800 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-500"></select>
                     </div>
                     <div>
                         <div class="flex justify-between mb-1"><label class="text-[10px] text-zinc-500 uppercase">Volumen General</label><span id="vol-perc" class="text-[10px] text-cyan-400 font-bold">70%</span></div>
@@ -286,6 +321,50 @@
             document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
         }
 
+        // LÓGICA DEL NUEVO BUSCADOR DE REGALOS
+        const giftPanel = document.getElementById('gift-list-panel');
+        const giftDisplay = document.getElementById('selected-gift-display');
+        const giftSearch = document.getElementById('gift-search');
+        const optionsContainer = document.getElementById('gift-options-container');
+        const hiddenInput = document.getElementById('gift-select');
+        let allGifts = [];
+
+        giftDisplay.onclick = () => giftPanel.classList.toggle('hidden');
+
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('custom-gift-dropdown').contains(e.target)) {
+                giftPanel.classList.add('hidden');
+            }
+        });
+
+        fetch('/gift-list').then(r => r.json()).then(data => {
+            allGifts = data;
+            renderGifts(allGifts);
+        });
+
+        function renderGifts(list) {
+            optionsContainer.innerHTML = list.map(g => `
+                <div class="gift-option" onclick="selectGift('${g.name}', '${g.image}')">
+                    <img src="${g.image}" onerror="this.src='https://via.placeholder.com/32?text=🎁'">
+                    <span class="text-white font-bold uppercase text-[12px]">${g.name}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectGift(name, img) {
+            hiddenInput.value = name;
+            document.getElementById('current-gift-text').innerHTML = `
+                <div class="flex items-center gap-2 text-cyan-400">
+                    <img src="${img}" class="w-5 h-5"> <span>${name.toUpperCase()}</span>
+                </div>`;
+            giftPanel.classList.add('hidden');
+        }
+
+        giftSearch.oninput = (e) => {
+            const term = e.target.value.toLowerCase();
+            renderGifts(allGifts.filter(g => g.name.toLowerCase().includes(term)));
+        };
+
         const btnSave = document.getElementById('btn-save-action');
         if(btnSave) {
             btnSave.onclick = () => {
@@ -308,11 +387,6 @@
         const fileInput = document.getElementById('file-input');
         if(fileInput) fileInput.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Seleccionar MP3...";
         function deleteAction(index) { socket.emit("deleteAction", { username: document.getElementById('username').value, index }); }
-
-        fetch('/gift-list').then(r => r.json()).then(d => {
-            const giftSelect = document.getElementById('gift-select');
-            if(giftSelect) giftSelect.innerHTML += d.map(g => `<option value="${g.name}">${g.name.toUpperCase()}</option>`).join('');
-        });
 
         const btnConnect = document.getElementById('btn-connect');
         if(btnConnect) {
@@ -360,7 +434,6 @@
                     <span class="text-yellow-400 font-mono text-[10px] md:text-[11px] bg-yellow-500/10 px-2 py-1 rounded font-bold">${Math.floor(d[1])} pts</span>
                 </div>
             `).join('');
-
             const dash = document.getElementById('dashboard-donators-container'); if(dash) dash.innerHTML = htmlContent;
         }
 
@@ -436,8 +509,7 @@
 
         socket.on("gift", (data) => {
             giftersSet.add(data.user);
-            const powerAdded = data.amount * 100; // Multiplicador estándar visual
-            
+            const powerAdded = data.amount * 100;
             donatorsMap.set(data.user, (donatorsMap.get(data.user) || 0) + powerAdded);
             updateDonatorsRanking();
             
