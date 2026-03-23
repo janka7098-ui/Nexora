@@ -260,7 +260,6 @@
 
     <script>
         const socket = io();
-        let currentMode = 'mp3'; // Esto evita que el código "explote" al intentar leer el modo
         lucide.createIcons();
         
         const donatorsMap = new Map();
@@ -340,12 +339,12 @@
         if(volInput) volInput.oninput = (e) => document.getElementById('vol-perc').innerText = Math.round(e.target.value * 100) + "%";
 
         function setMode(mode) {
-            currentMode = mode; // Ahora sí modificará la variable global
-            document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
-            document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
-            document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
-            document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
-        }
+        currentMode = mode; // Ahora sí modificará la variable global
+        document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
+        document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
+        document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
+        document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
+    }
 
         const btnSave = document.getElementById('btn-save-action');
         if(btnSave) {
