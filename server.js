@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 
 // 2. Carga el panel de configuración de regalos
 app.get('/interactive', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'interactivoR.html'));
+    res.sendFile(path.join(__dirname, 'public', 'interactivo.html'));
 });
 
 // 3. Servir archivos estáticos (imágenes, sonidos, regalos)
