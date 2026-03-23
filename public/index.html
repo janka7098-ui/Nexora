@@ -445,7 +445,7 @@
             const img = document.getElementById('gift-preview-img');
             if (giftName) {
                 container.classList.remove('hidden');
-                img.src = `/regalos/${giftName.toLowerCase()}.png`;
+                img.src = `/regalos/${giftName}.png`;
             } else {
                 container.classList.add('hidden');
             }
@@ -556,7 +556,7 @@
             const list = document.getElementById('custom-options-list');
             if(list) list.innerHTML = d.map(g => `
                 <div class="custom-select-option" onmouseover="playHover()" onclick="selectCustomOption('${g.name}', '${g.name}', '/regalos/${g.name.toLowerCase()}.png')">
-                    <img src="/regalos/${g.name.toLowerCase()}.png" class="custom-select-option-img" onerror="this.src='https://via.placeholder.com/24?text=🎁'">
+                    <img src="/regalos/${g.name}.png" class="custom-select-option-img" onerror="this.src='https://via.placeholder.com/24?text=🎁'">
                     <span class="custom-select-option-text">${g.name}</span>
                 </div>`).join('');
         });
