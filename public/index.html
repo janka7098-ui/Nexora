@@ -57,14 +57,10 @@
             animation: spin 1s linear infinite;
         }
 
-        .gift-selector {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2300FFFF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em;
-            cursor: pointer;
-        }
+        /* Estilos básicos para elementos interactivos */
+        .mode-btn, .custom-select-trigger, .custom-select-option, button, a { cursor: pointer; }
 
-        .mode-btn { background: rgba(255,255,255,0.05); color: #666; transition: all 0.3s; cursor: pointer; }
+        .mode-btn { background: rgba(255,255,255,0.05); color: #666; transition: all 0.3s; }
         .mode-btn:hover { background: rgba(255,255,255,0.1); color: #ccc; }
         .mode-btn.active { background: var(--purple); color: white; }
         .mode-btn.active.webhook-active { background: var(--cyan); color: black; }
@@ -77,7 +73,7 @@
         
         .btn-copy-link {
             background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 6px;
-            border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: all 0.2s;
+            border-radius: 6px; color: #a1a1aa; transition: all 0.2s;
         }
         .btn-copy-link:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 255, 0.1); }
 
@@ -95,6 +91,133 @@
             animation: scan 3s linear infinite;
         }
         @keyframes scan { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+        /* =========================================
+           NUEVOS ESTILOS PARA EL SELECTOR VISUAL
+           ========================================= */
+        
+        /* Contenedor principal */
+        .custom-select-wrapper {
+            position: relative;
+            user-select: none;
+            width: 100%;
+        }
+
+        /* El botón principal (lo que se ve siempre) */
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 1px solid #8A2BE2; /* Borde morado de la imagen */
+            border-radius: 9999px; /* Completamente redondeado */
+            color: #efefef;
+            font-size: 0.75rem; /* text-xs */
+            font-weight: 700; /* font-bold */
+            transition: all 0.3s;
+        }
+
+        .custom-select-trigger:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+        }
+
+        /* Contenedor del panel desplegable */
+        .custom-select-options {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background-color: #0a0a0a; /* Fondo muy oscuro */
+            border: 1px solid #8A2BE2; /* Borde morado */
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            max-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Estado abierto del panel */
+        .custom-select-wrapper.open .custom-select-options {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Input de búsqueda interno */
+        .custom-select-search-container {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+        }
+
+        .custom-select-search {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px solid #39FF14; /* Borde verde neón de la imagen */
+            border-radius: 9999px;
+            color: #efefef;
+            font-size: 0.75rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .custom-select-search:focus {
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+        }
+
+        /* Contenedor de la lista de opciones (con scroll) */
+        .custom-select-options-list {
+            overflow-y: auto;
+            flex: 1;
+            padding: 0.5rem 0;
+        }
+
+        /* Estilo de cada opción individual */
+        .custom-select-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            transition: background 0.2s;
+            color: #a1a1aa; /* text-zinc-400 */
+            font-weight: 600;
+        }
+
+        .custom-select-option:hover {
+            background-color: rgba(138, 43, 226, 0.1);
+            color: white;
+        }
+
+        /* Imagen del regalo dentro de la opción */
+        .custom-select-option-img {
+            width: 24px;
+            height: 24px;
+            object-contain: contain;
+        }
+
+        /* Texto de la opción */
+        .custom-select-option-text {
+            font-size: 0.875rem; /* text-sm */
+            text-transform: capitalize;
+        }
+        
+        /* Ocultar opciones al buscar */
+        .custom-select-option.hidden {
+            display: none;
+        }
+
+        /* Scrollbar personalizado para la lista */
+        .custom-select-options-list::-webkit-scrollbar { width: 4px; }
+        .custom-select-options-list::-webkit-scrollbar-thumb { background: #8A2BE2; border-radius: 10px; }
+
     </style>
 </head>
 <body class="p-2 md:p-4 pb-12">
@@ -188,12 +311,23 @@
                     <button onclick="setMode('link')" onmouseover="playHover()" id="mode-link" class="mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Webhook Juego</button>
                 </div>
                 <div class="space-y-4">
-                    <div class="relative group">
-                        <select id="gift-select" onmouseover="playHover()" onchange="updateGiftPreview(this.value)" class="gift-selector w-full bg-black/60 border border-zinc-700 p-3 rounded-xl text-xs outline-none focus:border-cyan-500 text-zinc-300 font-bold">
-                            <option value="" disabled selected>Seleccionar Regalo...</option>
-                        </select>
-                    </div>
                     
+                    <div class="custom-select-wrapper" id="gift-select-wrapper">
+                        <div class="custom-select-trigger" onmouseover="playHover()" onclick="toggleCustomSelect()">
+                            <span id="custom-select-label">Seleccionar regalo</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-purple-500 transition-transform duration-300" id="custom-select-arrow"></i>
+                        </div>
+                        
+                        <div class="custom-select-options">
+                            <div class="custom-select-search-container">
+                                <input type="text" class="custom-select-search" placeholder="Escribe para buscar..." onkeyup="filterCustomOptions(this.value)">
+                            </div>
+                            <div class="custom-select-options-list" id="custom-options-list">
+                                </div>
+                        </div>
+                        
+                        <input type="hidden" id="gift-select-value" value="">
+                    </div>
                     <div id="gift-preview-container" class="hidden flex flex-col items-center justify-center p-4 bg-black/40 border border-zinc-800 rounded-xl animate-pulse">
                         <p class="text-[10px] text-cyan-500 uppercase font-black mb-2">Vista Previa</p>
                         <img id="gift-preview-img" src="" class="w-16 h-16 object-contain" onerror="this.src='https://via.placeholder.com/64?text=Regalo'">
@@ -248,7 +382,7 @@
                 <div class="space-y-6">
                     <div>
                         <div class="flex items-center gap-2 justify-between mb-2"><label class="text-[10px] text-zinc-500 uppercase">Activar Voz Bot (TTS)</label><input type="checkbox" id="tts-enabled" checked class="accent-cyan-500 h-4 w-4"></div>
-                        <select id="tts-voice" class="gift-selector w-full bg-black/40 border border-zinc-800 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-500"></select>
+                        <select id="tts-voice" class="w-full bg-black/40 border border-zinc-800 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-500 appearance-none"></select>
                     </div>
                     <div>
                         <div class="flex justify-between mb-1"><label class="text-[10px] text-zinc-500 uppercase">Volumen General</label><span id="vol-perc" class="text-[10px] text-cyan-400 font-bold">70%</span></div>
@@ -287,15 +421,82 @@
         function playHover() { if(!isOverlay) sndHover.cloneNode().play().catch(()=>{}); }
         function playSelect() { if(!isOverlay) sndSelect.cloneNode().play().catch(()=>{}); }
 
-        function updateGiftPreview(giftName) {
+        // =========================================
+        // LÓGICA JAVASCRIPT PARA EL SELECTOR VISUAL
+        // =========================================
+        
+        // Abrir/Cerrar el selector
+        function toggleCustomSelect() {
+            if(isOverlay) return;
+            const wrapper = document.getElementById('gift-select-wrapper');
+            const arrow = document.getElementById('custom-select-arrow');
+            wrapper.classList.toggle('open');
+            
+            // Rotar la flecha
+            if(wrapper.classList.contains('open')) {
+                arrow.style.transform = 'rotate(180deg)';
+                // Enfocar el buscador automáticamente al abrir
+                setTimeout(() => {
+                    wrapper.querySelector('.custom-select-search').focus();
+                }, 100);
+            } else {
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Cerrar si se hace clic fuera del selector
+        window.addEventListener('click', function(e) {
+            const wrapper = document.getElementById('gift-select-wrapper');
+            if (wrapper && !wrapper.contains(e.target) && wrapper.classList.contains('open')) {
+                toggleCustomSelect();
+            }
+        });
+
+        // Filtrar opciones al escribir en el buscador
+        function filterCustomOptions(searchTerm) {
+            const list = document.getElementById('custom-options-list');
+            const options = list.querySelectorAll('.custom-select-option');
+            const term = searchTerm.toLowerCase();
+
+            options.forEach(option => {
+                const text = option.querySelector('.custom-select-option-text').innerText.toLowerCase();
+                if (text.includes(term)) {
+                    option.classList.remove('hidden');
+                } else {
+                    option.classList.add('hidden');
+                }
+            });
+        }
+
+        // Al seleccionar una opción de la lista
+        function selectCustomOption(value, name, imgSrc) {
             playSelect();
+            
+            // Actualizar el valor en el input oculto (para guardar)
+            document.getElementById('gift-select-value').value = value;
+            
+            // Actualizar la etiqueta visible
+            document.getElementById('custom-select-label').innerText = name.toUpperCase();
+            
+            // Cerrar el panel
+            toggleCustomSelect();
+            
+            // Mostrar la previsualización grande (tu lógica existente)
+            updateGiftPreview(value);
+        }
+        
+        // Función original modificada para la previsualización grande
+        function updateGiftPreview(giftName) {
             const container = document.getElementById('gift-preview-container');
             const img = document.getElementById('gift-preview-img');
             if (giftName) {
                 container.classList.remove('hidden');
                 img.src = `/regalos/${giftName.toLowerCase()}.png`;
+            } else {
+                container.classList.add('hidden');
             }
         }
+        // =========================================
 
         function copyOverlayUrl(type) {
             const url = window.location.origin + '/?overlay=' + type;
@@ -333,7 +534,10 @@
         const btnSave = document.getElementById('btn-save-action');
         if(btnSave) {
             btnSave.onclick = () => {
-                const username = document.getElementById('username').value; const gift = document.getElementById('gift-select').value;
+                const username = document.getElementById('username').value; 
+                // OBTENER VALOR DEL NUEVO SELECTOR VISUAL
+                const gift = document.getElementById('gift-select-value').value;
+                
                 if(!username || !gift) return alert("Faltan datos");
                 if(currentMode === 'mp3') {
                     const fileInput = document.getElementById('file-input'); const file = fileInput.files[0];
@@ -353,9 +557,21 @@
         if(fileInput) fileInput.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Seleccionar MP3...";
         function deleteAction(index) { socket.emit("deleteAction", { username: document.getElementById('username').value, index }); }
 
+        // MODIFICADO: Llenar el nuevo selector visual en lugar del select antiguo
         fetch('/gift-list').then(r => r.json()).then(d => {
-            const giftSelect = document.getElementById('gift-select');
-            if(giftSelect) giftSelect.innerHTML += d.map(g => `<option value="${g.name}">${g.name.toUpperCase()}</option>`).join('');
+            const list = document.getElementById('custom-options-list');
+            if(list) {
+                // Generar el HTML para cada opción con imagen
+                list.innerHTML = d.map(g => {
+                    const imgSrc = `/regalos/${g.name.toLowerCase()}.png`;
+                    return `
+                        <div class="custom-select-option" onmouseover="playHover()" onclick="selectCustomOption('${g.name}', '${g.name}', '${imgSrc}')">
+                            <img src="${imgSrc}" class="custom-select-option-img" onerror="this.src='https://via.placeholder.com/24?text=🎁'">
+                            <span class="custom-select-option-text">${g.name}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
         });
 
         const btnConnect = document.getElementById('btn-connect');
@@ -518,4 +734,3 @@
     </script>
 </body>
 </html>
-
