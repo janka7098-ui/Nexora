@@ -10,9 +10,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700;900&display=swap');
 
-        /* -------------------------------------
-           VARIABLES Y RESET GAMER
-        -------------------------------------- */
         :root {
             --bg-base: #050507;       
             --bg-panel: #0d0d12;      
@@ -29,9 +26,6 @@
             height: 100vh; display: flex; flex-direction: column; overflow: hidden; margin: 0;
         }
 
-        /* -------------------------------------
-           ESTILOS DEL WORKSPACE Y PANELES
-        -------------------------------------- */
         .topbar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 25px; background-color: var(--bg-panel);
@@ -52,9 +46,6 @@
             display: flex; flex-direction: column; gap: 20px; overflow-y: auto; position: relative;
         }
 
-        /* -------------------------------------
-           COMPONENTES Y BOTONES
-        -------------------------------------- */
         .input-gamer {
             background-color: #000; border: 1px solid var(--border-color); color: white;
             padding: 8px 15px; border-radius: 6px; font-size: 0.9rem; outline: none; font-weight: bold;
@@ -78,12 +69,11 @@
         .btn-hero.cyan { color: var(--cyan-neon); border-color: rgba(0,229,255,0.3); }
         .btn-hero.cyan:hover { background-color: rgba(0,229,255,0.1); border-color: var(--cyan-neon); box-shadow: 0 0 20px rgba(0,229,255,0.2); }
 
-        /* Tarjeta Central & Tabla de Alertas */
         .tarjeta-central {
             background-color: rgba(13, 13, 18, 0.95); border: 1px solid var(--border-color);
             border-radius: 12px; display: flex; flex-direction: column;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
-            min-height: 400px; /* Asegura espacio para la tabla */
+            min-height: 400px;
         }
         
         .alert-table th { font-weight: normal; color: var(--text-muted); border-bottom: 1px solid var(--border-color); text-align: left; padding: 12px 15px; font-size: 0.85rem; }
@@ -103,18 +93,15 @@
         }
         .btn-select-sound:hover { border-color: var(--cyan-neon); color: var(--cyan-neon); background-color: rgba(0,229,255,0.05); }
 
-        /* Sliders de Volumen Estilo Tabla */
         input[type=range].table-slider { -webkit-appearance: none; width: 100%; background: transparent; height: 4px; border-radius: 2px; background-color: #1a1a25; outline: none; }
         input[type=range].table-slider::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 8px; border-radius: 2px; background: var(--cyan-neon); cursor: pointer; box-shadow: 0 0 5px rgba(0,229,255,0.5); }
 
-        /* Cuadricula 2x2 para Módulos */
         .grid-modulos { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; flex-grow: 1; min-height: 300px; }
         .modulo-box { background-color: rgba(13, 13, 18, 0.8); border: 1px solid var(--border-color); border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
         .modulo-header { padding: 10px 15px; font-size: 0.8rem; font-weight: 900; border-bottom: 1px solid var(--border-color); text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; }
         .btn-copy-link { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #a1a1aa; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
         .btn-copy-link:hover { color: var(--cyan-neon); border-color: var(--cyan-neon); background: rgba(0, 255, 255, 0.1); }
 
-        /* Scrollbars y Utilidades */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-base); }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
@@ -122,6 +109,13 @@
         .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Animación personalizada para el Regalo Hero */
+        @keyframes hero-bounce {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+        .animate-hero { animation: hero-bounce 0.5s ease-in-out infinite; }
 
         #loader { position: fixed; inset: 0; background: rgba(5, 5, 7, 0.98); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
         .spinner { width: 60px; height: 60px; border: 4px solid rgba(138, 43, 226, 0.1); border-left-color: var(--cyan-neon); border-radius: 50%; animation: spin 1s linear infinite; }
@@ -341,12 +335,11 @@
         const donatorsMap = new Map();
         const giftersSet = new Set();
 
-        /* --- LÓGICA DE LA TABLA CENTRAL DE ALERTAS --- */
+        /* --- ESTADO DE LA TABLA DE ALERTAS --- */
         const alertsTableBody = document.getElementById('alerts-table-body');
         const fileInput = document.getElementById('global-file-input');
         let currentRowEditing = null;
 
-        // Estado inicial simulando la imagen de referencia
         let tableAlerts = [
             { id: 1, enabled: true, trigger: 'Share', sound: 'Discord Leave Noise', volume: 80 },
             { id: 2, enabled: true, trigger: 'Follow', sound: 'Bad to the Bone Meme', volume: 80 },
@@ -354,6 +347,54 @@
             { id: 4, enabled: true, trigger: 'Rosa (1 Coins)', sound: 'Fart', volume: 80 }
         ];
 
+        /* --- FUNCIONES DE MEJORA DE REGALOS --- */
+
+        // 1. Normalización de nombres para archivos locales
+        function normalizeGiftName(name) {
+            if (!name) return "default";
+            return name.toLowerCase()
+                .split('(')[0] // Quita el precio "(1 Coins)"
+                .trim()
+                .replace(/\s+/g, '_') // Espacios a guiones bajos
+                .replace(/[^\w\s-]/g, ''); // Quita caracteres especiales
+        }
+
+        // 2. Animación Central en Pantalla
+        function triggerGiftAnimation(giftName, imageUrl) {
+            const container = document.body;
+            const animDiv = document.createElement('div');
+            
+            animDiv.className = `fixed inset-0 flex flex-col items-center justify-center z-[1000] pointer-events-none fade-in`;
+            animDiv.innerHTML = `
+                <div class="bg-black/40 backdrop-blur-md p-10 rounded-full border-4 border-cyan-500 shadow-[0_0_50px_rgba(0,229,255,0.4)] animate-hero">
+                    <img src="${imageUrl}" onerror="this.src='https://via.placeholder.com/200?text=🎁'" class="w-48 h-48 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
+                </div>
+                <h2 class="text-6xl font-black italic text-white mt-8 uppercase tracking-tighter drop-shadow-[0_5px_15px_rgba(0,0,0,1)]">
+                    ${giftName}
+                </h2>
+            `;
+
+            container.appendChild(animDiv);
+
+            setTimeout(() => {
+                animDiv.classList.add('transition-opacity', 'duration-500', 'opacity-0');
+                setTimeout(() => animDiv.remove(), 500);
+            }, 2000);
+        }
+
+        // 3. Sistema de Sonidos desde Tabla
+        function playAlertSound(triggerName) {
+            // Buscamos coincidencia exacta o parcial en los triggers de la tabla
+            const alert = tableAlerts.find(a => a.enabled && triggerName.toLowerCase().includes(a.trigger.toLowerCase().split('(')[0].trim().toLowerCase()));
+            
+            if (alert && alert.sound) {
+                const audio = new Audio(`/sounds/${alert.sound}.mp3`);
+                audio.volume = (alert.volume || 70) / 100;
+                audio.play().catch(e => console.warn("Error audio:", e));
+            }
+        }
+
+        /* --- LÓGICA DE LA TABLA --- */
         function renderAlertsTable() {
             alertsTableBody.innerHTML = '';
             tableAlerts.forEach((alert, index) => {
@@ -367,12 +408,7 @@
                         <input type="checkbox" ${alert.enabled ? 'checked' : ''} class="accent-cyan-500 w-4 h-4 cursor-pointer">
                     </td>
                     <td>
-                        <select class="select-trigger w-full max-w-[200px]">
-                            <option value="Follow" ${alert.trigger === 'Follow' ? 'selected' : ''}>👤 Follow</option>
-                            <option value="Share" ${alert.trigger === 'Share' ? 'selected' : ''}>🔁 Share</option>
-                            <option value="Rosa (1 Coins)" ${alert.trigger === 'Rosa (1 Coins)' ? 'selected' : ''}>🌹 Rosa (1 Coins)</option>
-                            <option value="Eres increíble (1 Coins)" ${alert.trigger === 'Eres increíble (1 Coins)' ? 'selected' : ''}>🐱 Eres increíble (1 Coins)</option>
-                        </select>
+                        <input type="text" value="${alert.trigger}" class="bg-transparent border-none text-white text-xs outline-none w-full">
                     </td>
                     <td>
                         <div class="flex items-center gap-3">
@@ -396,7 +432,7 @@
         }
 
         function addNewAlertRow() {
-            tableAlerts.unshift({ id: Date.now(), enabled: true, trigger: 'Follow', sound: '', volume: 70 });
+            tableAlerts.unshift({ id: Date.now(), enabled: true, trigger: 'New Trigger', sound: '', volume: 70 });
             renderAlertsTable();
         }
 
@@ -410,28 +446,24 @@
             fileInput.click();
         }
 
-        // Simular la carga del archivo en la tabla visualmente
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0 && currentRowEditing !== null) {
                 const fileName = e.target.files[0].name.replace('.mp3', '');
                 tableAlerts[currentRowEditing].sound = fileName;
                 renderAlertsTable();
-                
-                // NOTA PARA BACKEND: Aquí iría el socket.emit('uploadAndSave', ...)
                 fileInput.value = ''; 
                 currentRowEditing = null;
             }
         });
 
-        // Inicializar tabla
         renderAlertsTable();
 
-        /* --- RESTO DE LÓGICA (OVERLAYS, CONEXIÓN, TTS) --- */
+        /* --- LÓGICA DE SOCKETS --- */
         function copyOverlayUrl(type) {
             const url = window.location.origin + '/?overlay=' + type;
             navigator.clipboard.writeText(url).then(() => {
-                alert('¡Enlace copiado con éxito!\n\nPega esta URL en una fuente de Navegador en OBS:\n' + url);
-            }).catch(err => alert('Hubo un error al copiar. Copia manualmente esta URL:\n' + url));
+                alert('¡Enlace copiado!\n' + url);
+            });
         }
 
         const synth = window.speechSynthesis; let voices = [];
@@ -447,130 +479,90 @@
             synth.speak(utter);
         }
 
-        const volInput = document.getElementById('tts-volume');
-        if(volInput) volInput.oninput = (e) => document.getElementById('vol-perc').innerText = Math.round(e.target.value * 100) + "%";
-
-        // SE RESTAURÓ LA LÓGICA DE VALIDACIÓN Y ENVÍO DE LA KEY
         const btnConnect = document.getElementById('btn-connect');
         if(btnConnect) {
             btnConnect.onclick = () => {
                 const username = document.getElementById('username').value;
                 const key = document.getElementById('key').value;
-                if(!username || !key) return alert("Faltan datos (Usuario o Access Key)");
+                if(!username || !key) return alert("Faltan datos");
                 document.getElementById('loader').style.display = 'flex'; 
                 socket.emit("startConnection", { username, key }); 
             };
         }
 
-        const btnDisconnect = document.getElementById('btn-disconnect');
-        if(btnDisconnect) btnDisconnect.onclick = () => { socket.emit("stopConnection"); };
-
         socket.on("status", (status) => {
             if(isOverlay) return; document.getElementById('loader').style.display = 'none';
             const sText = document.getElementById('connection-status'); const sPulse = document.getElementById('status-pulse');
-            const hostAvatar = document.getElementById('host-avatar'); const hostTitle = document.getElementById('host-title');
-            
             if (status === "connected") {
-                sText.innerText = "SISTEMA ONLINE"; sText.className = "text-[10px] uppercase tracking-[3px] text-cyan-400 font-bold italic";
+                sText.innerText = "ONLINE"; sText.className = "text-[10px] text-cyan-400 font-bold italic";
                 sPulse.className = "w-2 h-2 rounded-full bg-cyan-400 animate-ping";
                 document.getElementById('btn-connect').classList.add('hidden'); document.getElementById('btn-disconnect').classList.remove('hidden');
-                hostAvatar.classList.add('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
-                speak("Sistemas en línea."); socket.emit("getActions", document.getElementById('username').value);
+                speak("Sistemas en línea.");
             } else {
-                sText.innerText = "OFFLINE"; sText.className = "text-[10px] uppercase tracking-[3px] text-red-500 font-bold italic";
+                sText.innerText = "OFFLINE"; sText.className = "text-[10px] text-red-500 font-bold italic";
                 sPulse.className = "w-2 h-2 rounded-full bg-red-500";
                 document.getElementById('btn-connect').classList.remove('hidden'); document.getElementById('btn-disconnect').classList.add('hidden');
-                hostAvatar.src = "/Logo.png"; hostAvatar.classList.remove('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
             }
-        });
-
-        socket.on("connectedUserData", (data) => {
-            if(isOverlay) return;
-            if(data.profilePictureUrl) document.getElementById('host-avatar').src = data.profilePictureUrl;
-            if(data.username) document.getElementById('host-title').innerHTML = `${data.username} <span style="color: var(--cyan-neon); font-size: 1rem;">LIVE</span>`;
         });
 
         function updateDonatorsRanking() {
             const sorted = Array.from(donatorsMap.entries()).sort((a,b) => b[1] - a[1]).slice(0, 10);
             const htmlContent = sorted.map((d, i) => `
                 <div class="flex items-center justify-between bg-black/40 p-2 rounded border border-yellow-500/20 ${i===0 ? 'border-yellow-500/50 bg-yellow-900/10' : ''}">
-                    <div class="flex items-center gap-2 text-xs"><span class="text-yellow-500 font-black ${i===0 ? 'text-lg' : 'text-sm'}">${i === 0 ? '👑' : '#' + (i+1)}</span><span class="font-bold text-zinc-300 truncate max-w-[80px] md:max-w-[100px]">${d[0]}</span></div>
-                    <span class="text-yellow-400 font-mono text-[10px] md:text-[11px] bg-yellow-500/10 px-2 py-1 rounded font-bold">${Math.floor(d[1])} pts</span>
+                    <div class="flex items-center gap-2 text-xs"><span class="text-yellow-500 font-black">${i === 0 ? '👑' : '#' + (i+1)}</span><span class="font-bold text-zinc-300 truncate max-w-[100px]">${d[0]}</span></div>
+                    <span class="text-yellow-400 font-mono text-[11px] bg-yellow-500/10 px-2 py-1 rounded font-bold">${Math.floor(d[1])} pts</span>
                 </div>
             `).join('');
-
             const dash = document.getElementById('dashboard-donators-container'); if(dash) dash.innerHTML = htmlContent;
         }
 
-        socket.on("likeRanking", (ranking) => {
-            const container = document.getElementById('ranking-container');
-            if(container) {
-                container.innerHTML = ranking.map((user, i) => `
-                    <div class="flex items-center justify-between bg-black/40 p-3 rounded-lg border border-red-500/20 hover:border-red-500/50 transition-colors">
-                        <div class="flex items-center gap-3 text-xs"><span class="text-red-500 font-black text-sm">${i===0?'👑':'#'+user.rank}</span><span class="font-bold text-zinc-300 truncate max-w-[100px]">${user.user}</span></div>
-                        <span class="text-red-400 font-mono text-[11px] bg-red-500/10 px-2 py-1 rounded font-bold">${user.likes} ❤</span>
-                    </div>
-                `).join('');
-            }
-        });
-
-        function checkVoicePermission(data) {
-            const radio = document.querySelector('input[name="tts-filter"]:checked');
-            if (!radio) return true;
-            const filter = radio.value;
-            if (filter === 'all') return true;
-            if (filter === 'followers' && (data.isFollower || data.isMod || data.isSub)) return true;
-            if (filter === 'vip' && (data.isMod || data.isSub)) return true;
-            if (filter === 'gifters' && giftersSet.has(data.user)) return true; 
-            return false;
-        }
-
-        function getBadges(data) {
-            let badges = '';
-            if (data.isMod) badges += '<span class="bg-red-500 text-black text-[8px] px-1 rounded font-bold mr-1">MOD</span>';
-            if (data.isSub) badges += '<span class="bg-purple-500 text-white text-[8px] px-1 rounded font-bold mr-1">SUB</span>';
-            if (data.isFollower && !data.isMod && !data.isSub) badges += '<span class="bg-green-500 text-black text-[8px] px-1 rounded font-bold mr-1">SIGUE</span>';
-            if (giftersSet.has(data.user)) badges += '<span class="bg-yellow-500 text-black text-[8px] px-1 rounded font-bold mr-1">DONADOR</span>';
-            return badges;
-        }
-
         socket.on("chat", (data) => {
-            const badges = getBadges(data);
-            const canSpeak = !isOverlay ? checkVoicePermission(data) : false; 
-            
             const chatContainer = document.getElementById('chat-container');
             if(chatContainer) {
                 const div = document.createElement('div');
                 div.className = "bg-zinc-900/50 p-2 rounded-lg border-l-2 border-purple-500 text-xs flex items-center gap-2 fade-in";
-                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-6 h-6 rounded-full bg-zinc-800" onerror="this.style.display='none'">
-                    <div>${badges}<span class="text-purple-400 font-bold">${data.user}:</span> <span class="text-zinc-300">${data.message}</span></div>`;
-                
+                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-6 h-6 rounded-full bg-zinc-800">
+                    <div><span class="text-purple-400 font-bold">${data.user}:</span> <span class="text-zinc-300">${data.message}</span></div>`;
                 chatContainer.prepend(div);
                 if (chatContainer.children.length > 10) chatContainer.removeChild(chatContainer.lastElementChild);
             }
-
-            if (canSpeak) speak(`${data.user} dice: ${data.message}`);
+            speak(`${data.user} dice: ${data.message}`);
         });
 
+        /* --- MEJORA: SOCKET GIFT ACTUALIZADO --- */
         socket.on("gift", (data) => {
+            // 1. Normalización y Selección de Imagen
+            const normalizedName = normalizeGiftName(data.gift);
+            const localImagePath = `/regalos/${normalizedName}.png`;
+
+            // 2. Disparar Sonido y Animación
+            playAlertSound(data.gift);
+            triggerGiftAnimation(data.gift, localImagePath);
+
+            // 3. Lógica de Ranking (Sin cambios)
             giftersSet.add(data.user);
             const powerAdded = data.amount * 100;
-            
             donatorsMap.set(data.user, (donatorsMap.get(data.user) || 0) + powerAdded);
             updateDonatorsRanking();
             
+            // 4. Renderizar en el Panel (Con Fallback)
             const giftContainer = document.getElementById('gift-container');
             if(giftContainer) {
                 const div = document.createElement('div');
                 div.className = "bg-green-900/20 p-2 rounded-lg border border-green-500/30 flex items-center gap-2 fade-in";
-                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-8 h-8 rounded-full border border-green-500">
-                    <img src="${data.image}" class="w-8 h-8 object-contain" onerror="this.src='https://via.placeholder.com/32?text=🎁'">
+                div.innerHTML = `
+                    <img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-8 h-8 rounded-full border border-green-500">
+                    <img src="${localImagePath}" 
+                         onerror="this.onerror=null; this.src='${data.image}';" 
+                         class="w-10 h-10 object-contain" 
+                         alt="${data.gift}">
                     <div class="text-[10px]"><b class="text-white">${data.user}</b> x${data.amount} <span class="text-green-400">${data.gift}</span></div>`;
                 
                 giftContainer.prepend(div);
                 if (giftContainer.children.length > 10) giftContainer.removeChild(giftContainer.lastElementChild);
             }
 
+            // 5. Historial (Sin cambios)
             const histContainer = document.getElementById('gift-history');
             if(histContainer && !isOverlay) {
                 const hist = document.createElement('div');
