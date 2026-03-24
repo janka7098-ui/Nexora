@@ -57,7 +57,6 @@
             animation: spin 1s linear infinite;
         }
 
-        /* Estilos del nuevo Buscador de Regalos */
         .gift-option {
             display: flex;
             align-items: center;
@@ -143,7 +142,7 @@
 
     <div id="loader">
         <div class="spinner"></div>
-        <p class="mt-4 text-cyan-500 font-bold tracking-widest animate-pulse uppercase">Procesando Datos...</p>
+        <p id="loader-text" class="mt-4 text-cyan-500 font-bold tracking-widest animate-pulse uppercase">Procesando Datos...</p>
     </div>
 
     <nav id="nav-header" class="max-w-[1800px] mx-auto mb-6 flex flex-col lg:flex-row items-center justify-between glass p-4 gap-4">
@@ -321,7 +320,7 @@
             document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
         }
 
-        // LÓGICA DEL NUEVO BUSCADOR DE REGALOS
+        // BUSCADOR DE REGALOS
         const giftPanel = document.getElementById('gift-list-panel');
         const giftDisplay = document.getElementById('selected-gift-display');
         const giftSearch = document.getElementById('gift-search');
@@ -365,35 +364,96 @@
             renderGifts(allGifts.filter(g => g.name.toLowerCase().includes(term)));
         };
 
+        // --- LÓGICA DE GUARDADO CORREGIDA ---
         const btnSave = document.getElementById('btn-save-action');
         if(btnSave) {
             btnSave.onclick = () => {
-                const username = document.getElementById('username').value; const gift = document.getElementById('gift-select').value;
-                if(!username || !gift) return alert("Faltan datos");
+                const usernameInput = document.getElementById('username');
+                const username = usernameInput.value.trim(); 
+                const gift = document.getElementById('gift-select').value;
+                
+                if(!username || !gift) return alert("Por favor ingresa el usuario de TikTok y selecciona un regalo.");
+
                 if(currentMode === 'mp3') {
-                    const fileInput = document.getElementById('file-input'); const file = fileInput.files[0];
-                    if(!file) return alert("Selecciona un MP3");
+                    const fileInput = document.getElementById('file-input'); 
+                    const file = fileInput.files[0];
+                    if(!file) return alert("Selecciona un archivo MP3 primero.");
+                    
                     document.getElementById('loader').style.display = 'flex';
+                    document.getElementById('loader-text').innerText = "Subiendo Audio...";
+
                     const reader = new FileReader();
-                    reader.onload = (e) => { socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); fileInput.value = ""; document.getElementById('file-name').innerText = "Seleccionar MP3..."; };
+                    reader.onload = (e) => { 
+                        socket.emit("uploadAndSave", { 
+                            username, 
+                            gift, 
+                            fileName: file.name, 
+                            fileData: e.target.result 
+                        }); 
+                        // Reset de campos
+                        fileInput.value = ""; 
+                        document.getElementById('file-name').innerText = "Seleccionar MP3..."; 
+                    };
+                    reader.onerror = () => {
+                        alert("Error al leer el archivo.");
+                        document.getElementById('loader').style.display = 'none';
+                    };
                     reader.readAsDataURL(file);
                 } else {
-                    const link = document.getElementById('link-input').value; if(!link) return alert("Ingresa el Link");
-                    socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } }); document.getElementById('link-input').value = "";
+                    const link = document.getElementById('link-input').value.trim(); 
+                    if(!link) return alert("Ingresa el Link del Webhook");
+                    
+                    document.getElementById('loader').style.display = 'flex';
+                    socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } }); 
+                    document.getElementById('link-input').value = "";
                 }
             };
         }
 
+        // --- ESCUCHADORES PARA CERRAR EL LOADER ---
+        socket.on("actionSaved", (data) => {
+            document.getElementById('loader').style.display = 'none';
+            // Refrescar lista de eventos
+            socket.emit("getActions", document.getElementById('username').value);
+        });
+
+        socket.on("actionsUpdated", (actions) => {
+            // Cuando recibimos la lista actualizada, también nos aseguramos de quitar el loader
+            document.getElementById('loader').style.display = 'none';
+            const list = document.getElementById('actions-list');
+            if(list) {
+                list.innerHTML = actions.map((a, i) => `
+                    <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-zinc-800">
+                        <div class="text-[10px]"><b class="${a.type === 'link' ? 'text-cyan-400' : 'text-purple-400'} uppercase">${a.type}</b><br><b class="text-white">${a.gift}</b></div>
+                        <button onclick="deleteAction(${i})" class="text-red-500 hover:text-white transition-colors"><i data-lucide="trash-2" class="w-4"></i></button>
+                    </div>`).join('');
+                lucide.createIcons();
+            }
+        });
+
+        socket.on("error", (msg) => {
+            document.getElementById('loader').style.display = 'none';
+            alert("Error del servidor: " + msg);
+        });
+        // ----------------------------------------
+
         const fileInput = document.getElementById('file-input');
         if(fileInput) fileInput.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Seleccionar MP3...";
-        function deleteAction(index) { socket.emit("deleteAction", { username: document.getElementById('username').value, index }); }
+        
+        function deleteAction(index) { 
+            const user = document.getElementById('username').value;
+            if(!user) return;
+            socket.emit("deleteAction", { username: user, index }); 
+        }
 
         const btnConnect = document.getElementById('btn-connect');
         if(btnConnect) {
             btnConnect.onclick = () => {
                 const username = document.getElementById('username').value; const key = document.getElementById('key').value;
                 if(!username || !key) return alert("Faltan datos");
-                document.getElementById('loader').style.display = 'flex'; socket.emit("startConnection", { username, key });
+                document.getElementById('loader').style.display = 'flex'; 
+                document.getElementById('loader-text').innerText = "Estableciendo Conexión...";
+                socket.emit("startConnection", { username, key });
             };
         }
 
@@ -401,21 +461,28 @@
         if(btnDisconnect) btnDisconnect.onclick = () => { socket.emit("stopConnection"); };
 
         socket.on("status", (status) => {
-            if(isOverlay) return; document.getElementById('loader').style.display = 'none';
-            const sText = document.getElementById('connection-status'); const sPulse = document.getElementById('status-pulse');
-            const hostAvatar = document.getElementById('host-avatar'); const hostTitle = document.getElementById('host-title');
+            if(isOverlay) return; 
+            document.getElementById('loader').style.display = 'none';
+            const sText = document.getElementById('connection-status'); 
+            const sPulse = document.getElementById('status-pulse');
+            const hostAvatar = document.getElementById('host-avatar'); 
+            const hostTitle = document.getElementById('host-title');
             
             if (status === "connected") {
                 sText.innerText = "SISTEMA ONLINE"; sText.className = "text-[10px] uppercase tracking-[3px] text-cyan-400 font-bold italic";
                 sPulse.className = "w-2 h-2 rounded-full bg-cyan-400 animate-ping";
-                document.getElementById('btn-connect').classList.add('hidden'); document.getElementById('btn-disconnect').classList.remove('hidden');
+                document.getElementById('btn-connect').classList.add('hidden'); 
+                document.getElementById('btn-disconnect').classList.remove('hidden');
                 hostAvatar.classList.add('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
-                speak("Sistemas en línea."); socket.emit("getActions", document.getElementById('username').value);
+                speak("Sistemas en línea."); 
+                socket.emit("getActions", document.getElementById('username').value);
             } else {
                 sText.innerText = "OFFLINE"; sText.className = "text-[10px] uppercase tracking-[3px] text-red-500 font-bold italic";
                 sPulse.className = "w-2 h-2 rounded-full bg-red-500";
-                document.getElementById('btn-connect').classList.remove('hidden'); document.getElementById('btn-disconnect').classList.add('hidden');
-                hostAvatar.src = "/Logo.png"; hostAvatar.classList.remove('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
+                document.getElementById('btn-connect').classList.remove('hidden'); 
+                document.getElementById('btn-disconnect').classList.add('hidden');
+                hostAvatar.src = "/Logo.png"; 
+                hostAvatar.classList.remove('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
                 hostTitle.innerHTML = `NEXORA <span class="text-cyan-500">ULTRA</span>`;
             }
         });
@@ -436,18 +503,6 @@
             `).join('');
             const dash = document.getElementById('dashboard-donators-container'); if(dash) dash.innerHTML = htmlContent;
         }
-
-        socket.on("actionsUpdated", (actions) => {
-            const list = document.getElementById('actions-list');
-            if(list) {
-                list.innerHTML = actions.map((a, i) => `
-                    <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-zinc-800">
-                        <div class="text-[10px]"><b class="${a.type === 'link' ? 'text-cyan-400' : 'text-purple-400'} uppercase">${a.type}</b><br><b class="text-white">${a.gift}</b></div>
-                        <button onclick="deleteAction(${i})" class="text-red-500 hover:text-white transition-colors"><i data-lucide="trash-2" class="w-4"></i></button>
-                    </div>`).join('');
-                lucide.createIcons();
-            }
-        });
 
         socket.on("triggerSound", (fileUrl) => {
             if(isOverlay) return; 
