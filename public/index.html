@@ -30,71 +30,53 @@
         }
 
         .glass {
-            background: rgba(15, 15, 22, 0.85);
-            backdrop-filter: blur(16px);
-            border-radius: 16px;
-            border: 1px solid rgba(138, 43, 226, 0.15);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(15, 15, 22, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            transition: all 0.4s ease;
         }
 
         .glass:hover {
-            border-color: rgba(0, 255, 255, 0.5);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+            border-color: rgba(138, 43, 226, 0.3);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.1);
         }
 
-        #loader {
-            position: fixed; inset: 0;
-            background: rgba(5, 5, 7, 0.98);
-            display: none; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 100;
-        }
-
-        .spinner {
-            width: 60px; height: 60px;
-            border: 4px solid rgba(138, 43, 226, 0.1);
-            border-left-color: var(--cyan);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        .gift-option {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        .gift-option:hover {
-            background: rgba(138, 43, 226, 0.2);
-        }
-        .gift-option img {
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
-        }
+        /* Estilo para los contenedores de scroll */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
 
-        .mode-btn { background: rgba(255,255,255,0.05); color: #666; transition: all 0.3s; }
-        .mode-btn.active { background: var(--purple); color: white; }
-        .mode-btn.active.webhook-active { background: var(--cyan); color: black; }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 10px; }
-        .fade-in { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Botones y animaciones */
+        .neon-border-cyan { border: 1px solid var(--cyan); box-shadow: 0 0 10px rgba(0, 255, 255, 0.2); }
+        .neon-border-purple { border: 1px solid var(--purple); box-shadow: 0 0 10px rgba(138, 43, 226, 0.2); }
         
+        .mode-btn { background: rgba(255,255,255,0.03); color: #888; border: 1px solid transparent; transition: all 0.3s; }
+        .mode-btn.active { background: rgba(138, 43, 226, 0.2); color: white; border-color: var(--purple); }
+        .mode-btn.active.webhook-active { background: rgba(0, 255, 255, 0.15); color: var(--cyan); border-color: var(--cyan); }
+
+        .gift-option { display: flex; align-items: center; gap: 12px; padding: 12px; cursor: pointer; border-radius: 12px; transition: all 0.2s; }
+        .gift-option:hover { background: rgba(138, 43, 226, 0.15); transform: translateX(5px); }
+        
+        #loader { position: fixed; inset: 0; background: #050507; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        .spinner { width: 50px; height: 50px; border: 3px solid rgba(138, 43, 226, 0.1); border-top-color: var(--cyan); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .btn-copy-link {
-            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 6px;
-            border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: all 0.2s;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 5px 8px;
+            border-radius: 8px; color: #71717a; cursor: pointer; transition: all 0.2s;
         }
-        .btn-copy-link:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 255, 0.1); }
+        .btn-copy-link:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 255, 0.05); }
+
+        input, select { background: rgba(0,0,0,0.4) !important; border: 1px solid rgba(255,255,255,0.1) !important; transition: all 0.3s; }
+        input:focus { border-color: var(--cyan) !important; box-shadow: 0 0 10px rgba(0, 255, 255, 0.1); }
     </style>
 </head>
-<body class="p-2 md:p-4 pb-12">
+<body class="p-2 md:p-6 pb-12">
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -133,7 +115,7 @@
                     }
                     
                     const style = document.createElement('style');
-                    style.innerHTML = `.bg-zinc-900\\/50, .bg-green-900\\/20, .bg-black\\/40 { background: rgba(10, 10, 15, 0.85) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(8px) !important; border-radius: 12px; }`;
+                    style.innerHTML = `.bg-zinc-900\\/50, .bg-green-900\\/20, .bg-black\\/40 { background: rgba(10, 10, 15, 0.8) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(10px) !important; border-radius: 15px; }`;
                     document.head.appendChild(style);
                 }
             });
@@ -142,141 +124,171 @@
 
     <div id="loader">
         <div class="spinner"></div>
-        <p id="loader-text" class="mt-4 text-cyan-500 font-bold tracking-widest animate-pulse uppercase">Procesando Datos...</p>
+        <p id="loader-text" class="mt-6 text-cyan-400 font-bold tracking-[0.2em] animate-pulse text-xs uppercase">Inicializando Sistema...</p>
     </div>
 
-    <nav id="nav-header" class="max-w-[1800px] mx-auto mb-6 flex flex-col lg:flex-row items-center justify-between glass p-4 gap-4">
-        <div class="flex items-center gap-4 w-full lg:w-auto justify-center lg:justify-start">
-            <img id="host-avatar" src="/Logo.png" alt="Logo" class="h-[50px] w-[50px] md:h-[60px] md:w-[60px] object-cover rounded-full border-2 border-transparent transition-all duration-500" onerror="this.src='/Logo.png'">
+    <nav id="nav-header" class="max-w-[1800px] mx-auto mb-8 flex flex-col lg:flex-row items-center justify-between glass p-5 gap-6">
+        <div class="flex items-center gap-5 w-full lg:w-auto">
+            <div class="relative">
+                <img id="host-avatar" src="/Logo.png" alt="Logo" class="h-14 w-14 md:h-16 md:w-16 object-cover rounded-2xl border border-white/10 transition-all duration-700" onerror="this.src='/Logo.png'">
+                <div id="status-pulse" class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-red-500 border-4 border-[#0a0a0f]"></div>
+            </div>
             <div class="flex flex-col">
-                <h1 id="host-title" class="text-2xl md:text-3xl font-black italic tracking-tighter leading-none uppercase">NEXORA <span class="text-cyan-500">ULTRA</span></h1>
-                <div class="flex items-center gap-2 mt-1">
-                    <div id="status-pulse" class="w-2 h-2 rounded-full bg-red-500"></div>
-                    <span id="connection-status" class="text-[10px] uppercase tracking-[3px] text-red-500 font-bold italic">Desconectado</span>
-                </div>
+                <h1 id="host-title" class="text-2xl md:text-4xl font-black italic tracking-tighter leading-none uppercase">NEXORA <span class="text-cyan-500">ULTRA</span></h1>
+                <span id="connection-status" class="text-[10px] uppercase tracking-[4px] text-red-500 font-bold mt-1">SISTEMA OFFLINE</span>
             </div>
         </div>
 
-        <div class="flex flex-wrap justify-center gap-2 md:gap-4 items-center">
-            <input id="username" type="text" placeholder="@usuario_tiktok" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs focus:border-cyan-500 outline-none w-[140px] md:w-40 font-medium">
-            <input id="key" type="password" placeholder="Access Key" class="bg-black/60 border border-zinc-800 px-3 py-2 rounded-lg text-xs focus:border-cyan-500 outline-none w-[100px] md:w-32 font-medium">
-            <button id="btn-connect" class="bg-cyan-600 hover:bg-cyan-400 text-black px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Conectar</button>
-            <button id="btn-disconnect" class="hidden bg-zinc-900 border border-red-600 text-red-500 px-4 md:px-6 py-2 rounded-lg font-black text-xs transition-all uppercase tracking-widest">Salir</button>
+        <div class="flex flex-wrap justify-center lg:justify-end gap-3 items-center w-full lg:w-auto">
+            <div class="flex bg-black/40 rounded-xl border border-white/5 p-1 gap-1">
+                <input id="username" type="text" placeholder="@usuario_tiktok" class="bg-transparent border-none px-4 py-2 text-xs outline-none w-36 font-semibold">
+                <input id="key" type="password" placeholder="Key" class="bg-transparent border-none px-4 py-2 text-xs outline-none w-24 font-semibold border-l border-white/10">
+            </div>
+            <button id="btn-connect" class="bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-3 rounded-xl font-black text-xs transition-all uppercase tracking-widest shadow-lg shadow-cyan-500/20">Conectar</button>
+            <button id="btn-disconnect" class="hidden bg-red-500/10 border border-red-500/50 text-red-500 px-8 py-3 rounded-xl font-black text-xs transition-all uppercase tracking-widest hover:bg-red-500 hover:text-white">Desconectar</button>
         </div>
     </nav>
 
-    <div id="action-buttons" class="max-w-[1800px] mx-auto mb-6 flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="juego.html" class="flex-1 max-w-[300px] bg-purple-600 hover:bg-purple-500 text-white text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-purple-400 shadow-[0_0_15px_rgba(138,43,226,0.4)] hover:shadow-[0_0_25px_rgba(138,43,226,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
-            <i data-lucide="gamepad-2" class="w-5 h-5"></i>
-            Ir a Juego
+    <div id="action-buttons" class="max-w-[1800px] mx-auto mb-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="juego.html" class="flex-1 max-w-[350px] bg-gradient-to-r from-purple-600 to-indigo-700 text-white text-center py-4 px-6 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-xl hover:shadow-purple-500/30 hover:-translate-y-1 flex items-center justify-center gap-3">
+            <i data-lucide="gamepad-2" class="w-5 h-5"></i> Dashboard Juego
         </a>
-        <a href="interactivo.html" class="flex-1 max-w-[300px] bg-cyan-600 hover:bg-cyan-400 text-black text-center py-3 px-6 rounded-xl font-black uppercase tracking-widest transition-all duration-300 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
-            <i data-lucide="mouse-pointer-click" class="w-5 h-5"></i>
-            Ir a Interactivo
+        <a href="interactivo.html" class="flex-1 max-w-[350px] bg-gradient-to-r from-cyan-600 to-blue-700 text-white text-center py-4 px-6 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-xl hover:shadow-cyan-500/30 hover:-translate-y-1 flex items-center justify-center gap-3">
+            <i data-lucide="zap" class="w-5 h-5"></i> Panel Interactivo
         </a>
     </div>
 
     <main id="view-dashboard" class="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:h-[750px]">
+        
         <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
             <section class="glass p-6">
-                <h2 class="text-cyan-400 font-bold uppercase text-xs mb-4 flex items-center gap-2 italic tracking-widest"><i data-lucide="upload-cloud" class="w-4"></i> Configurar Alerta</h2>
+                <h2 class="text-cyan-400 font-bold uppercase text-[10px] mb-5 flex items-center gap-2 tracking-[0.2em]"><i data-lucide="settings-2" class="w-4"></i> CONFIGURAR ALERTA</h2>
                 
-                <div class="flex bg-black/40 p-1 rounded-lg border border-zinc-800 mb-4">
-                    <button onclick="setMode('mp3')" id="mode-mp3" class="mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Modo MP3</button>
-                    <button onclick="setMode('link')" id="mode-link" class="mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md">Webhook Juego</button>
+                <div class="flex bg-black/40 p-1 rounded-xl border border-white/5 mb-6">
+                    <button onclick="setMode('mp3')" id="mode-mp3" class="mode-btn active flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg">AUDIO MP3</button>
+                    <button onclick="setMode('link')" id="mode-link" class="mode-btn flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg">WEBHOOK</button>
                 </div>
 
-                <div class="space-y-4">
+                <div class="space-y-5">
                     <div class="relative group" id="custom-gift-dropdown">
-                        <button type="button" id="selected-gift-display" class="w-full bg-black/60 border border-zinc-700 p-3 rounded-xl text-xs flex items-center justify-between hover:border-purple-500 transition-all text-zinc-300 font-bold">
+                        <button type="button" id="selected-gift-display" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-xs flex items-center justify-between hover:border-purple-500 transition-all text-zinc-400 font-bold">
                             <span id="current-gift-text">Seleccionar Regalo...</span>
                             <i data-lucide="chevron-down" class="w-4 h-4 text-cyan-400"></i>
                         </button>
 
-                        <div id="gift-list-panel" class="hidden absolute z-50 mt-2 w-full bg-[#0a0a0f] border-2 border-purple-600 rounded-2xl shadow-[0_0_20px_rgba(138,43,226,0.3)] overflow-hidden">
-                            <div class="p-2 border-b border-zinc-800">
+                        <div id="gift-list-panel" class="hidden absolute z-50 mt-2 w-full bg-[#0f0f15] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
+                            <div class="p-3 border-b border-white/5">
                                 <div class="relative">
-                                    <input type="text" id="gift-search" placeholder="Escribe para buscar..." class="w-full bg-black border border-green-500 rounded-lg p-2 pl-8 text-xs text-white outline-none focus:border-green-400 shadow-[0_0_10px_rgba(57,255,20,0.2)]">
-                                    <i data-lucide="search" class="absolute left-2 top-2.5 w-4 h-4 text-zinc-500"></i>
+                                    <input type="text" id="gift-search" placeholder="Buscar regalo..." class="w-full bg-black border border-white/5 rounded-lg p-2.5 pl-9 text-xs text-white outline-none">
+                                    <i data-lucide="search" class="absolute left-3 top-3 w-4 h-4 text-zinc-500"></i>
                                 </div>
                             </div>
-                            <div id="gift-options-container" class="max-h-64 overflow-y-auto p-1 custom-scrollbar">
-                                </div>
+                            <div id="gift-options-container" class="max-h-64 overflow-y-auto p-2 custom-scrollbar"></div>
                         </div>
                         <input type="hidden" id="gift-select" value="">
                     </div>
 
                     <div id="container-mp3">
                         <input type="file" id="file-input" accept="audio/mpeg" class="hidden">
-                        <button onclick="document.getElementById('file-input').click()" class="w-full bg-zinc-900 border border-dashed border-zinc-700 p-3 rounded-lg text-xs text-zinc-400 hover:border-cyan-500 transition-all flex flex-col items-center gap-2"><i data-lucide="music" class="w-4 h-4 text-purple-500"></i><span id="file-name">Seleccionar MP3...</span></button>
+                        <button onclick="document.getElementById('file-input').click()" class="w-full bg-black/20 border-2 border-dashed border-white/5 p-5 rounded-2xl text-xs text-zinc-500 hover:border-purple-500 hover:text-purple-400 transition-all flex flex-col items-center gap-3">
+                            <i data-lucide="music-4" class="w-6 h-6"></i>
+                            <span id="file-name" class="font-semibold uppercase tracking-tighter">Cargar Audio MP3</span>
+                        </button>
                     </div>
                     
                     <div id="container-link" class="hidden">
-                        <input id="link-input" type="text" placeholder="http://localhost:8080/comando" class="w-full bg-black/60 border border-zinc-800 p-3 rounded-lg text-xs text-cyan-400 outline-none focus:border-cyan-500 font-mono">
+                        <input id="link-input" type="text" placeholder="URL del comando del juego..." class="w-full p-4 rounded-xl text-xs text-cyan-400 font-mono">
                     </div>
                     
-                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-3 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all shadow-lg">Guardar y Vincular</button>
+                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-4 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all shadow-xl shadow-white/5 active:scale-95">Vincular Acción</button>
                 </div>
             </section>
             
-            <section class="glass flex-1 p-6 flex flex-col overflow-hidden min-h-[250px] lg:min-h-0">
-                <h2 class="text-purple-400 font-bold uppercase text-xs mb-4 italic tracking-widest">Eventos Activos</h2>
-                <div id="actions-list" class="flex-1 overflow-y-auto space-y-2 pr-2"></div>
+            <section class="glass flex-1 p-6 flex flex-col overflow-hidden min-h-[300px]">
+                <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-4 tracking-[0.2em]">EVENTOS PROGRAMADOS</h2>
+                <div id="actions-list" class="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar"></div>
             </section>
         </div>
 
         <div class="col-span-1 lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-purple-400 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="message-square" class="inline w-3 mr-1"></i> CHAT</span> <button onclick="copyOverlayUrl('chat')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
+            <div class="glass flex flex-col overflow-hidden h-[400px] lg:h-full">
+                <div class="p-4 border-b border-white/5 bg-white/5 text-[10px] font-black tracking-[0.3em] text-purple-400 flex justify-between items-center">
+                    <span class="flex items-center gap-2 uppercase"><i data-lucide="message-square" class="w-3"></i> Feed de Chat</span>
+                    <button onclick="copyOverlayUrl('chat')" class="btn-copy-link" title="Copiar URL OBS"><i data-lucide="link" class="w-3"></i></button>
                 </div>
-                <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+                <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar"></div>
             </div>
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-green-400 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="gift" class="inline w-3 mr-1"></i> REGALOS</span> <button onclick="copyOverlayUrl('gifts')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
+
+            <div class="glass flex flex-col overflow-hidden h-[400px] lg:h-full">
+                <div class="p-4 border-b border-white/5 bg-white/5 text-[10px] font-black tracking-[0.3em] text-green-400 flex justify-between items-center">
+                    <span class="flex items-center gap-2 uppercase"><i data-lucide="gift" class="w-3"></i> Regalos Live</span>
+                    <button onclick="copyOverlayUrl('gifts')" class="btn-copy-link" title="Copiar URL OBS"><i data-lucide="link" class="w-3"></i></button>
                 </div>
-                <div id="gift-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+                <div id="gift-container" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar"></div>
             </div>
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-red-500 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="flame" class="inline w-3 mr-1"></i> TOP LIKES</span> <button onclick="copyOverlayUrl('likes')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
+
+            <div class="glass flex flex-col overflow-hidden h-[400px] lg:h-full">
+                <div class="p-4 border-b border-white/5 bg-white/5 text-[10px] font-black tracking-[0.3em] text-red-500 flex justify-between items-center">
+                    <span class="flex items-center gap-2 uppercase"><i data-lucide="flame" class="w-3"></i> Ranking Likes</span>
+                    <button onclick="copyOverlayUrl('likes')" class="btn-copy-link" title="Copiar URL OBS"><i data-lucide="link" class="w-3"></i></button>
                 </div>
-                <div id="ranking-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+                <div id="ranking-container" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar"></div>
             </div>
-            <div class="glass flex flex-col overflow-hidden h-[300px] lg:h-full">
-                <div class="p-3 border-b border-zinc-900 bg-black/20 text-xs font-bold tracking-widest italic text-yellow-500 flex justify-between items-center">
-                    <span class="flex items-center"><i data-lucide="award" class="inline w-3 mr-1"></i> TOP DONADORES</span> <button onclick="copyOverlayUrl('donators')" class="btn-copy-link" title="Copiar URL para OBS"><i data-lucide="link" class="w-3 h-3"></i></button>
+
+            <div class="glass flex flex-col overflow-hidden h-[400px] lg:h-full">
+                <div class="p-4 border-b border-white/5 bg-white/5 text-[10px] font-black tracking-[0.3em] text-yellow-500 flex justify-between items-center">
+                    <span class="flex items-center gap-2 uppercase"><i data-lucide="award" class="w-3"></i> TOP Donadores</span>
+                    <button onclick="copyOverlayUrl('donators')" class="btn-copy-link" title="Copiar URL OBS"><i data-lucide="link" class="w-3"></i></button>
                 </div>
-                <div id="dashboard-donators-container" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+                <div id="dashboard-donators-container" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar"></div>
             </div>
         </div>
 
         <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
             <section class="glass p-6">
-                <h2 class="text-xs font-bold uppercase mb-4 text-zinc-500 italic">Controles Maestro</h2>
+                <h2 class="text-[10px] font-black uppercase mb-6 text-zinc-500 tracking-[0.2em]">CONTROLES DE VOZ (TTS)</h2>
                 <div class="space-y-6">
-                    <div>
-                        <div class="flex items-center gap-2 justify-between mb-2"><label class="text-[10px] text-zinc-500 uppercase">Activar Voz Bot (TTS)</label><input type="checkbox" id="tts-enabled" checked class="accent-cyan-500 h-4 w-4"></div>
-                        <select id="tts-voice" class="w-full bg-black/40 border border-zinc-800 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-500"></select>
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                        <div class="flex items-center justify-between mb-4">
+                            <label class="text-[10px] text-zinc-400 font-bold uppercase">Estado TTS</label>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="tts-enabled" checked class="sr-only peer">
+                                <div class="w-9 h-5 bg-zinc-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-cyan-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
+                            </label>
+                        </div>
+                        <select id="tts-voice" class="w-full p-3 rounded-xl text-xs text-white outline-none"></select>
                     </div>
-                    <div>
-                        <div class="flex justify-between mb-1"><label class="text-[10px] text-zinc-500 uppercase">Volumen General</label><span id="vol-perc" class="text-[10px] text-cyan-400 font-bold">70%</span></div>
-                        <input id="tts-volume" type="range" min="0" max="1" step="0.1" value="0.7" class="w-full accent-cyan-500 cursor-pointer">
+
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                        <div class="flex justify-between mb-3"><label class="text-[10px] text-zinc-400 font-bold uppercase">Volumen</label><span id="vol-perc" class="text-[10px] text-cyan-400 font-black">70%</span></div>
+                        <input id="tts-volume" type="range" min="0" max="1" step="0.1" value="0.7" class="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-500">
                     </div>
-                    <div class="pt-4 border-t border-zinc-800 space-y-3">
-                        <label class="text-[10px] text-zinc-500 uppercase block font-bold"><i data-lucide="shield" class="inline w-3 mr-1"></i> Filtro de Voz (TTS)</label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="all" checked class="accent-cyan-500 w-4 h-4 cursor-pointer"><span class="text-[11px] text-zinc-300 font-bold uppercase">Todos (Público)</span></label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="followers" class="accent-green-500 w-4 h-4 cursor-pointer"><span class="text-[11px] text-green-400 font-bold uppercase">Solo Seguidores</span></label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="vip" class="accent-purple-500 w-4 h-4 cursor-pointer"><span class="text-[11px] text-purple-400 font-bold uppercase">Solo Mods / Subs</span></label>
-                        <label class="flex items-center gap-2 cursor-pointer bg-black/30 p-2 rounded-lg hover:bg-black/50 transition"><input type="radio" name="tts-filter" value="gifters" class="accent-yellow-400 w-4 h-4 cursor-pointer"><span class="text-[11px] text-yellow-400 font-bold uppercase">Solo Donadores (Regalos)</span></label>
+
+                    <div class="space-y-3">
+                        <label class="text-[10px] text-zinc-500 uppercase block font-black ml-1">Filtro de Audiencia</label>
+                        <div class="grid grid-cols-1 gap-2">
+                            <label class="flex items-center gap-3 cursor-pointer bg-white/5 p-3 rounded-xl hover:bg-white/10 transition">
+                                <input type="radio" name="tts-filter" value="all" checked class="accent-cyan-500 w-4 h-4">
+                                <span class="text-[10px] text-zinc-300 font-bold uppercase">Todos</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer bg-white/5 p-3 rounded-xl hover:bg-white/10 transition">
+                                <input type="radio" name="tts-filter" value="followers" class="accent-green-500 w-4 h-4">
+                                <span class="text-[10px] text-green-400 font-bold uppercase">Seguidores</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer bg-white/5 p-3 rounded-xl hover:bg-white/10 transition">
+                                <input type="radio" name="tts-filter" value="vip" class="accent-purple-500 w-4 h-4">
+                                <span class="text-[10px] text-purple-400 font-bold uppercase">Mods / Subs</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </section>
             
-            <section class="glass flex flex-col flex-1 overflow-hidden min-h-[200px] lg:min-h-0">
-                <div class="p-4 border-b border-zinc-900 bg-black/20 text-center"><h2 class="text-xs font-bold uppercase tracking-widest italic text-zinc-500">Historial de Sesión</h2></div>
-                <div id="gift-history" class="flex-1 overflow-y-auto p-3 space-y-2 text-[11px] font-mono text-zinc-500"></div>
+            <section class="glass flex flex-col flex-1 overflow-hidden min-h-[200px]">
+                <div class="p-4 border-b border-white/5 bg-white/5 text-center">
+                    <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">REGISTRO DE SESIÓN</h2>
+                </div>
+                <div id="gift-history" class="flex-1 overflow-y-auto p-4 space-y-2 text-[10px] font-mono text-zinc-600 custom-scrollbar"></div>
             </section>
         </div>
     </main>
@@ -291,8 +303,8 @@
         function copyOverlayUrl(type) {
             const url = window.location.origin + '/?overlay=' + type;
             navigator.clipboard.writeText(url).then(() => {
-                alert('¡Enlace copiado con éxito!\n\nPega esta URL en una fuente de Navegador en OBS:\n' + url);
-            }).catch(err => alert('Hubo un error al copiar. Copia manualmente esta URL:\n' + url));
+                alert('¡Enlace de Overlay copiado con éxito!');
+            }).catch(err => alert('Error al copiar: ' + url));
         }
 
         const synth = window.speechSynthesis; let voices = [];
@@ -314,13 +326,12 @@
         let currentMode = 'mp3';
         function setMode(mode) {
             currentMode = mode;
-            document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
-            document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active flex-1 py-2 text-[10px] font-bold uppercase rounded-md" : "mode-btn flex-1 py-2 text-[10px] font-bold uppercase rounded-md";
+            document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg" : "mode-btn flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg";
+            document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg" : "mode-btn flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg";
             document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
             document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
         }
 
-        // BUSCADOR DE REGALOS
         const giftPanel = document.getElementById('gift-list-panel');
         const giftDisplay = document.getElementById('selected-gift-display');
         const giftSearch = document.getElementById('gift-search');
@@ -344,8 +355,8 @@
         function renderGifts(list) {
             optionsContainer.innerHTML = list.map(g => `
                 <div class="gift-option" onclick="selectGift('${g.name}', '${g.image}')">
-                    <img src="${g.image}" onerror="this.src='https://via.placeholder.com/32?text=🎁'">
-                    <span class="text-white font-bold uppercase text-[12px]">${g.name}</span>
+                    <img src="${g.image}" class="w-7 h-7 object-contain" onerror="this.src='https://via.placeholder.com/32?text=🎁'">
+                    <span class="text-white font-bold uppercase text-[11px]">${g.name}</span>
                 </div>
             `).join('');
         }
@@ -354,7 +365,7 @@
             hiddenInput.value = name;
             document.getElementById('current-gift-text').innerHTML = `
                 <div class="flex items-center gap-2 text-cyan-400">
-                    <img src="${img}" class="w-5 h-5"> <span>${name.toUpperCase()}</span>
+                    <img src="${img}" class="w-5 h-5"> <span class="uppercase">${name}</span>
                 </div>`;
             giftPanel.classList.add('hidden');
         }
@@ -364,7 +375,6 @@
             renderGifts(allGifts.filter(g => g.name.toLowerCase().includes(term)));
         };
 
-        // --- LÓGICA DE GUARDADO CORREGIDA ---
         const btnSave = document.getElementById('btn-save-action');
         if(btnSave) {
             btnSave.onclick = () => {
@@ -372,37 +382,26 @@
                 const username = usernameInput.value.trim(); 
                 const gift = document.getElementById('gift-select').value;
                 
-                if(!username || !gift) return alert("Por favor ingresa el usuario de TikTok y selecciona un regalo.");
+                if(!username || !gift) return alert("Completa usuario y regalo.");
 
                 if(currentMode === 'mp3') {
                     const fileInput = document.getElementById('file-input'); 
                     const file = fileInput.files[0];
-                    if(!file) return alert("Selecciona un archivo MP3 primero.");
+                    if(!file) return alert("Selecciona MP3.");
                     
                     document.getElementById('loader').style.display = 'flex';
                     document.getElementById('loader-text').innerText = "Subiendo Audio...";
 
                     const reader = new FileReader();
                     reader.onload = (e) => { 
-                        socket.emit("uploadAndSave", { 
-                            username, 
-                            gift, 
-                            fileName: file.name, 
-                            fileData: e.target.result 
-                        }); 
-                        // Reset de campos
+                        socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); 
                         fileInput.value = ""; 
-                        document.getElementById('file-name').innerText = "Seleccionar MP3..."; 
-                    };
-                    reader.onerror = () => {
-                        alert("Error al leer el archivo.");
-                        document.getElementById('loader').style.display = 'none';
+                        document.getElementById('file-name').innerText = "Cargar Audio MP3"; 
                     };
                     reader.readAsDataURL(file);
                 } else {
                     const link = document.getElementById('link-input').value.trim(); 
-                    if(!link) return alert("Ingresa el Link del Webhook");
-                    
+                    if(!link) return alert("Falta Link.");
                     document.getElementById('loader').style.display = 'flex';
                     socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } }); 
                     document.getElementById('link-input').value = "";
@@ -410,40 +409,30 @@
             };
         }
 
-        // --- ESCUCHADORES PARA CERRAR EL LOADER ---
         socket.on("actionSaved", (data) => {
             document.getElementById('loader').style.display = 'none';
-            // Refrescar lista de eventos
             socket.emit("getActions", document.getElementById('username').value);
         });
 
         socket.on("actionsUpdated", (actions) => {
-            // Cuando recibimos la lista actualizada, también nos aseguramos de quitar el loader
             document.getElementById('loader').style.display = 'none';
             const list = document.getElementById('actions-list');
             if(list) {
                 list.innerHTML = actions.map((a, i) => `
-                    <div class="flex justify-between items-center bg-black/40 p-3 rounded-lg border border-zinc-800">
-                        <div class="text-[10px]"><b class="${a.type === 'link' ? 'text-cyan-400' : 'text-purple-400'} uppercase">${a.type}</b><br><b class="text-white">${a.gift}</b></div>
-                        <button onclick="deleteAction(${i})" class="text-red-500 hover:text-white transition-colors"><i data-lucide="trash-2" class="w-4"></i></button>
+                    <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5 fade-in">
+                        <div class="text-[9px]"><b class="${a.type === 'link' ? 'text-cyan-400' : 'text-purple-400'} uppercase font-black tracking-widest">${a.type}</b><br><b class="text-zinc-100 text-[11px] uppercase">${a.gift}</b></div>
+                        <button onclick="deleteAction(${i})" class="text-zinc-600 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4"></i></button>
                     </div>`).join('');
                 lucide.createIcons();
             }
         });
 
-        socket.on("error", (msg) => {
-            document.getElementById('loader').style.display = 'none';
-            alert("Error del servidor: " + msg);
-        });
-        // ----------------------------------------
-
-        const fileInput = document.getElementById('file-input');
-        if(fileInput) fileInput.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Seleccionar MP3...";
+        const fileInputDisp = document.getElementById('file-input');
+        if(fileInputDisp) fileInputDisp.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Cargar Audio MP3";
         
         function deleteAction(index) { 
             const user = document.getElementById('username').value;
-            if(!user) return;
-            socket.emit("deleteAction", { username: user, index }); 
+            if(user) socket.emit("deleteAction", { username: user, index }); 
         }
 
         const btnConnect = document.getElementById('btn-connect');
@@ -466,39 +455,37 @@
             const sText = document.getElementById('connection-status'); 
             const sPulse = document.getElementById('status-pulse');
             const hostAvatar = document.getElementById('host-avatar'); 
-            const hostTitle = document.getElementById('host-title');
             
             if (status === "connected") {
-                sText.innerText = "SISTEMA ONLINE"; sText.className = "text-[10px] uppercase tracking-[3px] text-cyan-400 font-bold italic";
-                sPulse.className = "w-2 h-2 rounded-full bg-cyan-400 animate-ping";
+                sText.innerText = "SISTEMA ONLINE"; sText.className = "text-[10px] uppercase tracking-[4px] text-cyan-400 font-bold mt-1";
+                sPulse.className = "absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-cyan-400 border-4 border-[#0a0a0f] animate-ping";
                 document.getElementById('btn-connect').classList.add('hidden'); 
                 document.getElementById('btn-disconnect').classList.remove('hidden');
-                hostAvatar.classList.add('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
+                hostAvatar.classList.add('border-cyan-500', 'shadow-2xl', 'shadow-cyan-500/20');
                 speak("Sistemas en línea."); 
                 socket.emit("getActions", document.getElementById('username').value);
             } else {
-                sText.innerText = "OFFLINE"; sText.className = "text-[10px] uppercase tracking-[3px] text-red-500 font-bold italic";
-                sPulse.className = "w-2 h-2 rounded-full bg-red-500";
+                sText.innerText = "SISTEMA OFFLINE"; sText.className = "text-[10px] uppercase tracking-[4px] text-red-500 font-bold mt-1";
+                sPulse.className = "absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-red-500 border-4 border-[#0a0a0f]";
                 document.getElementById('btn-connect').classList.remove('hidden'); 
                 document.getElementById('btn-disconnect').classList.add('hidden');
                 hostAvatar.src = "/Logo.png"; 
-                hostAvatar.classList.remove('border-cyan-500', 'shadow-[0_0_15px_rgba(0,255,255,0.4)]');
-                hostTitle.innerHTML = `NEXORA <span class="text-cyan-500">ULTRA</span>`;
+                hostAvatar.classList.remove('border-cyan-500', 'shadow-2xl');
             }
         });
 
         socket.on("connectedUserData", (data) => {
             if(isOverlay) return;
             if(data.profilePictureUrl) document.getElementById('host-avatar').src = data.profilePictureUrl;
-            if(data.username) document.getElementById('host-title').innerHTML = `${data.username} <span class="text-cyan-500 text-sm md:text-lg">LIVE</span>`;
+            if(data.username) document.getElementById('host-title').innerHTML = `${data.username} <span class="text-cyan-500 text-sm">LIVE</span>`;
         });
 
         function updateDonatorsRanking() {
             const sorted = Array.from(donatorsMap.entries()).sort((a,b) => b[1] - a[1]).slice(0, 10);
             const htmlContent = sorted.map((d, i) => `
-                <div class="flex items-center justify-between bg-black/40 p-2 rounded border border-yellow-500/20 ${i===0 ? 'border-yellow-500/50 bg-yellow-900/10' : ''}">
-                    <div class="flex items-center gap-2 text-xs"><span class="text-yellow-500 font-black ${i===0 ? 'text-lg' : 'text-sm'}">${i === 0 ? '👑' : '#' + (i+1)}</span><span class="font-bold text-zinc-300 truncate max-w-[80px] md:max-w-[100px]">${d[0]}</span></div>
-                    <span class="text-yellow-400 font-mono text-[10px] md:text-[11px] bg-yellow-500/10 px-2 py-1 rounded font-bold">${Math.floor(d[1])} pts</span>
+                <div class="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5 ${i===0 ? 'border-yellow-500/30 bg-yellow-500/5' : ''}">
+                    <div class="flex items-center gap-3 text-[11px]"><span class="text-yellow-500 font-black">${i === 0 ? '👑' : '#' + (i+1)}</span><span class="font-bold text-zinc-300 truncate w-24">${d[0]}</span></div>
+                    <span class="text-yellow-500 font-mono text-[10px] bg-yellow-500/10 px-2 py-1 rounded-lg font-black">${Math.floor(d[1])} pts</span>
                 </div>
             `).join('');
             const dash = document.getElementById('dashboard-donators-container'); if(dash) dash.innerHTML = htmlContent;
@@ -507,8 +494,7 @@
         socket.on("triggerSound", (fileUrl) => {
             if(isOverlay) return; 
             const audio = new Audio(fileUrl);
-            const volInput = document.getElementById('tts-volume');
-            if(volInput) audio.volume = volInput.value;
+            audio.volume = document.getElementById('tts-volume').value;
             audio.play();
         });
 
@@ -516,9 +502,9 @@
             const container = document.getElementById('ranking-container');
             if(container) {
                 container.innerHTML = ranking.map((user, i) => `
-                    <div class="flex items-center justify-between bg-black/40 p-3 rounded-lg border border-red-500/20 hover:border-red-500/50 transition-colors">
-                        <div class="flex items-center gap-3 text-xs"><span class="text-red-500 font-black text-sm">${i===0?'👑':'#'+user.rank}</span><span class="font-bold text-zinc-300 truncate max-w-[100px]">${user.user}</span></div>
-                        <span class="text-red-400 font-mono text-[11px] bg-red-500/10 px-2 py-1 rounded font-bold">${user.likes} ❤</span>
+                    <div class="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5">
+                        <div class="flex items-center gap-3 text-[11px]"><span class="text-red-500 font-black">${i===0?'👑':'#'+user.rank}</span><span class="font-bold text-zinc-300 truncate w-24">${user.user}</span></div>
+                        <span class="text-red-500 font-mono text-[10px] bg-red-500/10 px-2 py-1 rounded-lg font-black">${user.likes} ❤</span>
                     </div>
                 `).join('');
             }
@@ -537,57 +523,41 @@
 
         function getBadges(data) {
             let badges = '';
-            if (data.isMod) badges += '<span class="bg-red-500 text-black text-[8px] px-1 rounded font-bold mr-1">MOD</span>';
-            if (data.isSub) badges += '<span class="bg-purple-500 text-white text-[8px] px-1 rounded font-bold mr-1">SUB</span>';
-            if (data.isFollower && !data.isMod && !data.isSub) badges += '<span class="bg-green-500 text-black text-[8px] px-1 rounded font-bold mr-1">SIGUE</span>';
-            if (giftersSet.has(data.user)) badges += '<span class="bg-yellow-500 text-black text-[8px] px-1 rounded font-bold mr-1">DONADOR</span>';
+            if (data.isMod) badges += '<span class="bg-red-500 text-white text-[8px] px-1.5 rounded font-black mr-1">MOD</span>';
+            if (data.isSub) badges += '<span class="bg-purple-500 text-white text-[8px] px-1.5 rounded font-black mr-1">SUB</span>';
+            if (data.isFollower && !data.isMod && !data.isSub) badges += '<span class="bg-cyan-500 text-black text-[8px] px-1.5 rounded font-black mr-1">FAN</span>';
             return badges;
         }
 
         socket.on("chat", (data) => {
-            const badges = getBadges(data);
-            const canSpeak = !isOverlay ? checkVoicePermission(data) : false; 
-            
             const chatContainer = document.getElementById('chat-container');
             if(chatContainer) {
                 const div = document.createElement('div');
-                div.className = "bg-zinc-900/50 p-2 rounded-lg border-l-2 border-purple-500 text-xs flex items-center gap-2 fade-in";
-                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-6 h-6 rounded-full bg-zinc-800" onerror="this.style.display='none'">
-                    <div>${badges}<span class="text-purple-400 font-bold">${data.user}:</span> <span class="text-zinc-300">${data.message}</span></div>`;
-                
+                div.className = "bg-white/5 p-3 rounded-2xl border-l-4 border-purple-500 text-[11px] flex items-center gap-3 fade-in";
+                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-8 h-8 rounded-xl bg-zinc-800" onerror="this.style.display='none'">
+                    <div>${getBadges(data)}<span class="text-purple-400 font-black uppercase mr-1">${data.user}:</span> <span class="text-zinc-300">${data.message}</span></div>`;
                 chatContainer.prepend(div);
                 if (chatContainer.children.length > 10) chatContainer.removeChild(chatContainer.lastElementChild);
             }
-
-            if (canSpeak) speak(`${data.user} dice: ${data.message}`);
+            if (!isOverlay && checkVoicePermission(data)) speak(`${data.user} dice: ${data.message}`);
         });
 
         socket.on("gift", (data) => {
             giftersSet.add(data.user);
-            const powerAdded = data.amount * 100;
-            donatorsMap.set(data.user, (donatorsMap.get(data.user) || 0) + powerAdded);
+            donatorsMap.set(data.user, (donatorsMap.get(data.user) || 0) + (data.amount * 100));
             updateDonatorsRanking();
-            
             const giftContainer = document.getElementById('gift-container');
             if(giftContainer) {
                 const div = document.createElement('div');
-                div.className = "bg-green-900/20 p-2 rounded-lg border border-green-500/30 flex items-center gap-2 fade-in";
-                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-8 h-8 rounded-full border border-green-500">
-                    <img src="${data.image}" class="w-8 h-8 object-contain" onerror="this.src='https://via.placeholder.com/32?text=🎁'">
-                    <div class="text-[10px]"><b class="text-white">${data.user}</b> x${data.amount} <span class="text-green-400">${data.gift}</span></div>`;
-                
+                div.className = "bg-green-500/10 p-3 rounded-2xl border border-green-500/20 flex items-center gap-3 fade-in";
+                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-10 h-10 rounded-xl border border-green-500/50">
+                    <img src="${data.image}" class="w-10 h-10 object-contain">
+                    <div class="text-[10px]"><b class="text-white uppercase font-black">${data.user}</b><br><span class="text-green-400 font-bold">ENVIÓ x${data.amount} ${data.gift}</span></div>`;
                 giftContainer.prepend(div);
                 if (giftContainer.children.length > 10) giftContainer.removeChild(giftContainer.lastElementChild);
-            }
-
-            const histContainer = document.getElementById('gift-history');
-            if(histContainer && !isOverlay) {
-                const hist = document.createElement('div');
-                hist.innerText = `[${new Date().toLocaleTimeString()}] ${data.user} envió ${data.amount} ${data.gift}`;
-                histContainer.prepend(hist);
-                if (histContainer.children.length > 30) histContainer.removeChild(histContainer.lastElementChild);
             }
         });
     </script>
 </body>
+</html>
 </html>
