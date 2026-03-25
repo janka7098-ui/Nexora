@@ -11,12 +11,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700;900&display=swap');
         
         :root {
-            --purple: #8A2BE2;
-            --green: #39FF14;
-            --red: #FF3131;
-            --bg: #050507;
-            --cyan: #00FFFF;
-            --gold: #FFD700;
+            --purple: #8A2BE2; --green: #39FF14; --red: #FF3131;
+            --bg: #050507; --cyan: #00FFFF; --gold: #FFD700;
         }
 
         body {
@@ -25,8 +21,7 @@
             color: #efefef;
             overflow-x: hidden;
             background-image: radial-gradient(circle at 50% -20%, #1a0b2e 0%, var(--bg) 80%);
-            min-height: 100vh;
-            margin: 0;
+            min-height: 100vh; margin: 0;
         }
 
         .glass {
@@ -43,15 +38,9 @@
             box-shadow: 0 0 20px rgba(138, 43, 226, 0.1);
         }
 
-        /* Estilo para los contenedores de scroll */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
 
-        /* Botones y animaciones */
-        .neon-border-cyan { border: 1px solid var(--cyan); box-shadow: 0 0 10px rgba(0, 255, 255, 0.2); }
-        .neon-border-purple { border: 1px solid var(--purple); box-shadow: 0 0 10px rgba(138, 43, 226, 0.2); }
-        
         .mode-btn { background: rgba(255,255,255,0.03); color: #888; border: 1px solid transparent; transition: all 0.3s; }
         .mode-btn.active { background: rgba(138, 43, 226, 0.2); color: white; border-color: var(--purple); }
         .mode-btn.active.webhook-active { background: rgba(0, 255, 255, 0.15); color: var(--cyan); border-color: var(--cyan); }
@@ -72,13 +61,13 @@
         }
         .btn-copy-link:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 255, 0.05); }
 
-        input, select { background: rgba(0,0,0,0.4) !important; border: 1px solid rgba(255,255,255,0.1) !important; transition: all 0.3s; }
-        input:focus { border-color: var(--cyan) !important; box-shadow: 0 0 10px rgba(0, 255, 255, 0.1); }
+        input, select { background: rgba(0,0,0,0.4) !important; border: 1px solid rgba(255,255,255,0.1) !important; }
     </style>
 </head>
 <body class="p-2 md:p-6 pb-12">
 
     <script>
+        // LÓGICA DE OVERLAY PARA OBS (FONDO TRANSPARENTE)
         const urlParams = new URLSearchParams(window.location.search);
         const overlayType = urlParams.get('overlay'); 
         const isOverlay = !!overlayType;
@@ -94,9 +83,6 @@
                 document.getElementById('action-buttons').style.display = 'none';
                 document.getElementById('view-dashboard').style.display = 'none';
                 
-                const ttsCheckbox = document.getElementById('tts-enabled');
-                if(ttsCheckbox) ttsCheckbox.checked = false; 
-
                 if (['chat', 'gifts', 'likes', 'donators'].includes(overlayType)) {
                     const widgetContainer = document.createElement('div');
                     widgetContainer.className = 'w-full h-full p-2 flex flex-col justify-start overflow-hidden bg-transparent';
@@ -115,7 +101,7 @@
                     }
                     
                     const style = document.createElement('style');
-                    style.innerHTML = `.bg-zinc-900\\/50, .bg-green-900\\/20, .bg-black\\/40 { background: rgba(10, 10, 15, 0.8) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(10px) !important; border-radius: 15px; }`;
+                    style.innerHTML = `.bg-zinc-900\\/50, .bg-green-900\\/20, .bg-white\\/5 { background: rgba(10, 10, 15, 0.85) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(10px) !important; border-radius: 15px; margin-bottom: 8px; }`;
                     document.head.appendChild(style);
                 }
             });
@@ -130,164 +116,137 @@
     <nav id="nav-header" class="max-w-[1800px] mx-auto mb-8 flex flex-col lg:flex-row items-center justify-between glass p-5 gap-6">
         <div class="flex items-center gap-5 w-full lg:w-auto">
             <div class="relative">
-                <img id="host-avatar" src="/Logo.png" alt="Logo" class="h-14 w-14 md:h-16 md:w-16 object-cover rounded-2xl border border-white/10 transition-all duration-700" onerror="this.src='/Logo.png'">
+                <img id="host-avatar" src="/Logo.png" class="h-14 w-14 md:h-16 md:w-16 object-cover rounded-2xl border border-white/10" onerror="this.src='/Logo.png'">
                 <div id="status-pulse" class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-red-500 border-4 border-[#0a0a0f]"></div>
             </div>
-            <div class="flex flex-col">
-                <h1 id="host-title" class="text-2xl md:text-4xl font-black italic tracking-tighter leading-none uppercase">NEXORA <span class="text-cyan-500">ULTRA</span></h1>
+            <div>
+                <h1 id="host-title" class="text-2xl md:text-4xl font-black italic tracking-tighter uppercase">NEXORA <span class="text-cyan-500">ULTRA</span></h1>
                 <span id="connection-status" class="text-[10px] uppercase tracking-[4px] text-red-500 font-bold mt-1">SISTEMA OFFLINE</span>
             </div>
         </div>
 
         <div class="flex flex-wrap justify-center lg:justify-end gap-3 items-center w-full lg:w-auto">
-            <div class="flex bg-black/40 rounded-xl border border-white/5 p-1 gap-1">
-                <input id="username" type="text" placeholder="@usuario_tiktok" class="bg-transparent border-none px-4 py-2 text-xs outline-none w-36 font-semibold">
-                <input id="key" type="password" placeholder="Key" class="bg-transparent border-none px-4 py-2 text-xs outline-none w-24 font-semibold border-l border-white/10">
-            </div>
-            <button id="btn-connect" class="bg-cyan-500 hover:bg-cyan-400 text-black px-8 py-3 rounded-xl font-black text-xs transition-all uppercase tracking-widest shadow-lg shadow-cyan-500/20">Conectar</button>
-            <button id="btn-disconnect" class="hidden bg-red-500/10 border border-red-500/50 text-red-500 px-8 py-3 rounded-xl font-black text-xs transition-all uppercase tracking-widest hover:bg-red-500 hover:text-white">Desconectar</button>
+            <input id="username" type="text" placeholder="@usuario" class="bg-black/40 border border-white/5 px-4 py-2 text-xs rounded-xl outline-none w-36">
+            <input id="key" type="password" placeholder="Key" class="bg-black/40 border border-white/5 px-4 py-2 text-xs rounded-xl outline-none w-24">
+            <button id="btn-connect" class="bg-cyan-500 text-black px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest">Conectar</button>
+            <button id="btn-disconnect" class="hidden bg-red-500/10 border border-red-500/50 text-red-500 px-8 py-3 rounded-xl font-black text-xs uppercase">Salir</button>
         </div>
     </nav>
 
     <div id="action-buttons" class="max-w-[1800px] mx-auto mb-8 flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="juego.html" class="flex-1 max-w-[350px] bg-gradient-to-r from-purple-600 to-indigo-700 text-white text-center py-4 px-6 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-xl hover:shadow-purple-500/30 hover:-translate-y-1 flex items-center justify-center gap-3">
-            <i data-lucide="gamepad-2" class="w-5 h-5"></i> Dashboard Juego
+        <a href="juego.html" class="flex-1 max-w-[350px] bg-purple-600 p-4 rounded-2xl font-bold uppercase text-center flex items-center justify-center gap-3 hover:scale-105 transition-all">
+            <i data-lucide="gamepad-2"></i> Dashboard Juego
         </a>
-        <a href="interactivo.html" class="flex-1 max-w-[350px] bg-gradient-to-r from-cyan-600 to-blue-700 text-white text-center py-4 px-6 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-xl hover:shadow-cyan-500/30 hover:-translate-y-1 flex items-center justify-center gap-3">
-            <i data-lucide="zap" class="w-5 h-5"></i> Panel Interactivo
+        <a href="interactivo.html" class="flex-1 max-w-[350px] bg-cyan-600 p-4 rounded-2xl font-bold uppercase text-center flex items-center justify-center gap-3 hover:scale-105 transition-all">
+            <i data-lucide="zap"></i> Panel Interactivo
         </a>
     </div>
 
-    <main id="view-dashboard" class="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:h-[750px]">
+    <main id="view-dashboard" class="max-w-[1800px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
+        <div class="lg:col-span-3 flex flex-col gap-6">
             <section class="glass p-6">
-                <h2 class="text-cyan-400 font-bold uppercase text-[10px] mb-5 flex items-center gap-2 tracking-[0.2em]"><i data-lucide="settings-2" class="w-4"></i> CONFIGURAR ALERTA</h2>
-                
-                <div class="flex bg-black/40 p-1 rounded-xl border border-white/5 mb-6">
+                <h2 class="text-cyan-400 font-bold uppercase text-[10px] mb-5 tracking-[0.2em]">CONFIGURAR ALERTA</h2>
+                <div class="flex bg-black/40 p-1 rounded-xl mb-6">
                     <button onclick="setMode('mp3')" id="mode-mp3" class="mode-btn active flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg">AUDIO MP3</button>
                     <button onclick="setMode('link')" id="mode-link" class="mode-btn flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg">WEBHOOK</button>
                 </div>
 
-                <div class="space-y-5">
-                    <div class="relative group" id="custom-gift-dropdown">
-                        <button type="button" id="selected-gift-display" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-xs flex items-center justify-between hover:border-purple-500 transition-all text-zinc-400 font-bold">
+                <div class="space-y-4">
+                    <div class="relative" id="custom-gift-dropdown">
+                        <button id="selected-gift-display" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-xs flex justify-between items-center text-zinc-400 font-bold">
                             <span id="current-gift-text">Seleccionar Regalo...</span>
-                            <i data-lucide="chevron-down" class="w-4 h-4 text-cyan-400"></i>
+                            <i data-lucide="chevron-down" class="text-cyan-400"></i>
                         </button>
-
-                        <div id="gift-list-panel" class="hidden absolute z-50 mt-2 w-full bg-[#0f0f15] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-                            <div class="p-3 border-b border-white/5">
-                                <div class="relative">
-                                    <input type="text" id="gift-search" placeholder="Buscar regalo..." class="w-full bg-black border border-white/5 rounded-lg p-2.5 pl-9 text-xs text-white outline-none">
-                                    <i data-lucide="search" class="absolute left-3 top-3 w-4 h-4 text-zinc-500"></i>
-                                </div>
+                        <div id="gift-list-panel" class="hidden absolute z-50 mt-2 w-full bg-[#0f0f15] border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                            <div class="p-2 border-b border-white/5">
+                                <input type="text" id="gift-search" placeholder="Buscar..." class="w-full bg-black p-2 text-xs text-white rounded-lg outline-none">
                             </div>
-                            <div id="gift-options-container" class="max-h-64 overflow-y-auto p-2 custom-scrollbar"></div>
+                            <div id="gift-options-container" class="max-h-60 overflow-y-auto custom-scrollbar"></div>
                         </div>
                         <input type="hidden" id="gift-select" value="">
                     </div>
 
                     <div id="container-mp3">
                         <input type="file" id="file-input" accept="audio/mpeg" class="hidden">
-                        <button onclick="document.getElementById('file-input').click()" class="w-full bg-black/20 border-2 border-dashed border-white/5 p-5 rounded-2xl text-xs text-zinc-500 hover:border-purple-500 hover:text-purple-400 transition-all flex flex-col items-center gap-3">
-                            <i data-lucide="music-4" class="w-6 h-6"></i>
-                            <span id="file-name" class="font-semibold uppercase tracking-tighter">Cargar Audio MP3</span>
+                        <button onclick="document.getElementById('file-input').click()" class="w-full bg-black/20 border-2 border-dashed border-white/5 p-5 rounded-2xl text-xs flex flex-col items-center gap-3">
+                            <i data-lucide="music-4" class="text-purple-400"></i>
+                            <span id="file-name" class="uppercase font-bold">Cargar MP3</span>
                         </button>
                     </div>
-                    
+
                     <div id="container-link" class="hidden">
-                        <input id="link-input" type="text" placeholder="URL del comando del juego..." class="w-full p-4 rounded-xl text-xs text-cyan-400 font-mono">
+                        <input id="link-input" type="text" placeholder="URL del comando..." class="w-full p-4 rounded-xl text-xs text-cyan-400">
                     </div>
-                    
-                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-4 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all shadow-xl shadow-white/5 active:scale-95">Vincular Acción</button>
+
+                    <button id="btn-save-action" class="w-full bg-white text-black font-black py-4 rounded-xl text-xs uppercase hover:bg-cyan-500 transition-all">Vincular Acción</button>
                 </div>
             </section>
-            
-            <section class="glass flex-1 p-6 flex flex-col overflow-hidden min-h-[300px]">
-                <h2 class="text-purple-400 font-bold uppercase text-[10px] mb-4 tracking-[0.2em]">EVENTOS PROGRAMADOS</h2>
-                <div id="actions-list" class="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar"></div>
+
+            <section class="glass p-6 flex-1 min-h-[300px] flex flex-col">
+                <h2 class="text-purple-400 font-bold text-[10px] mb-4 tracking-[0.2em]">EVENTOS ACTIVOS</h2>
+                <div id="actions-list" class="flex-1 overflow-y-auto space-y-3 custom-scrollbar"></div>
             </section>
         </div>
 
-        <div class="col-span-1 lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="glass flex flex-col overflow-hidden h-[400px] lg:h-full">
-                <div class="p-4 border-b border-white/5 bg-white/5 text-[10px] font-black tracking-[0.3em] text-purple-400 flex justify-between items-center">
-                    <span class="flex items-center gap-2 uppercase"><i data-lucide="message-square" class="w-3"></i> Feed de Chat</span>
-                    <button onclick="copyOverlayUrl('chat')" class="btn-copy-link" title="Copiar URL OBS"><i data-lucide="link" class="w-3"></i></button>
+        <div class="lg:col-span-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass flex flex-col h-[400px]">
+                <div class="p-4 bg-white/5 flex justify-between items-center text-[10px] font-black tracking-[0.3em] text-purple-400">
+                    <span>FEED DE CHAT</span><button onclick="copyOverlayUrl('chat')" class="btn-copy-link"><i data-lucide="link" class="w-3"></i></button>
                 </div>
                 <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar"></div>
             </div>
 
-            <div class="glass flex flex-col overflow-hidden h-[400px] lg:h-full">
-                <div class="p-4 border-b border-white/5 bg-white/5 text-[10px] font-black tracking-[0.3em] text-green-400 flex justify-between items-center">
-                    <span class="flex items-center gap-2 uppercase"><i data-lucide="gift" class="w-3"></i> Regalos Live</span>
-                    <button onclick="copyOverlayUrl('gifts')" class="btn-copy-link" title="Copiar URL OBS"><i data-lucide="link" class="w-3"></i></button>
+            <div class="glass flex flex-col h-[400px]">
+                <div class="p-4 bg-white/5 flex justify-between items-center text-[10px] font-black tracking-[0.3em] text-green-400">
+                    <span>REGALOS LIVE</span><button onclick="copyOverlayUrl('gifts')" class="btn-copy-link"><i data-lucide="link" class="w-3"></i></button>
                 </div>
                 <div id="gift-container" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar"></div>
             </div>
 
-            <div class="glass flex flex-col overflow-hidden h-[400px] lg:h-full">
-                <div class="p-4 border-b border-white/5 bg-white/5 text-[10px] font-black tracking-[0.3em] text-red-500 flex justify-between items-center">
-                    <span class="flex items-center gap-2 uppercase"><i data-lucide="flame" class="w-3"></i> Ranking Likes</span>
-                    <button onclick="copyOverlayUrl('likes')" class="btn-copy-link" title="Copiar URL OBS"><i data-lucide="link" class="w-3"></i></button>
+            <div class="glass flex flex-col h-[400px]">
+                <div class="p-4 bg-white/5 flex justify-between items-center text-[10px] font-black tracking-[0.3em] text-red-500">
+                    <span>RANKING LIKES</span><button onclick="copyOverlayUrl('likes')" class="btn-copy-link"><i data-lucide="link" class="w-3"></i></button>
                 </div>
                 <div id="ranking-container" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar"></div>
             </div>
 
-            <div class="glass flex flex-col overflow-hidden h-[400px] lg:h-full">
-                <div class="p-4 border-b border-white/5 bg-white/5 text-[10px] font-black tracking-[0.3em] text-yellow-500 flex justify-between items-center">
-                    <span class="flex items-center gap-2 uppercase"><i data-lucide="award" class="w-3"></i> TOP Donadores</span>
-                    <button onclick="copyOverlayUrl('donators')" class="btn-copy-link" title="Copiar URL OBS"><i data-lucide="link" class="w-3"></i></button>
+            <div class="glass flex flex-col h-[400px]">
+                <div class="p-4 bg-white/5 flex justify-between items-center text-[10px] font-black tracking-[0.3em] text-yellow-500">
+                    <span>TOP DONADORES</span><button onclick="copyOverlayUrl('donators')" class="btn-copy-link"><i data-lucide="link" class="w-3"></i></button>
                 </div>
                 <div id="dashboard-donators-container" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar"></div>
             </div>
         </div>
 
-        <div class="col-span-1 lg:col-span-3 flex flex-col gap-6">
+        <div class="lg:col-span-3 flex flex-col gap-6">
             <section class="glass p-6">
-                <h2 class="text-[10px] font-black uppercase mb-6 text-zinc-500 tracking-[0.2em]">CONTROLES DE VOZ (TTS)</h2>
+                <h2 class="text-[10px] font-black uppercase mb-6 text-zinc-500 tracking-[0.2em]">CONTROLES DE VOZ</h2>
                 <div class="space-y-6">
-                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
+                    <div class="bg-black/40 p-4 rounded-2xl">
                         <div class="flex items-center justify-between mb-4">
                             <label class="text-[10px] text-zinc-400 font-bold uppercase">Estado TTS</label>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="tts-enabled" checked class="sr-only peer">
-                                <div class="w-9 h-5 bg-zinc-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-cyan-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
-                            </label>
+                            <input type="checkbox" id="tts-enabled" checked class="accent-cyan-500">
                         </div>
                         <select id="tts-voice" class="w-full p-3 rounded-xl text-xs text-white outline-none"></select>
                     </div>
-
-                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5">
-                        <div class="flex justify-between mb-3"><label class="text-[10px] text-zinc-400 font-bold uppercase">Volumen</label><span id="vol-perc" class="text-[10px] text-cyan-400 font-black">70%</span></div>
-                        <input id="tts-volume" type="range" min="0" max="1" step="0.1" value="0.7" class="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-500">
+                    <div class="bg-black/40 p-4 rounded-2xl">
+                        <div class="flex justify-between mb-3"><label class="text-[10px] font-bold">VOLUMEN</label><span id="vol-perc" class="text-cyan-400 font-black">70%</span></div>
+                        <input id="tts-volume" type="range" min="0" max="1" step="0.1" value="0.7" class="w-full accent-cyan-500">
                     </div>
-
-                    <div class="space-y-3">
-                        <label class="text-[10px] text-zinc-500 uppercase block font-black ml-1">Filtro de Audiencia</label>
-                        <div class="grid grid-cols-1 gap-2">
-                            <label class="flex items-center gap-3 cursor-pointer bg-white/5 p-3 rounded-xl hover:bg-white/10 transition">
-                                <input type="radio" name="tts-filter" value="all" checked class="accent-cyan-500 w-4 h-4">
-                                <span class="text-[10px] text-zinc-300 font-bold uppercase">Todos</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer bg-white/5 p-3 rounded-xl hover:bg-white/10 transition">
-                                <input type="radio" name="tts-filter" value="followers" class="accent-green-500 w-4 h-4">
-                                <span class="text-[10px] text-green-400 font-bold uppercase">Seguidores</span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer bg-white/5 p-3 rounded-xl hover:bg-white/10 transition">
-                                <input type="radio" name="tts-filter" value="vip" class="accent-purple-500 w-4 h-4">
-                                <span class="text-[10px] text-purple-400 font-bold uppercase">Mods / Subs</span>
-                            </label>
-                        </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] text-zinc-500 font-black">FILTRO DE AUDIENCIA</label>
+                        <select id="tts-filter-select" class="w-full bg-black/40 p-3 rounded-xl text-[10px] text-white">
+                            <option value="all">TODOS LOS USUARIOS</option>
+                            <option value="followers">SÓLO SEGUIDORES</option>
+                            <option value="vip">MODS / SUBS</option>
+                        </select>
                     </div>
                 </div>
             </section>
             
-            <section class="glass flex flex-col flex-1 overflow-hidden min-h-[200px]">
-                <div class="p-4 border-b border-white/5 bg-white/5 text-center">
-                    <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">REGISTRO DE SESIÓN</h2>
-                </div>
+            <section class="glass flex-1 flex flex-col overflow-hidden min-h-[200px]">
+                <div class="p-4 bg-white/5 text-center text-[10px] font-black text-zinc-500">HISTORIAL</div>
                 <div id="gift-history" class="flex-1 overflow-y-auto p-4 space-y-2 text-[10px] font-mono text-zinc-600 custom-scrollbar"></div>
             </section>
         </div>
@@ -296,77 +255,31 @@
     <script>
         const socket = io();
         lucide.createIcons();
-        
         const donatorsMap = new Map();
         const giftersSet = new Set();
+        let allGifts = [];
 
-        function copyOverlayUrl(type) {
-            const url = window.location.origin + '/?overlay=' + type;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('¡Enlace de Overlay copiado con éxito!');
-            }).catch(err => alert('Error al copiar: ' + url));
-        }
-
-        const synth = window.speechSynthesis; let voices = [];
-        function loadVoices() { voices = synth.getVoices(); const voiceSelect = document.getElementById('tts-voice'); if(voiceSelect) voiceSelect.innerHTML = voices.map((v, i) => `<option value="${i}" ${v.lang.includes('es') ? 'selected' : ''}>${v.name}</option>`).join(''); }
-        speechSynthesis.onvoiceschanged = loadVoices; loadVoices();
-
-        function speak(text) {
-            const ttsCheckbox = document.getElementById('tts-enabled');
-            if (!ttsCheckbox || !ttsCheckbox.checked || isOverlay) return;
-            const utter = new SpeechSynthesisUtterance(text);
-            utter.voice = voices[document.getElementById('tts-voice').value] || voices[0];
-            utter.volume = document.getElementById('tts-volume').value;
-            synth.speak(utter);
-        }
-
-        const volInput = document.getElementById('tts-volume');
-        if(volInput) volInput.oninput = (e) => document.getElementById('vol-perc').innerText = Math.round(e.target.value * 100) + "%";
-
-        let currentMode = 'mp3';
-        function setMode(mode) {
-            currentMode = mode;
-            document.getElementById('mode-mp3').className = mode === 'mp3' ? "mode-btn active flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg" : "mode-btn flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg";
-            document.getElementById('mode-link').className = mode === 'link' ? "mode-btn active webhook-active flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg" : "mode-btn flex-1 py-2.5 text-[10px] font-bold uppercase rounded-lg";
-            document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
-            document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
-        }
-
+        // BUSCADOR DE REGALOS
         const giftPanel = document.getElementById('gift-list-panel');
         const giftDisplay = document.getElementById('selected-gift-display');
         const giftSearch = document.getElementById('gift-search');
         const optionsContainer = document.getElementById('gift-options-container');
-        const hiddenInput = document.getElementById('gift-select');
-        let allGifts = [];
 
         giftDisplay.onclick = () => giftPanel.classList.toggle('hidden');
-
-        document.addEventListener('click', (e) => {
-            if (!document.getElementById('custom-gift-dropdown').contains(e.target)) {
-                giftPanel.classList.add('hidden');
-            }
-        });
-
-        fetch('/gift-list').then(r => r.json()).then(data => {
-            allGifts = data;
-            renderGifts(allGifts);
-        });
+        
+        fetch('/gift-list').then(r => r.json()).then(data => { allGifts = data; renderGifts(data); });
 
         function renderGifts(list) {
             optionsContainer.innerHTML = list.map(g => `
                 <div class="gift-option" onclick="selectGift('${g.name}', '${g.image}')">
-                    <img src="${g.image}" class="w-7 h-7 object-contain" onerror="this.src='https://via.placeholder.com/32?text=🎁'">
+                    <img src="${g.image}" class="w-7 h-7 object-contain">
                     <span class="text-white font-bold uppercase text-[11px]">${g.name}</span>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
         function selectGift(name, img) {
-            hiddenInput.value = name;
-            document.getElementById('current-gift-text').innerHTML = `
-                <div class="flex items-center gap-2 text-cyan-400">
-                    <img src="${img}" class="w-5 h-5"> <span class="uppercase">${name}</span>
-                </div>`;
+            document.getElementById('gift-select').value = name;
+            document.getElementById('current-gift-text').innerHTML = `<div class="flex items-center gap-2 text-cyan-400"><img src="${img}" class="w-5 h-5"><span>${name.toUpperCase()}</span></div>`;
             giftPanel.classList.add('hidden');
         }
 
@@ -375,189 +288,117 @@
             renderGifts(allGifts.filter(g => g.name.toLowerCase().includes(term)));
         };
 
-        const btnSave = document.getElementById('btn-save-action');
-        if(btnSave) {
-            btnSave.onclick = () => {
-                const usernameInput = document.getElementById('username');
-                const username = usernameInput.value.trim(); 
-                const gift = document.getElementById('gift-select').value;
-                
-                if(!username || !gift) return alert("Completa usuario y regalo.");
-
-                if(currentMode === 'mp3') {
-                    const fileInput = document.getElementById('file-input'); 
-                    const file = fileInput.files[0];
-                    if(!file) return alert("Selecciona MP3.");
-                    
-                    document.getElementById('loader').style.display = 'flex';
-                    document.getElementById('loader-text').innerText = "Subiendo Audio...";
-
-                    const reader = new FileReader();
-                    reader.onload = (e) => { 
-                        socket.emit("uploadAndSave", { username, gift, fileName: file.name, fileData: e.target.result }); 
-                        fileInput.value = ""; 
-                        document.getElementById('file-name').innerText = "Cargar Audio MP3"; 
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    const link = document.getElementById('link-input').value.trim(); 
-                    if(!link) return alert("Falta Link.");
-                    document.getElementById('loader').style.display = 'flex';
-                    socket.emit("saveAction", { username, action: { gift, file: link, type: 'link' } }); 
-                    document.getElementById('link-input').value = "";
-                }
-            };
-        }
-
-        socket.on("actionSaved", (data) => {
-            document.getElementById('loader').style.display = 'none';
-            socket.emit("getActions", document.getElementById('username').value);
-        });
-
-        socket.on("actionsUpdated", (actions) => {
-            document.getElementById('loader').style.display = 'none';
-            const list = document.getElementById('actions-list');
-            if(list) {
-                list.innerHTML = actions.map((a, i) => `
-                    <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5 fade-in">
-                        <div class="text-[9px]"><b class="${a.type === 'link' ? 'text-cyan-400' : 'text-purple-400'} uppercase font-black tracking-widest">${a.type}</b><br><b class="text-zinc-100 text-[11px] uppercase">${a.gift}</b></div>
-                        <button onclick="deleteAction(${i})" class="text-zinc-600 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4"></i></button>
-                    </div>`).join('');
-                lucide.createIcons();
-            }
-        });
-
-        const fileInputDisp = document.getElementById('file-input');
-        if(fileInputDisp) fileInputDisp.onchange = (e) => document.getElementById('file-name').innerText = e.target.files[0]?.name || "Cargar Audio MP3";
-        
-        function deleteAction(index) { 
+        // CONEXIÓN
+        document.getElementById('btn-connect').onclick = () => {
             const user = document.getElementById('username').value;
-            if(user) socket.emit("deleteAction", { username: user, index }); 
-        }
+            const key = document.getElementById('key').value;
+            if(!user || !key) return alert("Faltan datos");
+            document.getElementById('loader').style.display = 'flex';
+            socket.emit("startConnection", { username: user, key });
+        };
 
-        const btnConnect = document.getElementById('btn-connect');
-        if(btnConnect) {
-            btnConnect.onclick = () => {
-                const username = document.getElementById('username').value; const key = document.getElementById('key').value;
-                if(!username || !key) return alert("Faltan datos");
-                document.getElementById('loader').style.display = 'flex'; 
-                document.getElementById('loader-text').innerText = "Estableciendo Conexión...";
-                socket.emit("startConnection", { username, key });
-            };
-        }
-
-        const btnDisconnect = document.getElementById('btn-disconnect');
-        if(btnDisconnect) btnDisconnect.onclick = () => { socket.emit("stopConnection"); };
+        document.getElementById('btn-disconnect').onclick = () => socket.emit("stopConnection");
 
         socket.on("status", (status) => {
-            if(isOverlay) return; 
+            if(isOverlay) return;
             document.getElementById('loader').style.display = 'none';
-            const sText = document.getElementById('connection-status'); 
-            const sPulse = document.getElementById('status-pulse');
-            const hostAvatar = document.getElementById('host-avatar'); 
-            
-            if (status === "connected") {
-                sText.innerText = "SISTEMA ONLINE"; sText.className = "text-[10px] uppercase tracking-[4px] text-cyan-400 font-bold mt-1";
-                sPulse.className = "absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-cyan-400 border-4 border-[#0a0a0f] animate-ping";
-                document.getElementById('btn-connect').classList.add('hidden'); 
-                document.getElementById('btn-disconnect').classList.remove('hidden');
-                hostAvatar.classList.add('border-cyan-500', 'shadow-2xl', 'shadow-cyan-500/20');
-                speak("Sistemas en línea."); 
-                socket.emit("getActions", document.getElementById('username').value);
-            } else {
-                sText.innerText = "SISTEMA OFFLINE"; sText.className = "text-[10px] uppercase tracking-[4px] text-red-500 font-bold mt-1";
-                sPulse.className = "absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-red-500 border-4 border-[#0a0a0f]";
-                document.getElementById('btn-connect').classList.remove('hidden'); 
-                document.getElementById('btn-disconnect').classList.add('hidden');
-                hostAvatar.src = "/Logo.png"; 
-                hostAvatar.classList.remove('border-cyan-500', 'shadow-2xl');
-            }
+            const connected = status === "connected";
+            document.getElementById('connection-status').innerText = connected ? "SISTEMA ONLINE" : "SISTEMA OFFLINE";
+            document.getElementById('connection-status').className = connected ? "text-[10px] uppercase tracking-[4px] text-cyan-400 font-bold mt-1" : "text-[10px] uppercase tracking-[4px] text-red-500 font-bold mt-1";
+            document.getElementById('status-pulse').className = connected ? "absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-cyan-400 border-4 border-[#0a0a0f] animate-ping" : "absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-red-500 border-4 border-[#0a0a0f]";
+            document.getElementById('btn-connect').classList.toggle('hidden', connected);
+            document.getElementById('btn-disconnect').classList.toggle('hidden', !connected);
+            if(connected) socket.emit("getActions", document.getElementById('username').value);
         });
 
-        socket.on("connectedUserData", (data) => {
-            if(isOverlay) return;
-            if(data.profilePictureUrl) document.getElementById('host-avatar').src = data.profilePictureUrl;
-            if(data.username) document.getElementById('host-title').innerHTML = `${data.username} <span class="text-cyan-500 text-sm">LIVE</span>`;
+        // TTS
+        const synth = window.speechSynthesis;
+        function loadVoices() {
+            const voices = synth.getVoices();
+            document.getElementById('tts-voice').innerHTML = voices.map((v, i) => `<option value="${i}" ${v.lang.includes('es') ? 'selected' : ''}>${v.name}</option>`).join('');
+        }
+        speechSynthesis.onvoiceschanged = loadVoices; loadVoices();
+
+        function speak(text) {
+            if (!document.getElementById('tts-enabled').checked || isOverlay) return;
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.voice = synth.getVoices()[document.getElementById('tts-voice').value];
+            utter.volume = document.getElementById('tts-volume').value;
+            synth.speak(utter);
+        }
+
+        // SOCKET EVENTOS
+        socket.on("chat", (data) => {
+            const container = document.getElementById('chat-container');
+            const div = document.createElement('div');
+            div.className = "bg-white/5 p-3 rounded-2xl border-l-4 border-purple-500 text-[11px] flex items-center gap-3 fade-in";
+            let badges = data.isMod ? '<span class="bg-red-500 px-1 rounded text-[8px] mr-1">MOD</span>' : '';
+            div.innerHTML = `<div>${badges}<span class="text-purple-400 font-black uppercase">${data.user}:</span> <span class="text-zinc-300">${data.message}</span></div>`;
+            container.prepend(div);
+            if(container.children.length > 15) container.removeChild(container.lastElementChild);
+            speak(`${data.user} dice: ${data.message}`);
+        });
+
+        socket.on("gift", (data) => {
+            const container = document.getElementById('gift-container');
+            const div = document.createElement('div');
+            div.className = "bg-green-500/10 p-3 rounded-2xl border border-green-500/20 flex items-center gap-3 fade-in";
+            div.innerHTML = `<img src="${data.image}" class="w-8 h-8 object-contain"> <div class="text-[10px]"><b class="text-white">${data.user}</b> x${data.amount} <span class="text-green-400 font-bold">${data.gift}</span></div>`;
+            container.prepend(div);
+            
+            donatorsMap.set(data.user, (donatorsMap.get(data.user) || 0) + (data.amount * 100));
+            updateDonatorsRanking();
         });
 
         function updateDonatorsRanking() {
             const sorted = Array.from(donatorsMap.entries()).sort((a,b) => b[1] - a[1]).slice(0, 10);
-            const htmlContent = sorted.map((d, i) => `
-                <div class="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5 ${i===0 ? 'border-yellow-500/30 bg-yellow-500/5' : ''}">
-                    <div class="flex items-center gap-3 text-[11px]"><span class="text-yellow-500 font-black">${i === 0 ? '👑' : '#' + (i+1)}</span><span class="font-bold text-zinc-300 truncate w-24">${d[0]}</span></div>
-                    <span class="text-yellow-500 font-mono text-[10px] bg-yellow-500/10 px-2 py-1 rounded-lg font-black">${Math.floor(d[1])} pts</span>
-                </div>
-            `).join('');
-            const dash = document.getElementById('dashboard-donators-container'); if(dash) dash.innerHTML = htmlContent;
+            document.getElementById('dashboard-donators-container').innerHTML = sorted.map((d, i) => `
+                <div class="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5">
+                    <div class="flex items-center gap-3 text-[11px]"><span class="text-yellow-500 font-black">#${i+1}</span><span class="font-bold">${d[0]}</span></div>
+                    <span class="text-yellow-500 font-black">${Math.floor(d[1])} pts</span>
+                </div>`).join('');
         }
 
-        socket.on("triggerSound", (fileUrl) => {
-            if(isOverlay) return; 
-            const audio = new Audio(fileUrl);
-            audio.volume = document.getElementById('tts-volume').value;
-            audio.play();
-        });
-
-        socket.on("likeRanking", (ranking) => {
-            const container = document.getElementById('ranking-container');
-            if(container) {
-                container.innerHTML = ranking.map((user, i) => `
-                    <div class="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5">
-                        <div class="flex items-center gap-3 text-[11px]"><span class="text-red-500 font-black">${i===0?'👑':'#'+user.rank}</span><span class="font-bold text-zinc-300 truncate w-24">${user.user}</span></div>
-                        <span class="text-red-500 font-mono text-[10px] bg-red-500/10 px-2 py-1 rounded-lg font-black">${user.likes} ❤</span>
-                    </div>
-                `).join('');
-            }
-        });
-
-        function checkVoicePermission(data) {
-            const radio = document.querySelector('input[name="tts-filter"]:checked');
-            if (!radio) return true;
-            const filter = radio.value;
-            if (filter === 'all') return true;
-            if (filter === 'followers' && (data.isFollower || data.isMod || data.isSub)) return true;
-            if (filter === 'vip' && (data.isMod || data.isSub)) return true;
-            if (filter === 'gifters' && giftersSet.has(data.user)) return true; 
-            return false;
+        function copyOverlayUrl(type) {
+            const url = window.location.origin + '/?overlay=' + type;
+            navigator.clipboard.writeText(url).then(() => alert('Overlay copiado para OBS'));
         }
 
-        function getBadges(data) {
-            let badges = '';
-            if (data.isMod) badges += '<span class="bg-red-500 text-white text-[8px] px-1.5 rounded font-black mr-1">MOD</span>';
-            if (data.isSub) badges += '<span class="bg-purple-500 text-white text-[8px] px-1.5 rounded font-black mr-1">SUB</span>';
-            if (data.isFollower && !data.isMod && !data.isSub) badges += '<span class="bg-cyan-500 text-black text-[8px] px-1.5 rounded font-black mr-1">FAN</span>';
-            return badges;
+        // GUARDADO DE ACCIONES
+        let currentMode = 'mp3';
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('mode-mp3').classList.toggle('active', mode === 'mp3');
+            document.getElementById('mode-link').classList.toggle('active', mode === 'link');
+            document.getElementById('container-mp3').classList.toggle('hidden', mode !== 'mp3');
+            document.getElementById('container-link').classList.toggle('hidden', mode !== 'link');
         }
 
-        socket.on("chat", (data) => {
-            const chatContainer = document.getElementById('chat-container');
-            if(chatContainer) {
-                const div = document.createElement('div');
-                div.className = "bg-white/5 p-3 rounded-2xl border-l-4 border-purple-500 text-[11px] flex items-center gap-3 fade-in";
-                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-8 h-8 rounded-xl bg-zinc-800" onerror="this.style.display='none'">
-                    <div>${getBadges(data)}<span class="text-purple-400 font-black uppercase mr-1">${data.user}:</span> <span class="text-zinc-300">${data.message}</span></div>`;
-                chatContainer.prepend(div);
-                if (chatContainer.children.length > 10) chatContainer.removeChild(chatContainer.lastElementChild);
-            }
-            if (!isOverlay && checkVoicePermission(data)) speak(`${data.user} dice: ${data.message}`);
-        });
+        document.getElementById('btn-save-action').onclick = () => {
+            const user = document.getElementById('username').value;
+            const gift = document.getElementById('gift-select').value;
+            if(!user || !gift) return alert("Faltan datos");
 
-        socket.on("gift", (data) => {
-            giftersSet.add(data.user);
-            donatorsMap.set(data.user, (donatorsMap.get(data.user) || 0) + (data.amount * 100));
-            updateDonatorsRanking();
-            const giftContainer = document.getElementById('gift-container');
-            if(giftContainer) {
-                const div = document.createElement('div');
-                div.className = "bg-green-500/10 p-3 rounded-2xl border border-green-500/20 flex items-center gap-3 fade-in";
-                div.innerHTML = `<img src="/avatar-proxy?url=${encodeURIComponent(data.avatar)}" class="w-10 h-10 rounded-xl border border-green-500/50">
-                    <img src="${data.image}" class="w-10 h-10 object-contain">
-                    <div class="text-[10px]"><b class="text-white uppercase font-black">${data.user}</b><br><span class="text-green-400 font-bold">ENVIÓ x${data.amount} ${data.gift}</span></div>`;
-                giftContainer.prepend(div);
-                if (giftContainer.children.length > 10) giftContainer.removeChild(giftContainer.lastElementChild);
+            if(currentMode === 'mp3') {
+                const file = document.getElementById('file-input').files[0];
+                if(!file) return alert("Sube un audio");
+                const reader = new FileReader();
+                reader.onload = (e) => socket.emit("uploadAndSave", { username: user, gift, fileName: file.name, fileData: e.target.result });
+                reader.readAsDataURL(file);
+            } else {
+                const link = document.getElementById('link-input').value;
+                socket.emit("saveAction", { username: user, action: { gift, file: link, type: 'link' } });
             }
+        };
+
+        socket.on("actionsUpdated", (actions) => {
+            document.getElementById('actions-list').innerHTML = actions.map((a, i) => `
+                <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/5">
+                    <div class="text-[10px]"><b class="${a.type === 'link' ? 'text-cyan-400' : 'text-purple-400'} uppercase">${a.type}</b><br><b class="text-white">${a.gift}</b></div>
+                    <button onclick="socket.emit('deleteAction', {username: '${document.getElementById('username').value}', index: ${i}})" class="text-red-500"><i data-lucide="trash-2" class="w-4"></i></button>
+                </div>`).join('');
+            lucide.createIcons();
         });
     </script>
 </body>
-</html>
 </html>
